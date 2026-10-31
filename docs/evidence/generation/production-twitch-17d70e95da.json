@@ -1,0 +1,150 @@
+{
+  "format": "liveforge.evidence/1",
+  "exportedAt": "2026-10-31T13:27:54.406Z",
+  "mode": "twitch",
+  "proposal": {
+    "id": "P1",
+    "text": "A still prop’s shadow becomes a solid bridge.",
+    "author": "yadneshujwal",
+    "origin": "twitch",
+    "createdAt": "2026-10-31T13:25:10.148Z"
+  },
+  "generation": {
+    "id": "4e6ba512-43ee-4c75-8014-a18c9106fd20",
+    "model": "gpt-6.1-sol",
+    "threadId": "01a19223-cbe7-7d33-8180-faf939bb1b2d",
+    "createdAt": "2026-10-31T13:26:09.319Z",
+    "updatedAt": "2026-10-31T13:26:39.531Z",
+    "attempt": 1,
+    "usage": {
+      "input_tokens": 9431,
+      "output_tokens": 302,
+      "cached_input_tokens": 0
+    }
+  },
+  "candidate": {
+    "id": "6e94e16d-95cf-4d61-8d78-16b26275d4ee",
+    "source": "export default { version: 1, name: \"Still Shadows Form Bridges\", description: \"A motionless prop casts a solid shadow from the nearest lit lantern, forming a bridge you can walk across.\", rules: [{ id: \"still-prop-bridge\", each: \"prop\", when: { compare: { left: { field: \"speed\" }, op: \"eq\", right: 0 } }, actions: [{ type: \"projectShadow\", maxLength: 480, thickness: 10, lifetime: 1, solid: true }] }] } satisfies RuleModule;",
+    "sourceHash": "17d70e95dab6e1df237f08de32f2a1942444d8efe84e4ba753ba7d12d818c662",
+    "program": {
+      "name": "Still Shadows Form Bridges",
+      "rules": [
+        {
+          "id": "still-prop-bridge",
+          "each": "prop",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": {
+                "field": "speed"
+              },
+              "right": 0
+            }
+          },
+          "actions": [
+            {
+              "type": "projectShadow",
+              "solid": true,
+              "lifetime": 1,
+              "maxLength": 480,
+              "thickness": 10
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "description": "A motionless prop casts a solid shadow from the nearest lit lantern, forming a bridge you can walk across."
+    },
+    "programHash": "a4b95dfe0483e3ba864c51d685b56fcb39804b7d9f4a89d590b0a1686beecd53",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Checkpoint round trip and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 1314
+      },
+      "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+      "engineVersion": "last-light/1.0.0",
+      "ticksSimulated": 3490
+    },
+    "approvedAt": "2026-10-31T13:27:32.659Z",
+    "activatedAt": "2026-10-31T13:27:41.100Z"
+  },
+  "events": [
+    {
+      "at": "2026-10-31T13:25:10.148Z",
+      "id": "356f5049-ef43-4c57-aef6-5f4187dd4555",
+      "type": "proposal.received",
+      "message": "A Twitch viewer proposed a new mechanic.",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-10-31T13:26:09.319Z",
+      "id": "3ebcba66-d959-4ab5-906a-4b54489e1b60",
+      "type": "generation.queued",
+      "message": "The selected proposal is queued for Codex.",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-10-31T13:26:39.531Z",
+      "id": "5becea63-41d2-436d-992f-69e724392952",
+      "type": "candidate.verified",
+      "message": "Generated source passed the trusted game verifier.",
+      "proposalId": "P1",
+      "sourceHash": "17d70e95dab6e1df237f08de32f2a1942444d8efe84e4ba753ba7d12d818c662",
+      "candidateId": "6e94e16d-95cf-4d61-8d78-16b26275d4ee",
+      "programHash": "a4b95dfe0483e3ba864c51d685b56fcb39804b7d9f4a89d590b0a1686beecd53"
+    },
+    {
+      "at": "2026-10-31T13:27:32.660Z",
+      "id": "455bc0fb-0e87-4735-83fb-d9da2a37e8ae",
+      "type": "candidate.approved",
+      "message": "The host approved this exact verified source.",
+      "sourceHash": "17d70e95dab6e1df237f08de32f2a1942444d8efe84e4ba753ba7d12d818c662",
+      "candidateId": "6e94e16d-95cf-4d61-8d78-16b26275d4ee",
+      "previewHash": "1e766df078a05a5087e83d2a5d605241fd78f17c076ed8f59a657471b7772113",
+      "programHash": "a4b95dfe0483e3ba864c51d685b56fcb39804b7d9f4a89d590b0a1686beecd53"
+    },
+    {
+      "at": "2026-10-31T13:27:41.100Z",
+      "id": "e0f359b3-2d27-4669-b476-0fa6f7960f9d",
+      "type": "candidate.activated",
+      "message": "Still Shadows Form Bridges entered the game at a saved checkpoint.",
+      "sourceHash": "17d70e95dab6e1df237f08de32f2a1942444d8efe84e4ba753ba7d12d818c662",
+      "candidateId": "6e94e16d-95cf-4d61-8d78-16b26275d4ee",
+      "programHash": "a4b95dfe0483e3ba864c51d685b56fcb39804b7d9f4a89d590b0a1686beecd53"
+    }
+  ]
+}

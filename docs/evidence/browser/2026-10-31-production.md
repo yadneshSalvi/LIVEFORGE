@@ -14,9 +14,9 @@ Performed through the Codex in-app browser at https://liveforge-iota.vercel.app.
 
 ## Production issue found and repaired
 
-The initial deployment's fresh-generation readiness probe looked only for an environment-based Sandbox token. Vercel Functions supply the OIDC token through trusted request context. The follow-up uses the official OIDC helper, captures short-lived credentials for the bounded asynchronous job, and never stores the token in the database or uploads a fixed expiring token. Hosted fresh-generation verification is recorded below once completed.
+The initial deployment's fresh-generation readiness probe looked only for an environment-based Sandbox token. Vercel Functions supply the OIDC token through trusted request context. The follow-up uses the official OIDC helper, captures short-lived credentials for the bounded asynchronous job, and never stores the token in the database or uploads a fixed expiring token. Hosted fresh-generation verification is recorded below.
 
-Public Twitch command posting remains pending explicit permission. No synthetic practice proposal is represented as a real Twitch viewer contribution.
+At this initial stage, public Twitch posting was awaiting permission. The authorized real-message test is recorded at the end of this document; synthetic practice proposals remain labeled separately.
 
 ## Fresh hosted generation passed
 
@@ -33,3 +33,15 @@ The production request-context fix was deployed as `dpl_68Mt4gMityYr7PEeAok2VB8E
 [Sanitized runtime record](../generation/41c7da64-9483-463e-866c-c31dff36d1e7.json)
 
 ![Fresh generated law active on production](production-fresh-law.jpg)
+
+## Real Twitch proposal through activation passed
+
+After the user explicitly authorized public test commands, the signed-in `yadneshujwal` account posted `!forge A still prop’s shadow becomes a solid bridge.` and `!back P1` in its own Twitch chat. This is a real platform-ingress test using the host’s own account, not evidence of an independent audience or measured engagement. Exactly two public messages were sent in this check.
+
+The deployed Twitch show `b2ffc9c2-dfd3-46de-9f27-61c004abe13a` received proposal P1 with Twitch provenance, the correct author, and support 1. The host selected P1 and triggered a fresh official Codex job. **Still Shadows Form Bridges** passed all six trusted checks over 3,490 ticks in its first attempt. The exported queue-to-result timestamps span 30.212 seconds for this one run. Actual runtime thread: `01a19223-cbe7-7d33-8180-faf939bb1b2d`.
+
+The exact preview was opened and played across the visible shadow bridge with real keyboard input. The host approved source `17d70e95dab6e1df237f08de32f2a1942444d8efe84e4ba753ba7d12d818c662` and activated it at a checkpoint. The studio displayed that law as active, attributed it to `yadneshujwal`, and advanced to round 2.
+
+[Unmodified browser-exported generation evidence](../generation/production-twitch-17d70e95da.json) records the actual proposal, Codex thread, source/program hashes, checks, approval, and activation. [Public message screenshot](production-twitch-messages.jpg) and [received proposal/support](production-twitch-proposal.jpg) show the corresponding UI observations.
+
+![Real Twitch proposal generated and activated](production-twitch-activated.jpg)
