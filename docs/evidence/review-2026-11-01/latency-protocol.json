@@ -1,0 +1,90 @@
+{
+  "declaredAt": "2026-10-31T19:09:39.069115+00:00",
+  "purpose": "Paired real-provider latency comparison, declared before measurements. Keep all attempts and failed jobs.",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "medium",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "sourceCommit": "Must be one identical frozen source commit, recorded in the actual results.",
+  "concurrency": 1,
+  "sequence": [
+    {
+      "id": "B01-cold",
+      "pair": 1,
+      "originalCaseId": "E01",
+      "text": "Give the courier moon gravity so jumps float farther.",
+      "sandboxMode": "cold"
+    },
+    {
+      "id": "B01-snapshot",
+      "pair": 1,
+      "originalCaseId": "E01",
+      "text": "Give the courier moon gravity so jumps float farther.",
+      "sandboxMode": "snapshot"
+    },
+    {
+      "id": "B02-snapshot",
+      "pair": 2,
+      "originalCaseId": "E02",
+      "text": "Let the courier jump a second time in midair before landing.",
+      "sandboxMode": "snapshot"
+    },
+    {
+      "id": "B02-cold",
+      "pair": 2,
+      "originalCaseId": "E02",
+      "text": "Let the courier jump a second time in midair before landing.",
+      "sandboxMode": "cold"
+    },
+    {
+      "id": "B03-cold",
+      "pair": 3,
+      "originalCaseId": "E03",
+      "text": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+      "sandboxMode": "cold"
+    },
+    {
+      "id": "B03-snapshot",
+      "pair": 3,
+      "originalCaseId": "E03",
+      "text": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+      "sandboxMode": "snapshot"
+    },
+    {
+      "id": "B04-snapshot",
+      "pair": 4,
+      "originalCaseId": "E04",
+      "text": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+      "sandboxMode": "snapshot"
+    },
+    {
+      "id": "B04-cold",
+      "pair": 4,
+      "originalCaseId": "E04",
+      "text": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+      "sandboxMode": "cold"
+    },
+    {
+      "id": "B05-cold",
+      "pair": 5,
+      "originalCaseId": "E10",
+      "text": "A still prop\u2019s shadow becomes a solid bridge.",
+      "sandboxMode": "cold"
+    },
+    {
+      "id": "B05-snapshot",
+      "pair": 5,
+      "originalCaseId": "E10",
+      "text": "A still prop\u2019s shadow becomes a solid bridge.",
+      "sandboxMode": "snapshot"
+    }
+  ],
+  "report": [
+    "Median queue-to-verified duration per mode among verified runs, with failed/cancelled counts separately stated",
+    "Per-pair elapsed differences and all raw records",
+    "Sandbox preparation/install, Codex generation and verification stage timings when available",
+    "Snapshot creation time reported separately; never counted as zero-cost work",
+    "No comparisons against historical engine1 timings presented as controlled evidence"
+  ],
+  "criterion": "At least five real runs per mode; claim lower median only if measured. Cache hits or successful compilation alone are not a latency result."
+}

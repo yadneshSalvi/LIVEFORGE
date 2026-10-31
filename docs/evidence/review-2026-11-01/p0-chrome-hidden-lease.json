@@ -1,0 +1,313 @@
+{
+  "sourceCommit": "177079c3f8d84b7a7002666ee89cf7a8563b4992",
+  "environment": "Chrome actual hidden tab with focus emulation disabled; unchanged optimized177079c; Neon",
+  "showId": "fb7a03a6-9b24-49fc-8497-82c8c6952806",
+  "startedAt": "2026-10-31T18:56:34.939Z",
+  "samples": [
+    {
+      "at": "2026-10-31T18:56:37.004Z",
+      "elapsedMs": 2065,
+      "revision": 27,
+      "epoch": 1,
+      "leaseRemainingMs": 77671,
+      "checkpointTick": 8615,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T18:57:08.526Z",
+      "elapsedMs": 33587,
+      "revision": 31,
+      "epoch": 1,
+      "leaseRemainingMs": 85630,
+      "checkpointTick": 9816,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T18:57:40.590Z",
+      "elapsedMs": 65651,
+      "revision": 32,
+      "epoch": 1,
+      "leaseRemainingMs": 71794,
+      "checkpointTick": 9816,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T18:58:21.102Z",
+      "error": "NeonDbError"
+    },
+    {
+      "at": "2026-10-31T18:58:52.864Z",
+      "elapsedMs": 137925,
+      "revision": 38,
+      "epoch": 1,
+      "leaseRemainingMs": 79284,
+      "checkpointTick": 16774,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T18:59:24.923Z",
+      "elapsedMs": 169984,
+      "revision": 40,
+      "epoch": 1,
+      "leaseRemainingMs": 88436,
+      "checkpointTick": 16774,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T18:59:57.004Z",
+      "elapsedMs": 202065,
+      "revision": 42,
+      "epoch": 1,
+      "leaseRemainingMs": 75867,
+      "checkpointTick": 20376,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:00:29.087Z",
+      "elapsedMs": 234148,
+      "revision": 44,
+      "epoch": 1,
+      "leaseRemainingMs": 85128,
+      "checkpointTick": 20376,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:01:01.178Z",
+      "elapsedMs": 266239,
+      "revision": 46,
+      "epoch": 1,
+      "leaseRemainingMs": 70953,
+      "checkpointTick": 23972,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:01:33.243Z",
+      "elapsedMs": 298304,
+      "revision": 48,
+      "epoch": 1,
+      "leaseRemainingMs": 80625,
+      "checkpointTick": 23972,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:02:05.300Z",
+      "elapsedMs": 330361,
+      "revision": 51,
+      "epoch": 1,
+      "leaseRemainingMs": 88850,
+      "checkpointTick": 27572,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:02:37.348Z",
+      "elapsedMs": 362409,
+      "revision": 52,
+      "epoch": 1,
+      "leaseRemainingMs": 75044,
+      "checkpointTick": 27572,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:03:09.365Z",
+      "elapsedMs": 394426,
+      "revision": 55,
+      "epoch": 1,
+      "leaseRemainingMs": 82741,
+      "checkpointTick": 31170,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:03:41.407Z",
+      "elapsedMs": 426468,
+      "revision": 56,
+      "epoch": 1,
+      "leaseRemainingMs": 70700,
+      "checkpointTick": 31170,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:04:13.438Z",
+      "elapsedMs": 458499,
+      "revision": 59,
+      "epoch": 1,
+      "leaseRemainingMs": 80696,
+      "checkpointTick": 34772,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:04:44.945Z",
+      "elapsedMs": 490006,
+      "revision": 61,
+      "epoch": 1,
+      "leaseRemainingMs": 87924,
+      "checkpointTick": 34772,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:05:15.946Z",
+      "elapsedMs": 521007,
+      "revision": 63,
+      "epoch": 1,
+      "leaseRemainingMs": 76157,
+      "checkpointTick": 38371,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:05:48.026Z",
+      "elapsedMs": 553087,
+      "revision": 65,
+      "epoch": 1,
+      "leaseRemainingMs": 86131,
+      "checkpointTick": 38371,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:06:20.070Z",
+      "elapsedMs": 585131,
+      "revision": 67,
+      "epoch": 1,
+      "leaseRemainingMs": 74066,
+      "checkpointTick": 41971,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:06:52.140Z",
+      "elapsedMs": 617201,
+      "revision": 70,
+      "epoch": 1,
+      "leaseRemainingMs": 82029,
+      "checkpointTick": 45570,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:07:24.193Z",
+      "elapsedMs": 649254,
+      "revision": 71,
+      "epoch": 1,
+      "leaseRemainingMs": 68156,
+      "checkpointTick": 45570,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:07:56.272Z",
+      "elapsedMs": 681333,
+      "revision": 74,
+      "epoch": 1,
+      "leaseRemainingMs": 75839,
+      "checkpointTick": 49172,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:08:28.348Z",
+      "elapsedMs": 713409,
+      "revision": 76,
+      "epoch": 1,
+      "leaseRemainingMs": 83756,
+      "checkpointTick": 49172,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:09:00.381Z",
+      "elapsedMs": 745442,
+      "revision": 78,
+      "epoch": 1,
+      "leaseRemainingMs": 71729,
+      "checkpointTick": 52765,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:09:32.429Z",
+      "elapsedMs": 777490,
+      "revision": 80,
+      "epoch": 1,
+      "leaseRemainingMs": 81709,
+      "checkpointTick": 52765,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:10:03.444Z",
+      "elapsedMs": 808505,
+      "revision": 82,
+      "epoch": 1,
+      "leaseRemainingMs": 68659,
+      "checkpointTick": 56365,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:10:35.494Z",
+      "elapsedMs": 840555,
+      "revision": 84,
+      "epoch": 1,
+      "leaseRemainingMs": 76605,
+      "checkpointTick": 56365,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:11:07.574Z",
+      "elapsedMs": 872635,
+      "revision": 87,
+      "epoch": 1,
+      "leaseRemainingMs": 86613,
+      "checkpointTick": 59963,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:11:39.636Z",
+      "elapsedMs": 904697,
+      "revision": 88,
+      "epoch": 1,
+      "leaseRemainingMs": 72471,
+      "checkpointTick": 59963,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:12:10.393Z",
+      "elapsedMs": 935454,
+      "revision": 91,
+      "epoch": 1,
+      "leaseRemainingMs": 83799,
+      "checkpointTick": 63558,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    },
+    {
+      "at": "2026-10-31T19:12:42.462Z",
+      "elapsedMs": 967523,
+      "revision": 92,
+      "epoch": 1,
+      "leaseRemainingMs": 70903,
+      "checkpointTick": 63558,
+      "activeCandidateId": "15fce183-1a6c-44f7-b18f-40d0fe768037",
+      "phase": "live"
+    }
+  ],
+  "completedAt": "2026-10-31T19:12:42.462Z"
+}

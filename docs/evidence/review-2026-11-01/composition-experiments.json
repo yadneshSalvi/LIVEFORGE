@@ -1,0 +1,22 @@
+{
+  "declaredAt": "2026-10-31T19:04:24.236152+00:00",
+  "purpose": "Predeclared independent combination checks, before real engine2 provider evaluation. Individual source success does not establish combination safety.",
+  "combinations": [
+    {
+      "id": "C02",
+      "members": ["E01", "E02"],
+      "intent": "Moon gravity and exactly one extra airborne jump both remain effective."
+    },
+    {
+      "id": "C03",
+      "members": ["E01", "E02", "E03"],
+      "intent": "Moon gravity, exactly one extra airborne jump, and reversible held giant mode coexist."
+    }
+  ],
+  "additionalGates": [
+    "Independent combined verifier",
+    "Exact ordered context approval and activation through the server",
+    "Browser gameplay",
+    "Checkpoint save/restore and exact prior-stack rollback"
+  ]
+}
