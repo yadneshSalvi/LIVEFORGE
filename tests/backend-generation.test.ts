@@ -338,6 +338,51 @@ describe("durable generation races against late provider output", () => {
     expect(fake.stop).toHaveBeenCalledOnce();
   });
 
+  it("stops its VM despite stalled progress persistence and fences the late write after readiness", async () => {
+    const { show, job } = await fixture(),
+      fake = delayedSandbox();
+    const update = store.update.bind(store);
+    let release!: () => void, entered!: () => void;
+    const gate = new Promise<void>((r) => {
+        release = r;
+      }),
+      started = new Promise<void>((r) => {
+        entered = r;
+      });
+    const intercept = async <T, R>(
+      key: string,
+      change: (value: T) => R,
+    ): Promise<R> => {
+      if (key === showKey(show.id)) {
+        const before = (await store.get<ShowRecord>(key))!;
+        const probe = structuredClone(before);
+        change(probe as T);
+        if (!before.jobs[0].phases?.length && probe.jobs[0].phases?.length) {
+          entered();
+          await gate;
+        }
+      }
+      return update<T, R>(key, change);
+    };
+    vi.spyOn(store, "update").mockImplementation(intercept);
+    const running = runGeneration(show.id, job.id, undefined, {
+      sandboxMode: "cold",
+    });
+    await fake.started;
+    await started;
+    fake.finish();
+    await running;
+    const ready = (await store.get<ShowRecord>(showKey(show.id)))!;
+    expect(ready.jobs[0].status).toBe("ready");
+    expect(fake.stop).toHaveBeenCalledOnce();
+    expect(ready.jobs[0].phases).toBeUndefined();
+    release();
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    const after = (await store.get<ShowRecord>(showKey(show.id)))!;
+    expect(after.jobs[0]).toEqual(ready.jobs[0]);
+    expect(after.updatedAt).toBe(ready.updatedAt);
+    expect(after.candidates).toEqual(ready.candidates);
+  });
   it("cancellation wins even when a completed provider response arrives later", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();

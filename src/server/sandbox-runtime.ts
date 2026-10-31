@@ -4,8 +4,11 @@ import { Sandbox, Snapshot, type Command } from "@vercel/sandbox";
 import type { DocumentStore } from "./store";
 import { getStore } from "./store";
 import { HttpError } from "./errors";
+import type { SandboxFailureDiagnostic } from "./contracts";
 export const SANDBOX_SDK_VERSION = "0.166.0";
-export const SNAPSHOT_TTL_MS = 6 * 60 * 60 * 1000;
+/** Vercel's minimum provider retention; independent from the shorter application reuse window. */
+export const SNAPSHOT_TTL_MS = 24 * 60 * 60 * 1000;
+export const SNAPSHOT_REUSE_MS = 6 * 60 * 60 * 1000;
 export type SandboxMode = "cold" | "snapshot";
 export interface SandboxTimings {
   mode: SandboxMode;
@@ -15,6 +18,7 @@ export interface SandboxTimings {
   createMs: number;
   installMs: number;
   snapshotMs: number;
+  failures?: SandboxFailureDiagnostic[];
 }
 export type TrustedGenerationPhase =
   "thread-started" | "turn-started" | "source-returned";
@@ -25,19 +29,72 @@ export interface SandboxAuthentication {
 }
 interface CacheRecord {
   snapshotId?: string;
+  /** Local reuse cutoff, never extended when a provider snapshot is reused. */
   expiresAt?: number;
   lease?: { owner: string; expiresAt: number };
 }
 export interface SandboxProvider {
   create(options: Parameters<typeof Sandbox.create>[0]): Promise<Sandbox>;
   getSnapshot(
-    options: SandboxAuthentication & { snapshotId: string },
+    options: SandboxAuthentication & {
+      snapshotId: string;
+      signal?: AbortSignal;
+    },
   ): Promise<Pick<Snapshot, "status" | "expiresAt">>;
 }
 const provider: SandboxProvider = {
   create: (options) => Sandbox.create(options),
   getSnapshot: (options) => Snapshot.get(options),
 };
+class SetupFailure extends Error {
+  constructor(readonly category: SandboxFailureDiagnostic["category"]) {
+    super(category);
+  }
+}
+/** Fixed enums plus a numeric status. Never copy SDK text, response bodies, credentials or identifiers. */
+export function snapshotFailureDiagnostic(
+  stage: SandboxFailureDiagnostic["stage"],
+  error: unknown,
+): SandboxFailureDiagnostic {
+  const value =
+    error && typeof error === "object"
+      ? (error as {
+          status?: unknown;
+          response?: { status?: unknown };
+          name?: unknown;
+          code?: unknown;
+        })
+      : undefined;
+  const status = value?.response?.status ?? value?.status;
+  const httpStatus =
+    typeof status === "number" &&
+    Number.isInteger(status) &&
+    status >= 100 &&
+    status <= 599
+      ? status
+      : undefined;
+  const category: SandboxFailureDiagnostic["category"] =
+    error instanceof SetupFailure
+      ? error.category
+      : value?.name === "TimeoutError" ||
+          value?.name === "AbortError" ||
+          value?.code === "ETIMEDOUT"
+        ? "timeout"
+        : httpStatus !== undefined
+          ? "http-error"
+          : ["ECONNRESET", "ECONNREFUSED", "ENOTFOUND", "EAI_AGAIN"].includes(
+                String(value?.code),
+              )
+            ? "network-error"
+            : stage === "cache-publish" || stage === "cache-lease"
+              ? "store-error"
+              : "unknown";
+  return {
+    stage,
+    category,
+    ...(httpStatus !== undefined ? { httpStatus } : {}),
+  };
+}
 const cleanCheck = `const fs=require('node:fs');const names=['input.json','runner.mjs','codex-home','rule.ts','result.json','thread.json','failure.json','.codex'];if(names.some(n=>fs.existsSync('/vercel/sandbox/'+n))||process.env.CODEX_API_KEY||process.env.OPENAI_API_KEY||fs.existsSync(require('node:os').homedir()+'/.codex'))process.exit(42);`;
 const bounded = (n: number) => Math.max(0, Math.min(300000, Math.round(n)));
 const cacheKey = (projectId: string) =>
@@ -61,21 +118,42 @@ export async function createGenerationSandbox(options: {
   provider?: SandboxProvider;
 }): Promise<{ sandbox: Sandbox; timings: SandboxTimings }> {
   const start = Date.now(),
+    deadlineAt = options.deadlineAt ?? start + 260000,
     store = options.store ?? getStore(),
     api = options.provider ?? provider,
     mode = sandboxMode(options.mode),
     credentials = { ...options.credentials };
-  const show = await store.get<{ jobs: { id: string; status: string }[] }>(
-    "show:" + options.showId,
-  );
-  if (
-    !show?.jobs.some((j) => j.id === options.jobId && j.status === "starting")
-  )
-    throw new HttpError(
-      409,
-      "job_not_claimed",
-      "Only a claimed generation job may prepare its dependency runtime.",
+  function remaining() {
+    return deadlineAt - Date.now();
+  }
+  function operationSignal(limit: number) {
+    if (remaining() <= 0)
+      throw new HttpError(
+        503,
+        "generation_deadline",
+        "The bounded generation setup deadline expired; the active game is preserved.",
+      );
+    return AbortSignal.timeout(Math.max(1, Math.min(limit, remaining())));
+  }
+  async function requireStarting() {
+    operationSignal(5000);
+    const show = await untilAborted(
+      store.get<{ jobs: { id: string; status: string }[] }>(
+        "show:" + options.showId,
+      ),
+      operationSignal(5000),
     );
+    if (
+      !show?.jobs.some((j) => j.id === options.jobId && j.status === "starting")
+    )
+      throw new HttpError(
+        409,
+        "job_not_claimed",
+        "Only a current claimed generation job may prepare its dependency runtime.",
+      );
+    operationSignal(5000);
+  }
+  await requireStarting();
   const timings: SandboxTimings = {
     mode,
     cacheHit: false,
@@ -85,21 +163,34 @@ export async function createGenerationSandbox(options: {
     installMs: 0,
     snapshotMs: 0,
   };
+  const recordFailure = (
+    stage: SandboxFailureDiagnostic["stage"],
+    error: unknown,
+  ) => {
+    timings.failures ??= [];
+    if (timings.failures.length < 4)
+      timings.failures.push(snapshotFailureDiagnostic(stage, error));
+  };
+  const terminal = (error: unknown) =>
+    error instanceof HttpError &&
+    ["job_not_claimed", "generation_deadline"].includes(error.code);
+  async function stop(vm: Sandbox) {
+    await vm.stop({ signal: AbortSignal.timeout(5000) }).catch(() => undefined);
+  }
   const key = cacheKey(credentials.projectId),
     owner = randomUUID();
   const create = async (snapshotId?: string) => {
-    const t = Date.now(),
-      remaining = (options.deadlineAt ?? start + 260000) - Date.now();
-    if (remaining <= 0) throw new Error("Generation setup deadline expired");
+    await requireStarting();
+    const t = Date.now();
     try {
-      return await api.create({
+      const vm = await api.create({
         ...credentials,
         ...(snapshotId
           ? { source: { type: "snapshot" as const, snapshotId } }
           : { runtime: "node24" }),
         persistent: false,
         env: {},
-        timeout: Math.min(260000, remaining),
+        timeout: Math.min(260000, remaining()),
         resources: { vcpus: 2 },
         networkPolicy: {
           allow: snapshotId ? ["api.openai.com"] : ["registry.npmjs.org"],
@@ -108,8 +199,15 @@ export async function createGenerationSandbox(options: {
           application: "liveforge",
           purpose: snapshotId ? "generation" : "sdk-setup",
         },
-        signal: AbortSignal.timeout(Math.max(1, Math.min(25000, remaining))),
+        signal: operationSignal(25000),
       });
+      try {
+        await requireStarting();
+        return vm;
+      } catch (error) {
+        await stop(vm);
+        throw error;
+      }
     } finally {
       timings.createMs += bounded(Date.now() - t);
     }
@@ -127,34 +225,40 @@ export async function createGenerationSandbox(options: {
           `@openai/codex-sdk@${SANDBOX_SDK_VERSION}`,
         ],
         cwd: "/vercel/sandbox",
-        timeoutMs: 60000,
+        timeoutMs: Math.min(60000, remaining()),
+        signal: operationSignal(60000),
       });
-      if (result.exitCode !== 0)
-        throw new Error("Pinned SDK installation failed");
+      if (result.exitCode !== 0) throw new SetupFailure("command-failed");
     } finally {
       timings.installMs += bounded(Date.now() - t);
     }
   };
-  const assertClean = async (vm: Sandbox) => {
+  const audit = async (vm: Sandbox) => {
     const result = await vm.runCommand({
       cmd: "node",
       args: ["-e", cleanCheck],
       cwd: "/vercel/sandbox",
-      timeoutMs: 5000,
+      timeoutMs: Math.min(5000, remaining()),
+      signal: operationSignal(5000),
     });
-    if (result.exitCode !== 0)
-      throw new Error("Dependency image contains generation state");
+    if (result.exitCode !== 0) throw new SetupFailure("dirty-image");
   };
+  const network = async (
+    vm: Sandbox,
+    policy: Parameters<Sandbox["update"]>[0]["networkPolicy"],
+  ) => vm.update({ networkPolicy: policy }, { signal: operationSignal(5000) });
   const cold = async () => {
     const vm = await create();
     try {
       await install(vm);
-      await vm.update({ networkPolicy: "deny-all" });
-      await assertClean(vm);
-      await vm.update({ networkPolicy: { allow: ["api.openai.com"] } });
+      await requireStarting();
+      await network(vm, "deny-all");
+      await audit(vm);
+      await network(vm, { allow: ["api.openai.com"] });
+      await requireStarting();
       return vm;
     } catch (error) {
-      await vm.stop().catch(() => undefined);
+      await stop(vm);
       throw error;
     }
   };
@@ -173,29 +277,42 @@ export async function createGenerationSandbox(options: {
     });
   let prepared = false;
   for (let attempt = 0; attempt < 2; attempt++) {
-    let record = await store.get<CacheRecord>(key);
+    await requireStarting();
+    const record = await store.get<CacheRecord>(key);
     if (record?.snapshotId && record.expiresAt! > Date.now() + 30000) {
       const id = record.snapshotId;
+      let stage: SandboxFailureDiagnostic["stage"] = "snapshot-lookup";
       try {
-        const image = await api.getSnapshot({ ...credentials, snapshotId: id });
+        const image = await api.getSnapshot({
+          ...credentials,
+          snapshotId: id,
+          signal: operationSignal(10000),
+        });
+        stage = "snapshot-validation";
         if (
           image.status !== "created" ||
           !image.expiresAt ||
+          !Number.isFinite(image.expiresAt.getTime()) ||
           image.expiresAt.getTime() <= Date.now() + 30000
         )
-          throw new Error("Snapshot unavailable");
+          throw new SetupFailure("invalid-image");
+        stage = "vm-create";
         const vm = await create(id);
         try {
-          await assertClean(vm);
+          stage = "clean-audit";
+          await audit(vm);
+          await requireStarting();
         } catch (error) {
-          await vm.stop().catch(() => undefined);
+          await stop(vm);
           throw error;
         }
         timings.cacheHit = !prepared;
         timings.setupMs = bounded(Date.now() - start);
         return { sandbox: vm, timings };
-      } catch {
+      } catch (error) {
+        if (terminal(error)) throw error;
         timings.fallback = true;
+        recordFailure(stage, error);
         await invalidate(id);
       }
     }
@@ -207,51 +324,72 @@ export async function createGenerationSandbox(options: {
       return true;
     });
     if (!claimed) {
+      recordFailure("cache-lease", new SetupFailure("lease-busy"));
       break;
-    } // A competing authorized job prepares once; this job takes bounded cold fallback.
+    }
     prepared = true;
     let vm: Sandbox | undefined,
       captured = false;
+    let stage: SandboxFailureDiagnostic["stage"] = "vm-create";
     try {
       vm = await create();
+      stage = "dependency-install";
       await install(vm);
-      await vm.update({ networkPolicy: "deny-all" });
-      await assertClean(vm);
+      await requireStarting();
+      stage = "network-policy";
+      await network(vm, "deny-all");
+      stage = "clean-audit";
+      await audit(vm);
+      await requireStarting();
       const t = Date.now();
       let image: Snapshot;
       try {
+        stage = "snapshot-capture";
         image = await vm.snapshot({
           expiration: SNAPSHOT_TTL_MS,
-          signal: AbortSignal.timeout(20000),
+          signal: operationSignal(20000),
         });
         captured = true;
       } finally {
         timings.snapshotMs += bounded(Date.now() - t);
       }
-      if (image.status !== "created" || !image.expiresAt)
-        throw new Error("Dependency snapshot did not become ready");
+      stage = "snapshot-validation";
+      if (
+        image.status !== "created" ||
+        !image.expiresAt ||
+        !Number.isFinite(image.expiresAt.getTime()) ||
+        image.expiresAt.getTime() <= Date.now() + 30000
+      )
+        throw new SetupFailure("invalid-image");
+      stage = "cache-publish";
       const saved = await store.update<CacheRecord, boolean>(key, (r) => {
-        if (r.lease?.owner !== owner) return false;
+        if (r.lease?.owner !== owner || r.lease.expiresAt <= Date.now())
+          return false;
         r.snapshotId = image.snapshotId;
         r.expiresAt = Math.min(
           image.expiresAt!.getTime(),
-          Date.now() + SNAPSHOT_TTL_MS,
+          Date.now() + SNAPSHOT_REUSE_MS,
         );
         delete r.lease;
         return true;
       });
       if (!saved) {
-        await image.delete().catch(() => undefined);
+        recordFailure("cache-publish", new SetupFailure("lease-lost"));
+        await image
+          .delete({ signal: AbortSignal.timeout(5000) })
+          .catch(() => undefined);
         break;
       }
-    } catch {
-      timings.fallback = true;
+    } catch (error) {
       await store.update<CacheRecord, void>(key, (r) => {
         if (r.lease?.owner === owner) delete r.lease;
       });
+      if (terminal(error)) throw error;
+      timings.fallback = true;
+      recordFailure(stage, error);
       break;
     } finally {
-      if (vm && !captured) await vm.stop().catch(() => undefined);
+      if (vm && !captured) await stop(vm);
     }
   }
   timings.fallback = true;
@@ -276,9 +414,34 @@ export function parseTrustedPhase(line: string): TrustedGenerationPhase | null {
     return null;
   }
 }
+/** Observing progress must never prevent the caller from stopping a VM. The underlying store write may finish later. */
+function untilAborted<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const abort = () => {
+      cleanup();
+      reject(signal.reason);
+    };
+    const cleanup = () => signal.removeEventListener("abort", abort);
+    promise.then(
+      (value) => {
+        cleanup();
+        resolve(value);
+      },
+      (error) => {
+        cleanup();
+        reject(error);
+      },
+    );
+    if (signal.aborted) abort();
+    else signal.addEventListener("abort", abort, { once: true });
+  });
+}
 export async function waitWithTrustedProgress(
   command: Pick<Command, "logs" | "wait">,
-  onPhase: (phase: TrustedGenerationPhase) => Promise<void>,
+  onPhase: (
+    phase: TrustedGenerationPhase,
+    signal: AbortSignal,
+  ) => Promise<void>,
   timeoutMs = 70000,
 ) {
   const controller = new AbortController(),
@@ -306,7 +469,10 @@ export async function waitWithTrustedProgress(
           buffer = "";
           if (!seen.has(direct)) {
             seen.add(direct);
-            await onPhase(direct);
+            await untilAborted(
+              onPhase(direct, controller.signal),
+              controller.signal,
+            );
           }
           continue;
         }
@@ -316,14 +482,20 @@ export async function waitWithTrustedProgress(
           const phase = parseTrustedPhase(line);
           if (phase && !seen.has(phase)) {
             seen.add(phase);
-            await onPhase(phase);
+            await untilAborted(
+              onPhase(phase, controller.signal),
+              controller.signal,
+            );
           }
         }
       }
       const finalPhase = parseTrustedPhase(buffer);
       if (finalPhase && !seen.has(finalPhase)) {
         seen.add(finalPhase);
-        await onPhase(finalPhase);
+        await untilAborted(
+          onPhase(finalPhase, controller.signal),
+          controller.signal,
+        );
       }
     } catch (error) {
       if (!controller.signal.aborted) logError = error;
@@ -342,6 +514,7 @@ export async function waitWithTrustedProgress(
   } finally {
     controller.abort();
     logs.close();
-    await reader;
+    // Native close aborts the stream. A non-cooperative observer must not hold VM cleanup.
+    await untilAborted(reader, AbortSignal.timeout(50)).catch(() => undefined);
   }
 }

@@ -54,6 +54,30 @@ export interface Proposal {
   messageId?: string;
   ancestry?: ProposalAncestry;
 }
+export interface SandboxFailureDiagnostic {
+  stage:
+    | "snapshot-lookup"
+    | "snapshot-validation"
+    | "vm-create"
+    | "dependency-install"
+    | "network-policy"
+    | "clean-audit"
+    | "snapshot-capture"
+    | "cache-publish"
+    | "cache-lease";
+  category:
+    | "http-error"
+    | "timeout"
+    | "network-error"
+    | "invalid-image"
+    | "dirty-image"
+    | "command-failed"
+    | "lease-busy"
+    | "lease-lost"
+    | "store-error"
+    | "unknown";
+  httpStatus?: number;
+}
 export interface GenerationJob {
   id: string;
   proposalId: string;
@@ -86,6 +110,7 @@ export interface GenerationJob {
     installMs: number;
     snapshotMs: number;
     fallback: boolean;
+    failures?: SandboxFailureDiagnostic[];
   };
   phases?: Array<{
     phase: "thread-started" | "turn-started" | "source-returned";

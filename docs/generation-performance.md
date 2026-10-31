@@ -6,13 +6,15 @@ This change adds a dependency-only snapshot cache and trusted progress markers. 
 
 Only an already claimed generation job can call `createGenerationSandbox`. There is no public warm endpoint and selecting a proposal does not start infrastructure. A durable store record, keyed by project identity, Node runtime and pinned SDK version, permits one preparation lease at a time. A competing authorized job uses a bounded cold fallback instead of starting a second image preparation.
 
-Preparation creates a fresh **nonpersistent** Node 24 VM with an empty injected environment. It can reach only `registry.npmjs.org`, installs `@openai/codex-sdk@0.166.0` using `npm --ignore-scripts --no-audit --no-fund`, then switches to deny-all networking. A trusted audit rejects existing input, runner, Codex home, output, thread, result or failure files and model-key environment variables. Only then does it create a snapshot with a finite six-hour expiration. No model API key, proposal, session or generated output is ever written to the preparation VM. The SDK's `snapshot()` stops that VM.
+Preparation creates a fresh **nonpersistent** Node 24 VM with an empty injected environment. It can reach only `registry.npmjs.org`, installs `@openai/codex-sdk@0.166.0` using `npm --ignore-scripts --no-audit --no-fund`, then switches to deny-all networking. A trusted audit rejects existing input, runner, Codex home, output, thread, result or failure files and model-key environment variables. Only then does it request a snapshot with the provider’s minimum finite one-day retention. LIVEFORGE separately stops reusing that image after six hours, regardless of the longer provider expiration. Provider retention is measured from last use; unused replaced images expire under that provider policy. No model API key, proposal, session or generated output is ever written to the preparation VM. The SDK's `snapshot()` stops that VM.
 
 A job VM starts from the clean snapshot with `persistent: false`, an explicitly new model-only network policy, and no `runtime` field alongside snapshot source. It passes the clean-state audit before the coordinator writes its runner or input and injects the model key into the detached command. The generation VM is never snapshotted; stopping it discards its filesystem. Snapshot IDs remain in the internal cache record and never enter job timing data or evaluation output. Request-scoped Sandbox credentials stay closure-local and are never placed in the guest, the cache record or an uploaded configuration file.
 
-The cache checks both its conservative expiry and the provider's ready status. Expired or invalid images allow at most one rebuild per job, followed by a cold fallback. Preparation has a finite lease and create/install/snapshot timeouts. Every failed VM is stopped. An image captured after losing its publication lease is deleted. A shared 260-second coordinator/VM deadline includes setup; model attempts use only its remaining time, capped at the existing 70-second per-attempt limit.
+The cache checks both its conservative expiry and the provider's ready status. Expired or invalid images allow at most one rebuild per job, followed by a cold fallback. Preparation has a finite lease. Snapshot lookup, create, install, clean audit, network updates and snapshot capture use native SDK abort signals bounded by the remaining job deadline. Known VMs receive a bounded explicit stop on failure/cancellation; an image captured after losing its valid publication lease is deleted. Every allocation rechecks the durable starting claim before and after create, and preparation rechecks before capture, so a cancellation during installation cannot allocate another VM. A shared 260-second coordinator/VM deadline includes setup; model attempts use only its remaining time, capped at the existing 70-second per-attempt limit.
 
-The installed Sandbox SDK is pinned to 3.9.1. The implementation was checked against its type declarations and the official [snapshot lifecycle](https://vercel.com/docs/sandbox/concepts/snapshots) and [SDK reference](https://vercel.com/docs/sandbox/sdk-reference). In this SDK snapshots stop their source VM, expiration is in milliseconds, and detached commands expose abortable `logs()` and `wait()` methods.
+An aborted create request can have an unknown remote outcome before its VM identity is returned. Native SDK cancellation plus the VM's finite remaining job TTL bounds that outcome; the application cannot guarantee immediate remote deletion without an identifier. Database requests do not expose cancellation: claim reads have a bounded wait, and late progress writes are fenced by abort/deadline/current status/current attempt. A stalled progress observer cannot hold reader shutdown or the coordinator’s known-VM stop. Generation control-plane writes/reads/network changes also carry native bounded signals; final reads still require successful deny-all. These are bounded cleanup guarantees, not claims that every external request is cancellable.
+
+The installed Sandbox SDK is pinned to 3.9.1. The implementation was checked against its type declarations and the official [snapshot lifecycle](https://vercel.com/docs/sandbox/concepts/snapshots) and [SDK reference](https://vercel.com/docs/sandbox/sdk-reference). In this SDK snapshots stop their source VM, expiration is in milliseconds, and detached commands expose abortable `logs()` and `wait()` methods. The provider’s minimum is documented in the official [snapshot retention announcement](https://vercel.com/changelog/vercel-sandbox-snapshots-now-allow-custom-retention-periods): one day. Frozen `5ac7482` requested six hours and real evaluations fell back cold; that evidence remains untouched. The corrected provider expiration and the independent six-hour reuse cutoff must be measured in a separate checkpoint/run before making a warm-speed claim.
 
 ## Actual progress, bounded output
 
@@ -22,15 +24,18 @@ Final thread/result/source/failure files are read only after command completion 
 
 `GenerationJob.sandboxTimings` records:
 
-| Field        | Meaning                                                           |
-| ------------ | ----------------------------------------------------------------- |
-| `mode`       | Trusted server/evaluator choice, `cold` or `snapshot`             |
-| `cacheHit`   | The job reused an existing image rather than preparing it         |
-| `fallback`   | An image/setup failure or competing preparation required fallback |
-| `setupMs`    | Total helper wall time until the clean job VM was ready           |
-| `createMs`   | Aggregate VM-create time, including preparation if performed      |
-| `installMs`  | Aggregate pinned dependency installation time                     |
-| `snapshotMs` | Manual dependency-image capture time                              |
+| Field        | Meaning                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `mode`       | Trusted server/evaluator choice, `cold` or `snapshot`                                                 |
+| `cacheHit`   | The job reused an existing image rather than preparing it                                             |
+| `fallback`   | An image/setup failure or competing preparation required fallback                                     |
+| `setupMs`    | Total helper wall time until the clean job VM was ready                                               |
+| `createMs`   | Aggregate VM-create time, including preparation if performed                                          |
+| `installMs`  | Aggregate pinned dependency installation time                                                         |
+| `snapshotMs` | Manual dependency-image capture time                                                                  |
+| `failures?`  | At most four diagnostics: fixed `stage`, fixed `category`, optional integer `httpStatus` from 100–599 |
+
+Failure stages are snapshot lookup/validation/capture, VM create, dependency install, network policy, clean audit, cache publication or cache lease. Categories distinguish HTTP error, timeout, network error, invalid/dirty image, command failure, lease contention/loss, store error or unknown. No SDK error message, URL, response body, token, raw provider code or infrastructure identifier is copied. Diagnostics are host/evidence metadata, not public overlay text.
 
 These bounded durations contain no runtime or snapshot identifiers. Newly preparing the first image is not a cache hit and must be separated from warm-hit measurements.
 

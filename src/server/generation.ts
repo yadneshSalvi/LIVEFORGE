@@ -159,8 +159,12 @@ export async function stopGenerationSandbox(
   if (!name) return;
   try {
     const credentials = authentication ?? (await captureSandboxCredentials());
-    const sandbox = await Sandbox.get({ ...credentials, name });
-    await sandbox.stop();
+    const sandbox = await Sandbox.get({
+      ...credentials,
+      name,
+      signal: AbortSignal.timeout(5000),
+    });
+    await sandbox.stop({ signal: AbortSignal.timeout(5000) });
   } catch {
     /* A cancelled/expired sandbox is already stopped. */
   }
@@ -196,6 +200,17 @@ export async function runGeneration(
   );
   if (!claimed) return;
   const deadlineAt = Date.now() + 260_000;
+  const ioSignal = (limit = 5000) => {
+    assert(
+      deadlineAt > Date.now(),
+      503,
+      "generation_deadline",
+      "The bounded generation time budget expired; the active game is preserved.",
+    );
+    return AbortSignal.timeout(
+      Math.max(1, Math.min(limit, deadlineAt - Date.now())),
+    );
+  };
   try {
     assert(
       process.env.OPENAI_API_KEY,
@@ -226,12 +241,15 @@ export async function runGeneration(
         ? "Starting Codex from a clean dependency image."
         : "The isolated pinned SDK workspace is ready.";
     });
-    await sandbox.writeFiles([
-      {
-        path: "/vercel/sandbox/runner.mjs",
-        content: Buffer.from(CODEX_GUEST_RUNNER),
-      },
-    ]);
+    await sandbox.writeFiles(
+      [
+        {
+          path: "/vercel/sandbox/runner.mjs",
+          content: Buffer.from(CODEX_GUEST_RUNNER),
+        },
+      ],
+      { signal: ioSignal() },
+    );
     let repair: { source: string; diagnostic: string } | undefined;
     for (let attempt = 0; attempt < 3; attempt++) {
       const remainingMs = deadlineAt - Date.now();
@@ -241,7 +259,7 @@ export async function runGeneration(
         "generation_deadline",
         "The bounded generation time budget expired; the active game is preserved.",
       );
-      const commandBudget = Math.min(70_000, remainingMs);
+      let commandBudget = Math.min(70_000, remainingMs);
 
       await patchJob(showId, jobId, (j) => {
         j.attempt = attempt + 1;
@@ -250,34 +268,42 @@ export async function runGeneration(
           ? `Codex is repairing the candidate after independent verification (${attempt}/2).`
           : "Codex is composing a new rule from the selected proposal.";
       });
-      await sandbox.update({ networkPolicy: { allow: ["api.openai.com"] } });
-      await sandbox.writeFiles([
-        {
-          path: "/vercel/sandbox/input.json",
-          content: Buffer.from(
-            JSON.stringify({
-              model: job.model,
-              prompt: buildGenerationPrompt(
-                proposal.text +
-                  (job.revision
-                    ? "\nCreator-approved revision: " + job.revision
-                    : ""),
-                repair,
-                {
-                  mode: job.activationMode || "replace",
-                  retained: (job.baseCandidateIds || [])
-                    .map((id) => show!.candidates.find((c) => c.id === id))
-                    .filter((c): c is Candidate => Boolean(c))
-                    .map((c) => ({
-                      name: c.program.name,
-                      description: c.program.description,
-                    })),
-                },
-              ),
-            }),
-          ),
-        },
-      ]);
+      await sandbox.update(
+        { networkPolicy: { allow: ["api.openai.com"] } },
+        { signal: ioSignal() },
+      );
+      await sandbox.writeFiles(
+        [
+          {
+            path: "/vercel/sandbox/input.json",
+            content: Buffer.from(
+              JSON.stringify({
+                model: job.model,
+                prompt: buildGenerationPrompt(
+                  proposal.text +
+                    (job.revision
+                      ? "\nCreator-approved revision: " + job.revision
+                      : ""),
+                  repair,
+                  {
+                    mode: job.activationMode || "replace",
+                    retained: (job.baseCandidateIds || [])
+                      .map((id) => show!.candidates.find((c) => c.id === id))
+                      .filter((c): c is Candidate => Boolean(c))
+                      .map((c) => ({
+                        name: c.program.name,
+                        description: c.program.description,
+                      })),
+                  },
+                ),
+              }),
+            ),
+          },
+        ],
+        { signal: ioSignal() },
+      );
+      ioSignal();
+      commandBudget = Math.min(70_000, deadlineAt - Date.now());
       const running = await sandbox.runCommand({
         cmd: "node",
         args: ["/vercel/sandbox/runner.mjs"],
@@ -285,11 +311,22 @@ export async function runGeneration(
         env: { CODEX_API_KEY: process.env.OPENAI_API_KEY! },
         timeoutMs: commandBudget,
         detached: true,
+        signal: ioSignal(),
       });
       const command = await waitWithTrustedProgress(
         running,
-        async (phase) => {
-          await patchJob(showId, jobId, (j) => {
+        async (phase, signal) => {
+          // Store requests cannot be forcibly cancelled. Fence any late callback before mutating progress.
+          await store.update<ShowRecord, void>(showKey(showId), (current) => {
+            const j = current.jobs.find((job) => job.id === jobId);
+            if (
+              !j ||
+              signal.aborted ||
+              Date.now() >= deadlineAt ||
+              j.status !== "generating" ||
+              j.attempt !== attempt + 1
+            )
+              return;
             j.phases ??= [];
             if (
               j.phases.length < 9 &&
@@ -309,14 +346,20 @@ export async function runGeneration(
                 "Codex returned source; independent checks follow.",
             };
             j.message = labels[phase];
+            j.updatedAt = new Date().toISOString();
+            current.updatedAt = j.updatedAt;
           });
         },
         commandBudget,
       );
-      await sandbox.update({ networkPolicy: "deny-all" });
-      const thread = await sandbox.readFileToBuffer({
-        path: "/vercel/sandbox/thread.json",
-      });
+      await sandbox.update(
+        { networkPolicy: "deny-all" },
+        { signal: ioSignal() },
+      );
+      const thread = await sandbox.readFileToBuffer(
+        { path: "/vercel/sandbox/thread.json" },
+        { signal: ioSignal() },
+      );
       if (thread) {
         const metadata = JSON.parse(thread.toString());
         await patchJob(showId, jobId, (j) => {
@@ -325,7 +368,7 @@ export async function runGeneration(
       }
       if (command.exitCode !== 0) {
         const reason = await readGenerationFailure((path) =>
-          sandbox!.readFileToBuffer({ path }),
+          sandbox!.readFileToBuffer({ path }, { signal: ioSignal() }),
         );
         throw new HttpError(
           503,
@@ -335,12 +378,14 @@ export async function runGeneration(
             : "Codex did not return a completed source artifact. The active game is preserved; use a previously generated law while retrying.",
         );
       }
-      const resultBuffer = await sandbox.readFileToBuffer({
-        path: "/vercel/sandbox/result.json",
-      });
-      const sourceBuffer = await sandbox.readFileToBuffer({
-        path: "/vercel/sandbox/rule.ts",
-      });
+      const resultBuffer = await sandbox.readFileToBuffer(
+        { path: "/vercel/sandbox/result.json" },
+        { signal: ioSignal() },
+      );
+      const sourceBuffer = await sandbox.readFileToBuffer(
+        { path: "/vercel/sandbox/rule.ts" },
+        { signal: ioSignal() },
+      );
       assert(
         resultBuffer && sourceBuffer,
         503,
@@ -521,7 +566,10 @@ export async function runGeneration(
       /* Cancellation wins over a late provider response. */
     }
   } finally {
-    if (sandbox) await sandbox.stop().catch(() => undefined);
+    if (sandbox)
+      await sandbox
+        .stop({ signal: AbortSignal.timeout(5000) })
+        .catch(() => undefined);
     await deliverRecentChatReplies(showId).catch(() => undefined);
   }
 }

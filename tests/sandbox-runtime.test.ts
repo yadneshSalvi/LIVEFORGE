@@ -6,6 +6,8 @@ import {
   parseTrustedPhase,
   waitWithTrustedProgress,
   SNAPSHOT_TTL_MS,
+  SNAPSHOT_REUSE_MS,
+  snapshotFailureDiagnostic,
   type SandboxProvider,
 } from "../src/server/sandbox-runtime";
 import {
@@ -52,6 +54,7 @@ function fixture() {
     >();
   let snapshots = 0;
   let installHook: ((vm: number) => Promise<void>) | undefined;
+  let snapshotHook: (() => Promise<void>) | undefined;
   const api: SandboxProvider = {
     create: async (options) => {
       const vm = created.length;
@@ -73,6 +76,12 @@ function fixture() {
         snapshot: async (options: { expiration?: number }) => {
           snapshots++;
           trace.push({ vm, op: "snapshot", value: options });
+          if (!options.expiration || options.expiration < 86400000)
+            throw Object.assign(
+              new Error("synthetic invalid provider retention"),
+              { response: { status: 400 } },
+            );
+          await snapshotHook?.();
           const snapshotId = `private-snapshot-${snapshots}`,
             expiresAt = new Date(Date.now() + SNAPSHOT_TTL_MS);
           images.set(snapshotId, { status: "created", expiresAt });
@@ -123,6 +132,10 @@ function fixture() {
       installHook = hook;
     },
     snapshots: () => snapshots,
+    api,
+    setSnapshotHook: (hook: typeof snapshotHook) => {
+      snapshotHook = hook;
+    },
   };
 }
 describe("dependency-only sandbox image lifecycle (mocked SDK, no billable calls)", () => {
@@ -166,6 +179,128 @@ describe("dependency-only sandbox image lifecycle (mocked SDK, no billable calls
     expect(JSON.stringify(f.trace)).not.toContain("OPENAI_API_KEY=synthetic");
     expect(result.timings.cacheHit).toBe(false);
     expect(JSON.stringify(result.timings)).not.toContain("private-snapshot");
+  });
+  it("requests the provider's one-day minimum but stops local reuse after six hours", async () => {
+    const f = fixture(),
+      start = Date.now();
+    await f.run();
+    expect(SNAPSHOT_TTL_MS).toBe(86400000);
+    expect(SNAPSHOT_REUSE_MS).toBe(21600000);
+    const cache = [...f.store.records.entries()].find(([key]) =>
+      key.startsWith("sdk-image:"),
+    )![1] as { snapshotId: string; expiresAt: number };
+    expect(cache.expiresAt).toBeGreaterThanOrEqual(start + SNAPSHOT_REUSE_MS);
+    expect(cache.expiresAt).toBeLessThanOrEqual(Date.now() + SNAPSHOT_REUSE_MS);
+    expect(f.images.get(cache.snapshotId)!.expiresAt.getTime()).toBeGreaterThan(
+      cache.expiresAt,
+    );
+    const key = [...f.store.records.keys()].find((key) =>
+      key.startsWith("sdk-image:"),
+    )!;
+    await f.store.update<{ expiresAt: number }, void>(key, (r) => {
+      r.expiresAt = Date.now() - 1;
+    });
+    await f.run("two");
+    expect(f.snapshots()).toBe(2);
+  });
+  it("records only bounded stage/category/status when capture rejects, then falls back cold", async () => {
+    const f = fixture();
+    f.setSnapshotHook(async () => {
+      throw Object.assign(
+        new Error("Bearer synthetic-private-token private-snapshot-999"),
+        { response: { status: 400 }, secret: "synthetic-private-token" },
+      );
+    });
+    const result = await f.run();
+    expect(result.timings.fallback).toBe(true);
+    expect(result.timings.failures).toEqual([
+      { stage: "snapshot-capture", category: "http-error", httpStatus: 400 },
+    ]);
+    expect(JSON.stringify(result.timings)).not.toMatch(
+      /synthetic-private-token|private-snapshot-999|Bearer/,
+    );
+    expect(f.created).toHaveLength(2);
+    expect(f.trace.some((x) => x.vm === 0 && x.op === "stop")).toBe(true);
+    expect(
+      snapshotFailureDiagnostic("snapshot-lookup", {
+        response: { status: 999 },
+        message: "private",
+      }),
+    ).toEqual({ stage: "snapshot-lookup", category: "unknown" });
+    expect(
+      snapshotFailureDiagnostic("snapshot-lookup", {
+        response: { status: "429" },
+      }),
+    ).not.toHaveProperty("httpStatus");
+  });
+  it("aborts a pending cached lookup at the shared deadline before any new allocation", async () => {
+    const f = fixture();
+    await f.run();
+    let signal: AbortSignal | undefined;
+    vi.spyOn(f.api, "getSnapshot").mockImplementation(async (options) => {
+      signal = options.signal;
+      return await new Promise((_, reject) => {
+        if (signal?.aborted) reject(signal.reason);
+        else
+          signal?.addEventListener("abort", () => reject(signal!.reason), {
+            once: true,
+          });
+      });
+    });
+    await expect(f.run("two", "snapshot", Date.now() + 30)).rejects.toThrow(
+      /deadline/,
+    );
+    expect(signal?.aborted).toBe(true);
+    expect(f.created).toHaveLength(2);
+  });
+  it("does not snapshot or allocate another VM after cancellation during dependency install", async () => {
+    const f = fixture();
+    let release!: () => void, entered!: () => void;
+    const started = new Promise<void>((r) => {
+        entered = r;
+      }),
+      gate = new Promise<void>((r) => {
+        release = r;
+      });
+    f.setInstallHook(async () => {
+      entered();
+      await gate;
+    });
+    const run = f.run();
+    await started;
+    await f.store.update<{ jobs: { id: string; status: string }[] }, void>(
+      "show:show",
+      (show) => {
+        show.jobs[0].status = "cancelled";
+      },
+    );
+    release();
+    await expect(run).rejects.toThrow(/claimed/);
+    expect(f.snapshots()).toBe(0);
+    expect(f.created).toHaveLength(1);
+    expect(f.trace.filter((x) => x.op === "stop")).toHaveLength(1);
+    const cache = [...f.store.records.entries()].find(([key]) =>
+      key.startsWith("sdk-image:"),
+    )![1];
+    expect(cache).not.toHaveProperty("lease");
+  });
+  it("stops a VM returned after cancellation wins during its create request", async () => {
+    const f = fixture(),
+      create = f.api.create;
+    vi.spyOn(f.api, "create").mockImplementationOnce(async (options) => {
+      const vm = await create(options);
+      await f.store.update<{ jobs: { id: string; status: string }[] }, void>(
+        "show:show",
+        (show) => {
+          show.jobs[0].status = "cancelled";
+        },
+      );
+      return vm;
+    });
+    await expect(f.run("one", "cold")).rejects.toThrow(/claimed/);
+    expect(f.created).toHaveLength(1);
+    expect(f.trace.filter((x) => x.op === "stop")).toHaveLength(1);
+    expect(f.trace.some((x) => x.op === "command")).toBe(false);
   });
   it("reuses the durable clean image without reinstalling or snapshotting a generation VM", async () => {
     const f = fixture();
@@ -247,6 +382,40 @@ describe("trusted phase marker streaming", () => {
       "model says hello",
     ])
       expect(parseTrustedPhase(value)).toBeNull();
+  });
+  it("does not let stalled phase persistence block a completed command or reader cleanup", async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+        release = resolve;
+      }),
+      close = vi.fn();
+    let signal: AbortSignal | undefined;
+    const iterator = Object.assign(
+      (async function* () {
+        yield {
+          stream: "stdout",
+          data: 'LIVEFORGE_PHASE {"phase":"thread-started"}\n',
+        };
+      })(),
+      { close },
+    );
+    const started = Date.now();
+    const result = await waitWithTrustedProgress(
+      {
+        logs: () => iterator,
+        wait: async () => ({ exitCode: 0 }),
+      } as unknown as Pick<Command, "logs" | "wait">,
+      async (_phase, currentSignal) => {
+        signal = currentSignal;
+        await gate;
+      },
+      10,
+    );
+    expect(result.exitCode).toBe(0);
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(close).toHaveBeenCalled();
+    expect(signal?.aborted).toBe(true);
+    release();
   });
   it("streams bounded fragmented stdout markers while waiting, deduplicates and closes", async () => {
     const phases: string[] = [],
