@@ -1,0 +1,138 @@
+{
+  "showId": "41c7da64-9483-463e-866c-c31dff36d1e7",
+  "mode": "practice",
+  "recordedAt": "2026-10-31T12:00:48.899Z",
+  "records": [
+    {
+      "proposal": "When a prop stands still for half a second, its lantern-lit shadow becomes solid. Moving the prop makes the bridge disappear.",
+      "origin": "practice",
+      "revision": null,
+      "jobId": "4f7f9ae6-a51f-4a68-8438-0798afbbad3c",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdk": {
+        "package": "@openai/codex-sdk",
+        "version": "0.166.0"
+      },
+      "threadId": "01a191d3-506f-7fb3-822e-24d9dd930806",
+      "sandboxName": "blue-slow-beaver-2LeKYe",
+      "createdAt": "2026-10-31T11:58:18.359Z",
+      "completedAt": "2026-10-31T11:58:45.377Z",
+      "elapsedMs": 27018,
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "usage": {
+        "input_tokens": 9446,
+        "output_tokens": 350,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 9446,
+            "output_tokens": 350,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 141,
+            "cache_write_input_tokens": 9443
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a191d3-506f-7fb3-822e-24d9dd930806",
+          "sourceHash": "cf4fb4648163eef32d725db33e762642497c0b6ac59d2626288ff447926e9e7c",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Checkpoint round trip and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 1165
+            },
+            "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+            "engineVersion": "last-light/1.0.0",
+            "ticksSimulated": 3490
+          }
+        }
+      ],
+      "candidate": {
+        "source": "export default {\n  version: 1,\n  name: \"Still Prop Shadow Bridge\",\n  description: \"Leave the prop still for half a second to make its lantern-lit shadow solid. Move the prop and the shadow bridge disappears.\",\n  rules: [\n    {\n      id: \"solid-shadow-while-still\",\n      each: \"prop\",\n      when: {\n        compare: {\n          left: { field: \"stationaryTicks\" },\n          op: \"gte\",\n          right: 30\n        }\n      },\n      actions: [\n        {\n          type: \"projectShadow\",\n          maxLength: 480,\n          thickness: 10,\n          lifetime: 1,\n          solid: true\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+        "sourceHash": "cf4fb4648163eef32d725db33e762642497c0b6ac59d2626288ff447926e9e7c",
+        "recordedProgramHash": "0657d6a2e423694614769e3f6e9698703b39ecf37c8ef2c9869c81ef6ae4e47c",
+        "canonicalProgramHash": "0657d6a2e423694614769e3f6e9698703b39ecf37c8ef2c9869c81ef6ae4e47c",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 0,
+            "impulsesApplied": 0,
+            "surfacesCreated": 1165
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    }
+  ]
+}

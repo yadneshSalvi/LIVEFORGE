@@ -74,6 +74,8 @@ The coordinating development session is `01a190da-3cee-7a10-b7c1-e0cdbb379510`; 
 
 ## Source, rights and deployment
 
+**Live:** [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app). The [production verification record](docs/evidence/browser/2026-10-31-production.md) includes a complete deployed playthrough and a fresh hosted Codex generation.
+
 The original code and procedural visuals are included. Bundled fonts and icons have their license notices in [asset rights](docs/rights.md). Source is licensed under [MIT](LICENSE). Private plans and credentials are intentionally ignored and are not needed to run the documented experience.
 
 Deploy the repository root as a **Next.js / Node 22** Vercel project with a Postgres database, server secrets, exact production origin/Twitch callback and Sandbox identity. Deployment, live-chat evidence and submission readiness are separate from a successful local build. Source/judge access and any final video publication remain release-owner actions.
