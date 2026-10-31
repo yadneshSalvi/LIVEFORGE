@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-31T19:40:15.601222+00:00",
+  "source": "f89c2d00767f3d342cfb5fc5f7c63a956cc05545",
+  "requestContext": "Plain HTTP requests without cookies; not a browser observation",
+  "checks": [
+    {
+      "route": "/api/status",
+      "status": 200,
+      "cacheControl": "no-store",
+      "resolvedUrl": "http://localhost:3100/api/status",
+      "body": {
+        "service": "LIVEFORGE",
+        "storage": "postgres",
+        "generation": {
+          "configured": true,
+          "allowed": false,
+          "authorization": "Connect Twitch for fresh generation, or use a labeled previously generated law.",
+          "quota": null,
+          "provider": "official-codex-sdk-in-vercel-sandbox",
+          "model": "gpt-6.1-sol"
+        },
+        "twitch": {
+          "configured": true,
+          "transport": "host-browser-eventsub-websocket",
+          "chatRepliesAuthorized": false
+        }
+      }
+    },
+    {
+      "route": "/api/shows/current",
+      "status": 401,
+      "cacheControl": "no-store",
+      "resolvedUrl": "http://localhost:3100/api/shows/current",
+      "body": {
+        "error": "sign_in",
+        "message": "Create or resume a host studio first."
+      }
+    },
+    {
+      "route": "/api/library",
+      "status": 401,
+      "cacheControl": "no-store",
+      "resolvedUrl": "http://localhost:3100/api/library",
+      "body": {
+        "error": "sign_in",
+        "message": "Create or resume a host studio first."
+      }
+    }
+  ]
+}
