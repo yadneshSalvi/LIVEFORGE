@@ -13,6 +13,7 @@ export async function api<T>(
   path: string,
   body?: unknown,
   signal?: AbortSignal,
+  options?: { idempotencyKey?: string },
 ): Promise<T> {
   const controller = new AbortController();
   let timedOut = false;
@@ -33,7 +34,8 @@ export async function api<T>(
           ? undefined
           : {
               "Content-Type": "application/json",
-              "x-idempotency-key": crypto.randomUUID(),
+              "x-idempotency-key":
+                options?.idempotencyKey || crypto.randomUUID(),
             },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,

@@ -10,10 +10,22 @@ let paused = false;
 let previous = performance.now(),
   accumulator = 0;
 const emit = (event: WorkerEvent) => scope.postMessage(event);
+// Lease liveness follows worker wall time, independently of simulation pause/ticks.
+const emitHeartbeat = () =>
+  emit({
+    type: "heartbeat",
+    tick: engine.world.tick,
+    artifactHash: engine.artifactHash,
+    paused,
+  });
+setInterval(emitHeartbeat, 20_000);
 scope.onmessage = (event: MessageEvent<WorkerCommand>) => {
+  const command = event.data;
   try {
-    const command = event.data;
     switch (command.type) {
+      case "heartbeat":
+        emitHeartbeat();
+        return;
       case "input":
         input.update(command.input);
         break;
@@ -53,13 +65,15 @@ scope.onmessage = (event: MessageEvent<WorkerCommand>) => {
     }
     emit({ type: "snapshot", snapshot: engine.world });
   } catch (error) {
-    engine.rollback();
+    // A rejected command did not fail live simulation and must not retire its law.
     emit({
-      type: "fault",
+      type: "operationError",
+      operation: command.type,
+      ...(command.type === "checkpoint"
+        ? { requestId: command.requestId }
+        : {}),
       message:
-        error instanceof Error
-          ? error.message
-          : "Rule paused; checkpoint recovered",
+        error instanceof Error ? error.message : "Game operation was rejected",
     });
   }
 };
@@ -84,15 +98,22 @@ setInterval(() => {
     if (stepped && engine.world.tick % 2 === 0)
       emit({ type: "snapshot", snapshot: engine.world });
   } catch (error) {
-    engine.rollback();
+    const context = {
+      kind: "runtime" as const,
+      artifactHash: engine.artifactHash,
+      tick: engine.world.tick,
+    };
     paused = true;
+    input.clear();
     emit({
       type: "fault",
+      context,
       message:
         error instanceof Error
           ? error.message
           : "Rule paused; checkpoint recovered",
     });
+    engine.rollback();
     emit({ type: "snapshot", snapshot: engine.world });
   }
 }, 1000 / 60);

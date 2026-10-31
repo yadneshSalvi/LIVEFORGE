@@ -1635,6 +1635,38 @@ button {
   display: flex;
   padding: 2px;
 }
+.recovery-notice {
+  align-items: center;
+  font-size: 14px;
+  border-width: 2px;
+}
+.recovery-notice strong {
+  display: block;
+  font-size: 16px;
+}
+.recovery-notice p {
+  margin: 4px 0 0;
+}
+.recovery-notice > svg {
+  flex: 0 0 auto;
+}
+.recovery-notice .button {
+  flex-shrink: 0;
+  padding: 10px 14px;
+}
+.rail-fallback {
+  padding: 20px;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 640px) {
+  .recovery-notice {
+    flex-wrap: wrap;
+  }
+  .recovery-notice .button {
+    width: 100%;
+    justify-content: center;
+  }
+}
 .toast {
   position: fixed;
   bottom: 25px;

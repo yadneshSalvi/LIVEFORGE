@@ -1,3 +1,7 @@
+import {
+  generationRequest,
+  reserveGenerationQuota,
+} from "@/server/generation-quota";
 import { after } from "next/server";
 import {
   addProposal,
@@ -77,18 +81,80 @@ export async function POST(request: Request, context: Context) {
     const idempotency = request.headers.get("x-idempotency-key") || undefined;
     const path = action.join("/");
     let sandboxAuthentication: SandboxCredentials | undefined;
+    let generationMetadata:
+      | {
+          jobId: string;
+          requestHash: string;
+          quotaDay?: string;
+          quotaExempt?: boolean;
+        }
+      | undefined;
     let jobToRun: string | undefined;
     let stopName: string | undefined;
     if (path === "twitch/events") await maintainTwitchSession(owned);
     if (path === "generate") {
-      await requireGenerationHost(host.hostId);
+      const identity = await requireGenerationHost(host.hostId);
       assert(
         process.env.OPENAI_API_KEY,
         503,
         "generation_unconfigured",
-        "Codex generation requires the OpenAI key and Vercel Sandbox identity. The baseline game remains playable.",
+        "Codex generation requires the OpenAI key and Vercel Sandbox identity. Use a previously generated law while setup is checked.",
       );
       sandboxAuthentication = await captureSandboxCredentials();
+      const requestDescriptor = generationRequest(
+        showId,
+        host.hostId,
+        idempotency,
+        {
+          proposalId: body.proposalId,
+          revision: body.revision,
+          priorCandidateId: body.priorCandidateId,
+        },
+      );
+      assert(
+        typeof body.proposalId === "string",
+        400,
+        "proposal_id",
+        "Select a proposal.",
+      );
+      const previous = owned.idempotency[idempotency!];
+      if (previous)
+        assert(
+          (previous.result as { jobId?: string })?.jobId ===
+            requestDescriptor.jobId,
+          409,
+          "idempotency_conflict",
+          "This request key was already used for another command. Use a new key for a new generation.",
+        );
+      // Validate before reserving a daily slot; the authoritative mutation rechecks against competing commands.
+      const prospective = createGeneration(
+        structuredClone(owned),
+        body.proposalId,
+        typeof body.revision === "string" ? body.revision : undefined,
+        typeof body.priorCandidateId === "string"
+          ? body.priorCandidateId
+          : undefined,
+        requestDescriptor,
+      );
+      if (owned.jobs.some((job) => job.id === prospective.id))
+        generationMetadata = {
+          jobId: prospective.id,
+          requestHash: requestDescriptor.requestHash,
+          quotaDay: prospective.quotaDay,
+          quotaExempt: prospective.quotaExempt,
+        };
+      else {
+        const reservation = await reserveGenerationQuota(
+          identity,
+          requestDescriptor,
+        );
+        generationMetadata = {
+          jobId: reservation.jobId,
+          requestHash: reservation.requestHash,
+          quotaDay: reservation.day,
+          quotaExempt: reservation.exempt,
+        };
+      }
     }
     if (path === "twitch/session") {
       await mutate(showId, host.hostId, idempotency, (show) => {
@@ -171,6 +237,7 @@ export async function POST(request: Request, context: Context) {
             typeof body.priorCandidateId === "string"
               ? body.priorCandidateId
               : undefined,
+            generationMetadata,
           );
           return { jobId: job.id };
         }

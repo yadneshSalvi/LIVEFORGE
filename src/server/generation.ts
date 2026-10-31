@@ -1,3 +1,4 @@
+import { readGenerationFailure } from "./generation-failure";
 import { randomUUID } from "node:crypto";
 import { Sandbox } from "@vercel/sandbox";
 import { getContext, getVercelOidcToken } from "@vercel/oidc";
@@ -35,7 +36,8 @@ try {
   if((e.type==='item.started'||e.type==='item.completed')&&['command_execution','mcp_tool_call','file_change','web_search'].includes(e.item.type)){controller.abort();throw new Error('unexpected_tool_call');}
   if(e.type==='item.completed'&&e.item.type==='agent_message')finalResponse=e.item.text;
   if(e.type==='turn.completed')usage=e.usage;
-  if(e.type==='turn.failed'||e.type==='error')throw new Error('codex_turn_failed');
+  if(e.type==='turn.failed')throw new Error(e.error?.message||'codex_turn_failed');
+  if(e.type==='error')throw new Error(e.message||'codex_turn_failed');
  }
  const parsed=JSON.parse(finalResponse);
  if(typeof parsed.source!=='string'||parsed.source.length>24000)throw new Error('invalid_source_response');
@@ -242,6 +244,7 @@ export async function runGeneration(
         env: { CODEX_API_KEY: process.env.OPENAI_API_KEY! },
         timeoutMs: 70_000,
       });
+      await sandbox.update({ networkPolicy: "deny-all" });
       const thread = await sandbox.readFileToBuffer({
         path: "/vercel/sandbox/thread.json",
       });
@@ -251,13 +254,18 @@ export async function runGeneration(
           j.threadId = metadata.threadId;
         });
       }
-      assert(
-        command.exitCode === 0,
-        503,
-        "codex_failed",
-        "Codex did not return a completed source artifact. The active game is preserved.",
-      );
-      await sandbox.update({ networkPolicy: "deny-all" });
+      if (command.exitCode !== 0) {
+        const reason = await readGenerationFailure((path) =>
+          sandbox!.readFileToBuffer({ path }),
+        );
+        throw new HttpError(
+          503,
+          "codex_failed",
+          reason
+            ? `Codex generation failed: ${reason}. The active game is preserved; use a previously generated law while retrying.`
+            : "Codex did not return a completed source artifact. The active game is preserved; use a previously generated law while retrying.",
+        );
+      }
       const resultBuffer = await sandbox.readFileToBuffer({
         path: "/vercel/sandbox/result.json",
       });

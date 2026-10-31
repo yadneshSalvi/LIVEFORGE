@@ -11,6 +11,7 @@ import {
   createGeneration,
   createShow,
   showKey,
+  publicView,
   type ShowRecord,
 } from "@/server/show";
 import {
@@ -191,6 +192,54 @@ describe("production Sandbox runtime OIDC", () => {
   });
 });
 describe("durable generation races against late provider output", () => {
+  it("denies network before reading any failed-run artifacts and keeps the redacted reason host-only", async () => {
+    const { show, job } = await fixture();
+    const fake = delayedSandbox();
+    let modelComplete = false;
+    let denied = false;
+    fake.sandbox.update.mockImplementation(
+      async (options: { networkPolicy: unknown }) => {
+        if (modelComplete && options.networkPolicy === "deny-all")
+          denied = true;
+      },
+    );
+    fake.sandbox.runCommand.mockImplementation(
+      async ({ cmd }: { cmd: string }) => {
+        if (cmd === "node") {
+          modelComplete = true;
+          return { exitCode: 1 };
+        }
+        return { exitCode: 0 };
+      },
+    );
+    fake.sandbox.readFileToBuffer.mockImplementation(
+      async ({ path }: { path: string }) => {
+        expect(denied).toBe(true);
+        return Buffer.from(
+          JSON.stringify(
+            path.endsWith("failure.json")
+              ? {
+                  message:
+                    "401 invalid fixture-provider-key; Bearer private-credential",
+                }
+              : { threadId: "failed-fixture-thread" },
+          ),
+        );
+      },
+    );
+    await runGeneration(show.id, job.id);
+    const final = (await store.get<ShowRecord>(showKey(show.id)))!;
+    expect(final.jobs[0].status).toBe("failed");
+    expect(final.jobs[0].message).toContain("401 invalid");
+    expect(final.jobs[0].message).not.toMatch(
+      /fixture-provider-key|private-credential/,
+    );
+    expect(JSON.stringify(publicView(final))).not.toContain("401 invalid");
+    expect(final.candidates).toHaveLength(0);
+    expect(final.activeCandidateId).toBeNull();
+    expect(fake.stop).toHaveBeenCalledOnce();
+  });
+
   it("cancellation wins even when a completed provider response arrives later", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();

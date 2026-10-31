@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { type GameCheckpoint } from "@/game/contracts";
 import { GameEngine } from "@/game/core";
+import { sanitizeGenerationFailure } from "./generation-failure";
 import { parseCheckpoint } from "./checkpoint";
 import { REUSED_RULE_ARTIFACT, REUSED_STEP_ARTIFACT } from "./reused-artifact";
 import { compileRuleSource, verifyRuleProgram } from "@/game/rules";
@@ -27,6 +28,7 @@ export interface ShowRecord extends ShowState {
   oauth?: { stateHash: string; expiresAt: number };
 }
 const now = () => new Date().toISOString();
+export const AUTHORITY_LEASE_MS = 90_000;
 export const showKey = (id: string) => "show:" + id;
 export function event(
   show: ShowRecord,
@@ -218,11 +220,29 @@ export function hostView(show: ShowRecord): ShowState {
   return {
     ...state,
     twitch: effectiveTwitchConnection(show),
+    jobs: state.jobs.map(({ requestHash: _, ...job }) => job),
     proposals: state.proposals.map(({ messageId: _, ...proposal }) => proposal),
     candidates: state.candidates.map(
       ({ approvedBy: _, ...candidate }) => candidate,
     ),
   };
+}
+export function publicGenerationMessage(
+  status: GenerationJob["status"],
+): string {
+  const messages: Record<GenerationJob["status"], string> = {
+    queued: "The next law is queued.",
+    starting: "An isolated workshop is starting.",
+    generating: "Codex is composing the selected idea.",
+    verifying: "Independent game checks are running.",
+    ready: "Checks passed. The host is reviewing the next law.",
+    failed:
+      "The next law needs another attempt. The current game is preserved.",
+    cancelled: "The host stopped forging. The current game continues.",
+    stale: "The world changed. The next law needs a fresh review.",
+    rejected: "The host chose to revise the candidate.",
+  };
+  return messages[status];
 }
 export function publicView(show: ShowRecord): PublicShowState {
   const candidate = show.candidates.find(
@@ -251,13 +271,27 @@ export function publicView(show: ShowRecord): PublicShowState {
           programHash: candidate.programHash,
         }
       : null,
-    generation: job ? { status: job.status, message: job.message } : null,
+    generation: job
+      ? {
+          status: job.status,
+          message: job.reused
+            ? "A previously generated law was loaded; no AI call was made in this show."
+            : publicGenerationMessage(job.status),
+        }
+      : null,
     twitch: {
       status: effectiveTwitchConnection(show).status,
       channelLogin: show.twitch.channelLogin,
     },
     events: show.events
       .filter((e) => !e.type.startsWith("private."))
+      .map((e) =>
+        e.type === "generation.failed"
+          ? { ...e, message: publicGenerationMessage("failed") }
+          : e.type === "candidate.rejected"
+            ? { ...e, message: "The host chose to revise this candidate." }
+            : e,
+      )
       .slice(-30),
   };
 }
@@ -349,7 +383,7 @@ export function addProposal(
   text: unknown,
   author: string,
   actorId: string,
-  origin: "practice" | "twitch",
+  origin: "practice" | "twitch" | "sample",
   messageId?: string,
 ): Proposal {
   assert(show.votingOpen, 409, "round_closed", "This round is closed.");
@@ -365,6 +399,7 @@ export function addProposal(
   const duplicate = show.proposals.find(
     (p) =>
       p.status !== "hidden" &&
+      p.origin === origin &&
       p.text.toLocaleLowerCase() === normalized.toLocaleLowerCase(),
   );
   if (duplicate) return duplicate;
@@ -385,7 +420,9 @@ export function addProposal(
     "proposal.received",
     origin === "practice"
       ? "A practice idea joined the board."
-      : "A Twitch viewer proposed a new mechanic.",
+      : origin === "sample"
+        ? "A previously generated sample joined the board."
+        : "A Twitch viewer proposed a new mechanic.",
     { proposalId: proposal.id },
   );
   return proposal;
@@ -437,7 +474,7 @@ export function acquireLease(
       !takeover && old?.clientId === clientId && old.expiresAt > Date.now()
         ? old.epoch
         : (old?.epoch || 0) + 1,
-    expiresAt: Date.now() + 30_000,
+    expiresAt: Date.now() + AUTHORITY_LEASE_MS,
   };
   if (takeover)
     event(
@@ -491,7 +528,25 @@ export function createGeneration(
   proposalId: string,
   revision?: string,
   priorCandidateId?: string,
+  request?: {
+    jobId: string;
+    requestHash: string;
+    quotaDay?: string;
+    quotaExempt?: boolean;
+  },
 ): GenerationJob {
+  if (request) {
+    const existing = show.jobs.find((job) => job.id === request.jobId);
+    if (existing) {
+      assert(
+        existing.requestHash === request.requestHash,
+        409,
+        "idempotency_conflict",
+        "This request key belongs to a different generation.",
+      );
+      return existing;
+    }
+  }
   const proposal = show.proposals.find(
     (p) => p.id === proposalId && p.status !== "hidden",
   );
@@ -528,7 +583,14 @@ export function createGeneration(
   const job: GenerationJob = {
     ...(revision ? { revision: normalizeProposal(revision) } : {}),
     ...(priorCandidateId ? { priorCandidateId } : {}),
-    id: randomUUID(),
+    ...(request
+      ? {
+          requestHash: request.requestHash,
+          quotaDay: request.quotaDay,
+          quotaExempt: request.quotaExempt,
+        }
+      : {}),
+    id: request?.jobId ?? randomUUID(),
     proposalId,
     status: "queued",
     createdAt: now(),
@@ -679,8 +741,7 @@ export function activateCandidate(
   show.revision++;
   show.phase = "live";
   candidate.activatedAt = now();
-  show.round++;
-  show.votingOpen = true;
+  openNextRound(show);
   event(
     show,
     "candidate.activated",
@@ -693,8 +754,49 @@ export function activateCandidate(
   );
   return candidate;
 }
+export function openNextRound(show: ShowRecord) {
+  show.round++;
+  show.votingOpen = true;
+  show.voters = {};
+  for (const proposal of show.proposals) proposal.votes = 0;
+}
 export function rollback(show: ShowRecord, input: Record<string, unknown>) {
   requireLease(show, input.clientId, input.epoch);
+  if (input.expectedRevision !== undefined)
+    assert(
+      Number.isInteger(input.expectedRevision) &&
+        input.expectedRevision === show.revision,
+      409,
+      "rollback_stale",
+      "The world changed before this rollback. Refresh the active law before trying again.",
+    );
+  const runtimeFault =
+    input.faultedSourceHash !== undefined ||
+    input.runtimeFaultReason !== undefined;
+  if (runtimeFault) {
+    const active = show.candidates.find(
+      (candidate) => candidate.id === show.activeCandidateId,
+    );
+    assert(
+      input.expectedRevision !== undefined &&
+        typeof input.faultedSourceHash === "string" &&
+        /^[a-f0-9]{64}$/.test(input.faultedSourceHash) &&
+        input.faultedSourceHash === active?.sourceHash &&
+        typeof input.runtimeFaultReason === "string" &&
+        input.runtimeFaultReason.trim().length > 0 &&
+        input.runtimeFaultReason.length <= 1000,
+      409,
+      "runtime_fault_stale",
+      "This runtime fault does not identify the currently active law. The newer world was preserved.",
+    );
+    event(
+      show,
+      "private.runtime.fault",
+      sanitizeGenerationFailure(input.runtimeFaultReason) ||
+        "The active law reported a runtime fault.",
+      { sourceHash: active.sourceHash },
+    );
+  }
   assert(
     show.previousCheckpoint,
     409,
@@ -711,7 +813,9 @@ export function rollback(show: ShowRecord, input: Record<string, unknown>) {
   event(
     show,
     "world.rollback",
-    "The previous activation checkpoint was restored. Progress after that checkpoint is reset.",
+    runtimeFault
+      ? "Law retired after a runtime fault; world restored to the previous checkpoint."
+      : "The previous activation checkpoint was restored. Progress after that checkpoint is reset.",
   );
 }
 export function ingestTwitch(show: ShowRecord, input: unknown) {
@@ -816,12 +920,6 @@ export function importPracticeSample(
   sample: "shadow" | "step" = "shadow",
 ) {
   assert(
-    show.mode === "practice",
-    409,
-    "practice_only",
-    "Reusable samples are available in labeled practice studios.",
-  );
-  assert(
     !show.jobs.some((j) =>
       ["queued", "starting", "generating", "verifying"].includes(j.status),
     ),
@@ -833,7 +931,7 @@ export function importPracticeSample(
     show.candidates.length < 30,
     429,
     "candidate_limit",
-    "This practice show has reached its candidate limit. Start a fresh practice studio.",
+    "This show has reached its candidate limit. Start a fresh studio.",
   );
   rate(show, "sample", 6, 60_000);
   const artifact =
@@ -859,7 +957,7 @@ export function importPracticeSample(
     artifact.proposal,
     "Previously generated sample",
     "sample-" + show.candidates.length,
-    "practice",
+    "sample",
   );
   proposal.status = "selected";
   show.votingOpen = false;

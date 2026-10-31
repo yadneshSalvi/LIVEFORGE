@@ -149,7 +149,18 @@ export interface GameCheckpoint {
   program: RuleProgram | null;
   artifactHash: string | null;
 }
+export interface AuthorityHeartbeat {
+  tick: number;
+  artifactHash: string | null;
+  paused: boolean;
+}
+export interface WorkerRuntimeFaultContext {
+  kind: "runtime";
+  artifactHash: string | null;
+  tick: number;
+}
 export type WorkerCommand =
+  | { type: "heartbeat" }
   | { type: "input"; input: InputState }
   | { type: "pause"; value: boolean }
   | { type: "reset" }
@@ -160,5 +171,12 @@ export type WorkerCommand =
 export type WorkerEvent =
   | { type: "snapshot"; snapshot: GameSnapshot }
   | { type: "checkpoint"; checkpoint: GameCheckpoint; requestId?: number }
-  | { type: "fault"; message: string }
+  | ({ type: "heartbeat" } & AuthorityHeartbeat)
+  | { type: "fault"; message: string; context: WorkerRuntimeFaultContext }
+  | {
+      type: "operationError";
+      message: string;
+      operation: WorkerCommand["type"];
+      requestId?: number;
+    }
   | { type: "ready" };

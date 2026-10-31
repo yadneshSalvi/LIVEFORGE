@@ -6,6 +6,7 @@ import { LocalFileStore } from "@/server/store";
 import * as stores from "@/server/store";
 import {
   createShow,
+  addProposal,
   ingestTwitch,
   showKey,
   type ShowRecord,
@@ -165,6 +166,42 @@ describe("genuine Twitch input normalization", () => {
   });
 });
 describe("OAuth exact redirect, single-use state, encrypted server grants", () => {
+  it("authorizes an owned practice account without changing mode or losing its idea", async () => {
+    const practice = await createShow("practice-host", "practice", store);
+    await store.update<ShowRecord, void>(showKey(practice.id), (show) => {
+      addProposal(
+        show,
+        "A stationary prop should cast a solid shadow.",
+        "Practice inventor",
+        "practice-actor",
+        "practice",
+      );
+    });
+    const url = new URL(await twitchLogin(practice.id, "practice-host"));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async (address: string) =>
+        address.endsWith("/token")
+          ? Response.json({
+              access_token: "practice-access",
+              refresh_token: "practice-refresh",
+            })
+          : Response.json(valid()),
+      ),
+    );
+    await twitchCallback(
+      practice.id,
+      "practice-host",
+      url.searchParams.get("state")!,
+      "practice-code",
+    );
+    const saved = (await store.get<ShowRecord>(showKey(practice.id)))!;
+    expect(saved.mode).toBe("practice");
+    expect(saved.proposals[0].text).toContain("solid shadow");
+    expect(saved.credentialId).toBeDefined();
+    expect(await store.get("host-auth:practice-host")).toBeDefined();
+  });
+
   it("derives the exact callback from APP_BASE_URL instead of copied redirect env", () => {
     vi.stubEnv(
       "TWITCH_REDIRECT_URI",
@@ -248,7 +285,7 @@ describe("OAuth exact redirect, single-use state, encrypted server grants", () =
       /Authorize your Twitch channel/,
     );
   });
-  it("gates production billable generation on allowed OAuth-authenticated host", async () => {
+  it("requires OAuth and marks the former allowlist as daily-quota exemption", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("LIVEFORGE_GENERATION_HOST_IDS", "123");
     await expect(requireGenerationHost("host")).rejects.toThrow(
@@ -268,11 +305,16 @@ describe("OAuth exact redirect, single-use state, encrypted server grants", () =
         expiresAt: Date.now() + 3_600_000,
       }),
     });
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json(valid())));
-    await expect(requireGenerationHost("host")).resolves.toBeUndefined();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async () => Response.json(valid())),
+    );
+    await expect(requireGenerationHost("host")).resolves.toEqual(
+      expect.objectContaining({ exempt: true }),
+    );
     vi.stubEnv("LIVEFORGE_GENERATION_HOST_IDS", "999");
-    await expect(requireGenerationHost("host")).rejects.toThrow(
-      /authorized show host/,
+    await expect(requireGenerationHost("host")).resolves.toEqual(
+      expect.objectContaining({ exempt: false }),
     );
   });
 });

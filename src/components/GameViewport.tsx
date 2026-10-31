@@ -8,6 +8,8 @@ import {
 } from "react";
 import {
   EMPTY_INPUT,
+  type AuthorityHeartbeat,
+  type WorkerRuntimeFaultContext,
   type GameCheckpoint,
   type GameSnapshot,
   type InputState,
@@ -16,6 +18,10 @@ import {
   type WorkerEvent,
 } from "../game/contracts";
 import { WorldRenderer } from "../game/renderer";
+export type {
+  AuthorityHeartbeat,
+  WorkerRuntimeFaultContext,
+} from "../game/contracts";
 export interface GameViewportProps {
   presentation?: "world" | "candidate" | "live";
   showHud?: boolean;
@@ -27,7 +33,8 @@ export interface GameViewportProps {
   paused?: boolean;
   onSnapshot?: (snapshot: GameSnapshot) => void;
   onCheckpoint?: (checkpoint: GameCheckpoint) => void;
-  onFault?: (message: string) => void;
+  onAuthorityHeartbeat?: (heartbeat: AuthorityHeartbeat) => void;
+  onFault?: (message: string, context?: WorkerRuntimeFaultContext) => void;
   onReady?: () => void;
   className?: string;
 }
@@ -38,6 +45,7 @@ export interface GameViewportHandle {
   checkpoint(): Promise<GameCheckpoint>;
   activate(program: RuleProgram, artifactHash: string): void;
   rollback(): void;
+  requestHeartbeat(): void;
 }
 export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
   function GameViewport(props, ref) {
@@ -75,6 +83,7 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
         activate: (program, artifactHash) =>
           send({ type: "activate", program, artifactHash }),
         rollback: () => send({ type: "rollback" }),
+        requestHeartbeat: () => send({ type: "heartbeat" }),
       }),
       [],
     );
@@ -102,7 +111,23 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
             requests.current.get(data.requestId)?.resolve(data.checkpoint);
             requests.current.delete(data.requestId);
           } else callbacks.current.onCheckpoint?.(data.checkpoint);
-        } else callbacks.current.onFault?.(data.message);
+        } else if (data.type === "heartbeat") {
+          callbacks.current.onAuthorityHeartbeat?.({
+            tick: data.tick,
+            artifactHash: data.artifactHash,
+            paused: data.paused,
+          });
+        } else if (data.type === "fault") {
+          callbacks.current.onFault?.(data.message, data.context);
+        } else if (data.type === "operationError") {
+          if (data.requestId !== undefined) {
+            requests.current
+              .get(data.requestId)
+              ?.reject(new Error(data.message));
+            requests.current.delete(data.requestId);
+          }
+          callbacks.current.onFault?.(data.message);
+        }
       };
       authority.onerror = () =>
         callbacks.current.onFault?.(

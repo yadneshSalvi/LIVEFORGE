@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { getStore } from "./store";
 import { assert, HttpError } from "./errors";
-import { digest, encryptToken } from "./security";
+import { digest, encryptToken, privateActor } from "./security";
 import { event, ownedShow, rate, showKey, type ShowRecord } from "./show";
 
 import {
@@ -13,6 +13,11 @@ import {
 } from "./twitch-grants";
 export { validateTwitchToken } from "./twitch-grants";
 export type { ValidatedTwitchToken } from "./twitch-grants";
+import {
+  generationQuota,
+  type GenerationIdentity,
+  type GenerationQuotaView,
+} from "./generation-quota";
 const timeout = () => AbortSignal.timeout(12_000);
 export function twitchRedirectUri() {
   const base = process.env.APP_BASE_URL;
@@ -28,10 +33,10 @@ export async function twitchLogin(showId: string, ownerId: string) {
   const state = randomBytes(32).toString("base64url");
   await getStore().update<ShowRecord, void>(showKey(showId), (show) => {
     assert(
-      show.ownerId === ownerId && show.mode === "twitch",
+      show.ownerId === ownerId,
       404,
       "show_not_found",
-      "Open your Twitch studio first.",
+      "Open your studio first.",
     );
     rate(show, "oauth", 6, 60_000);
     show.oauth = {
@@ -303,53 +308,77 @@ export async function connectTwitchSession(
   });
 }
 
-/** Production billable work is limited to explicitly allowed OAuth-authenticated hosts. */
-export async function requireGenerationHost(ownerId: string) {
-  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) return;
-  const allowed = (process.env.LIVEFORGE_GENERATION_HOST_IDS || "")
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
+/** Only independently OAuth-authenticated hosts may request billable work, in every environment. */
+async function generationIdentity(
+  ownerId: string,
+  forceValidation: boolean,
+): Promise<GenerationIdentity> {
   const auth = await getStore().get<{ credentialId: string; userId: string }>(
     "host-auth:" + ownerId,
   );
   assert(
-    auth && allowed.includes(auth.userId),
+    auth,
     403,
     "generation_host_required",
-    "Live generation is reserved for an authorized show host. Connect the invited Twitch channel, or explore the labeled practice mechanic.",
+    "Connect Twitch to become an authorized show host. Until then, explore a labeled previously generated law.",
   );
-  const grant = await ensureOAuthGrant(auth.credentialId, ownerId, true);
+  const grant = await ensureOAuthGrant(
+    auth.credentialId,
+    ownerId,
+    forceValidation,
+  );
   assert(
     grant.userId === auth.userId,
     403,
     "generation_host_required",
-    "Twitch host identity changed. Authorize the invited host account again.",
+    "Twitch host identity changed. Authorize your Twitch account again.",
   );
+  const exempt = (process.env.LIVEFORGE_GENERATION_HOST_IDS || "")
+    .split(",")
+    .map((id) => id.trim())
+    .includes(grant.userId);
+  return { actorId: privateActor("generation:" + grant.userId), exempt };
 }
-
-export async function generationHostAllowed(
-  ownerId: string | undefined,
-): Promise<boolean> {
-  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) return true;
-  if (!ownerId) return false;
-  const auth = await getStore().get<{ credentialId: string; userId: string }>(
-    "host-auth:" + ownerId,
-  );
-  if (
-    !auth ||
-    !(process.env.LIVEFORGE_GENERATION_HOST_IDS || "")
-      .split(",")
-      .map((id) => id.trim())
-      .includes(auth.userId)
-  )
-    return false;
+export async function requireGenerationHost(ownerId: string) {
+  return generationIdentity(ownerId, true);
+}
+export async function generationAccess(ownerId: string | undefined): Promise<{
+  allowed: boolean;
+  authorization: string;
+  quota: GenerationQuotaView | null;
+}> {
+  if (!ownerId)
+    return {
+      allowed: false,
+      authorization:
+        "Connect Twitch for fresh generation, or use a labeled previously generated law.",
+      quota: null,
+    };
   try {
-    const grant = await ensureOAuthGrant(auth.credentialId, ownerId);
-    return grant.userId === auth.userId;
-  } catch {
-    return false;
+    const identity = await generationIdentity(ownerId, false);
+    const quota = await generationQuota(identity);
+    return {
+      allowed: !quota.exhausted,
+      authorization: quota.exhausted
+        ? "Today's generation allowance is used up. It resets at midnight UTC; a previously generated law is available now."
+        : quota.exempt
+          ? "Authenticated host · daily quota exempt"
+          : `Authenticated Twitch host · ${quota.userRemaining} fresh generations remaining today (UTC).`,
+      quota,
+    };
+  } catch (error) {
+    return {
+      allowed: false,
+      authorization:
+        error instanceof HttpError && error.code === "quota_configuration"
+          ? error.message
+          : "Reconnect your Twitch account for fresh generation, or use a labeled previously generated law.",
+      quota: null,
+    };
   }
+}
+export async function generationHostAllowed(ownerId: string | undefined) {
+  return (await generationAccess(ownerId)).allowed;
 }
 
 /** Polling an active studio maintains hourly validation without a separate always-on daemon. */

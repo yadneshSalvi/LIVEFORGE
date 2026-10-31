@@ -40,9 +40,17 @@ import { Modal } from "./Modal";
 import { ShowManager } from "./ShowManager";
 import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
 import { ruleDescription } from "@/lib/rule-copy";
+import {
+  retireFaultedLaw,
+  type RuntimeRecoveryTarget,
+} from "@/lib/runtime-recovery";
 import { TwitchConnector } from "@/lib/twitch-client";
 import { compileRuleSource, PRACTICE_RULE_SOURCE } from "@/game/rules";
-import type { GameCheckpoint, GameSnapshot } from "@/game/contracts";
+import type {
+  GameCheckpoint,
+  GameSnapshot,
+  WorkerRuntimeFaultContext,
+} from "@/game/contracts";
 import type {
   AuthorityLease,
   Candidate,
@@ -59,6 +67,16 @@ interface ServiceStatus {
     allowed: boolean;
     authorization: string;
     model: string;
+    quota: {
+      day: string;
+      resetsAt: string;
+      exempt: boolean;
+      perUserLimit: number;
+      globalLimit: number;
+      userRemaining: number | null;
+      globalRemaining: number | null;
+      exhausted: boolean;
+    } | null;
   };
   twitch: { configured: boolean };
   storage: string;
@@ -90,6 +108,10 @@ export function Studio() {
   const [muted, setMuted] = useState(true);
   const [snapshot, setSnapshot] = useState<GameSnapshot | null>(null);
   const [authority, setAuthority] = useState<AuthorityLease | null>(null);
+  const [authorityIssue, setAuthorityIssue] = useState<string | null>(null);
+  const [checkpointIssue, setCheckpointIssue] = useState<string | null>(null);
+  const [faultIssue, setFaultIssue] = useState<string | null>(null);
+  const [recoveringFault, setRecoveringFault] = useState(false);
   const [preview, setPreview] = useState<Candidate | null>(null);
   const [previewBaseline, setPreviewBaseline] = useState<GameCheckpoint | null>(
     null,
@@ -109,6 +131,14 @@ export function Studio() {
   const clientId = useRef("");
   const lease = useRef<AuthorityLease | null>(null);
   const lostAuthority = useRef(false);
+  const renewAuthority = useRef<() => Promise<void>>(async () => undefined);
+  const checkpointSaving = useRef(false);
+  const pendingFault = useRef<{
+    target: RuntimeRecoveryTarget;
+    fault: WorkerRuntimeFaultContext;
+    message: string;
+  } | null>(null);
+  const faultInFlight = useRef(false);
   const currentShow = useRef<ShowState | null>(null);
   const currentBusy = useRef<string | null>(null);
   const latestSnapshot = useRef<GameSnapshot | null>(null);
@@ -130,12 +160,49 @@ export function Studio() {
   const refresh = useCallback(async () => {
     try {
       const result = await api<HostShowResponse>("/api/shows/current");
-      setShow(result.show);
+      setShow((current) =>
+        current?.id === result.show.id &&
+        current.revision > result.show.revision
+          ? current
+          : result.show,
+      );
       return result.show;
     } catch (e) {
       if (!(e instanceof ApiError && (e.status === 401 || e.status === 404)))
         throw e;
       return null;
+    }
+  }, []);
+
+  const saveCheckpoint = useCallback(async (checkpoint?: GameCheckpoint) => {
+    const current = currentShow.current,
+      currentLease = lease.current;
+    if (
+      !current ||
+      !currentLease ||
+      currentLease.expiresAt <= Date.now() ||
+      currentBusy.current ||
+      pendingFault.current ||
+      checkpointSaving.current
+    )
+      return;
+    checkpointSaving.current = true;
+    try {
+      const saved = checkpoint || (await game.current?.checkpoint());
+      if (!saved || pendingFault.current || currentBusy.current) return;
+      await api<HostShowResponse>(`/api/shows/${current.id}/checkpoint`, {
+        clientId: clientId.current,
+        epoch: currentLease.epoch,
+        checkpoint: saved,
+      });
+      if (currentShow.current?.id === current.id) setCheckpointIssue(null);
+    } catch (error) {
+      if (currentShow.current?.id === current.id && !pendingFault.current)
+        setCheckpointIssue(
+          `Progress has not been saved. ${errorMessage(error)} The last acknowledged checkpoint is still available.`,
+        );
+    } finally {
+      checkpointSaving.current = false;
     }
   }, []);
 
@@ -195,7 +262,18 @@ export function Studio() {
     let alive = true;
     const showId = show.id;
     let acquired: AuthorityLease | null = null;
+    let renewing = false;
+    const loseControl = (message: string) => {
+      lease.current = null;
+      lostAuthority.current = true;
+      game.current?.pause(true);
+      setAuthority(null);
+      setPaused(true);
+      setAuthorityIssue(message);
+    };
     const renew = async () => {
+      if (!alive || renewing) return;
+      renewing = true;
       try {
         const result = await api<HostShowResponse>(
           `/api/shows/${showId}/lease`,
@@ -204,9 +282,11 @@ export function Studio() {
         );
         if (alive) {
           acquired = result.show.lease;
+          lease.current = result.show.lease;
           setAuthority(result.show.lease);
+          setAuthorityIssue(null);
           if (lostAuthority.current) {
-            if (result.show.checkpoint)
+            if (result.show.checkpoint && !pendingFault.current)
               game.current?.restore(result.show.checkpoint);
             setShow(result.show);
             setError(null);
@@ -219,15 +299,28 @@ export function Studio() {
         }
       } catch (e) {
         if (alive) {
-          lostAuthority.current = true;
-          setAuthority(null);
-          setPaused(true);
-          setError(errorMessage(e));
+          const held = lease.current;
+          if (
+            (e instanceof ApiError && [401, 403, 409].includes(e.status)) ||
+            !held ||
+            held.expiresAt <= Date.now()
+          )
+            loseControl(
+              `${errorMessage(e)} The game is paused; take control here to recover the saved world.`,
+            );
+          else
+            setAuthorityIssue(
+              "Connection interrupted. Your control lease is still valid; LIVEFORGE is retrying in the background.",
+            );
         }
+      } finally {
+        renewing = false;
       }
     };
+    renewAuthority.current = renew;
     const release = () => {
-      if (!acquired) return;
+      const held = lease.current || acquired;
+      if (!held || held.clientId !== clientId.current) return;
       void fetch(`/api/shows/${showId}/lease/release`, {
         method: "POST",
         credentials: "same-origin",
@@ -237,21 +330,27 @@ export function Studio() {
           "x-idempotency-key": crypto.randomUUID(),
         },
         body: JSON.stringify({
-          clientId: acquired.clientId,
-          epoch: acquired.epoch,
+          clientId: held.clientId,
+          epoch: held.epoch,
         }),
       }).catch(() => undefined);
     };
     window.addEventListener("pagehide", release);
     void renew();
-    const renewTimer = setInterval(() => void renew(), 12000);
+    const visible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (lease.current && lease.current.expiresAt <= Date.now())
+        loseControl(
+          "Control expired while the studio was away. Recover the saved world before continuing.",
+        );
+      game.current?.requestHeartbeat();
+      void renew();
+    };
+    document.addEventListener("visibilitychange", visible);
     const expiryTimer = setInterval(() => {
       if (lease.current && lease.current.expiresAt <= Date.now()) {
-        lostAuthority.current = true;
-        setAuthority(null);
-        setPaused(true);
-        setError(
-          "The game authority expired. Take control here to recover the saved world.",
+        loseControl(
+          "Control expired. The game is paused; take control here to recover the saved world.",
         );
       }
     }, 1000);
@@ -261,19 +360,7 @@ export function Studio() {
       });
     }, 2500);
     const checkpointTimer = setInterval(() => {
-      if (currentBusy.current || !game.current || !lease.current) return;
-      void game.current
-        .checkpoint()
-        .then((checkpoint) =>
-          api(`/api/shows/${showId}/checkpoint`, {
-            clientId: clientId.current,
-            epoch: lease.current?.epoch,
-            checkpoint,
-          }),
-        )
-        .catch(() => {
-          /* last acknowledged checkpoint stays available */
-        });
+      void saveCheckpoint();
     }, 10000);
     const channel = new BroadcastChannel(`liveforge-${showId}`);
     broadcast.current = channel;
@@ -284,15 +371,16 @@ export function Studio() {
     return () => {
       alive = false;
       release();
+      renewAuthority.current = async () => undefined;
       window.removeEventListener("pagehide", release);
+      document.removeEventListener("visibilitychange", visible);
       clearInterval(expiryTimer);
-      clearInterval(renewTimer);
       clearInterval(pollTimer);
       clearInterval(checkpointTimer);
       channel.close();
       broadcast.current = null;
     };
-  }, [show?.id, refresh, notify]);
+  }, [show?.id, refresh, notify, saveCheckpoint]);
 
   useEffect(() => {
     if (!toast) return;
@@ -348,18 +436,78 @@ export function Studio() {
   };
 
   const onCheckpoint = (checkpoint: GameCheckpoint) => {
+    void saveCheckpoint(checkpoint);
+  };
+
+  const recoverRuntimeFault = async () => {
+    const pending = pendingFault.current;
+    if (!pending || faultInFlight.current) return;
+    const held = lease.current;
+    if (!held || held.expiresAt <= Date.now()) {
+      setFaultIssue(
+        "The law stopped safely, but retirement still needs to be saved. Take control here, then retry recovery.",
+      );
+      return;
+    }
+    faultInFlight.current = true;
+    setRecoveringFault(true);
+    try {
+      const result = await retireFaultedLaw(
+        { ...pending.target, clientId: clientId.current, epoch: held.epoch },
+        pending.fault,
+        pending.message,
+      );
+      if (currentShow.current?.id !== pending.target.showId) return;
+      if (result.show.checkpoint) game.current?.restore(result.show.checkpoint);
+      game.current?.pause(true);
+      currentShow.current = result.show;
+      setShow(result.show);
+      pendingFault.current = null;
+      setFaultIssue(null);
+      setCheckpointIssue(null);
+      setNextRound(true);
+      notify(
+        "Fault recovery saved. The current approved world is restored; resume when ready.",
+      );
+    } catch (error) {
+      setFaultIssue(
+        `The law stopped safely, but server recovery is not complete. ${errorMessage(error)} Retry before resuming.`,
+      );
+    } finally {
+      faultInFlight.current = false;
+      setRecoveringFault(false);
+    }
+  };
+
+  const onGameFault = (message: string, fault?: WorkerRuntimeFaultContext) => {
+    game.current?.pause(true);
+    setPaused(true);
+    if (!fault || !fault.artifactHash) {
+      setError(message);
+      return;
+    }
     const current = currentShow.current,
-      currentLease = lease.current;
-    if (!current || !currentLease || currentBusy.current) return;
-    void api<HostShowResponse>(`/api/shows/${current.id}/checkpoint`, {
-      clientId: clientId.current,
-      epoch: currentLease.epoch,
-      checkpoint,
-    })
-      .then((result) => setShow(result.show))
-      .catch(() => {
-        /* periodic persistence retries; the last acknowledged snapshot remains valid */
-      });
+      held = lease.current;
+    if (!current) {
+      setError(message);
+      return;
+    }
+    pendingFault.current = {
+      target: {
+        showId: current.id,
+        revision: current.revision,
+        artifactHash: fault.artifactHash,
+        candidateId: current.activeCandidateId,
+        clientId: clientId.current,
+        epoch: held?.epoch || 0,
+      },
+      fault,
+      message,
+    };
+    setFaultIssue(
+      "A generated law stopped. Restoring and saving the previous approved world…",
+    );
+    void recoverRuntimeFault();
   };
 
   const tone = (kind: "select" | "ready" | "activate") => {
@@ -396,6 +544,12 @@ export function Studio() {
 
   const action = async (name: string, callback: () => Promise<void>) => {
     if (busy) return;
+    if (pendingFault.current && name !== "takeover") {
+      setFaultIssue(
+        "Finish saving fault recovery before changing the show. Retry recovery or take control here.",
+      );
+      return;
+    }
     setBusy(name);
     setError(null);
     try {
@@ -404,6 +558,10 @@ export function Studio() {
       setError(errorMessage(e));
     } finally {
       setBusy(null);
+      if (["generate", "revise"].includes(name))
+        void api<ServiceStatus>("/api/status")
+          .then(setStatus)
+          .catch(() => undefined);
     }
   };
 
@@ -417,6 +575,10 @@ export function Studio() {
       setAuthority(null);
       setSelectedId(null);
       setSnapshot(null);
+      setAuthorityIssue(null);
+      setCheckpointIssue(null);
+      setFaultIssue(null);
+      pendingFault.current = null;
       setNextRound(false);
       setStatus(await api<ServiceStatus>("/api/status"));
       window.history.replaceState(null, "", "/studio");
@@ -430,6 +592,10 @@ export function Studio() {
     setShow(resumed);
     setAuthority(null);
     setSnapshot(null);
+    setAuthorityIssue(null);
+    setCheckpointIssue(null);
+    setFaultIssue(null);
+    pendingFault.current = null;
     setSelectedId(null);
     setNextRound(false);
     setPreview(null);
@@ -571,13 +737,16 @@ export function Studio() {
       );
       if (result.show.checkpoint) game.current?.restore(result.show.checkpoint);
       setShow(result.show);
+      lease.current = result.show.lease;
       setAuthority(result.show.lease);
       lostAuthority.current = false;
-      setPaused(false);
+      setAuthorityIssue(null);
+      setPaused(Boolean(pendingFault.current));
       setError(null);
       notify(
         "Control transferred here. Other tabs can no longer change this world.",
       );
+      if (pendingFault.current) await recoverRuntimeFault();
     });
 
   const loadReused = () =>
@@ -630,6 +799,9 @@ export function Studio() {
       );
     } finally {
       setBusy(null);
+      void api<ServiceStatus>("/api/status")
+        .then(setStatus)
+        .catch(() => undefined);
     }
   };
 
@@ -910,6 +1082,60 @@ export function Studio() {
             }
           />
         )}
+        {authorityIssue && (
+          <div className="notice notice-error recovery-notice" role="alert">
+            <LockKeyhole size={20} />
+            <div>
+              <strong>
+                {authority
+                  ? "Connection needs attention"
+                  : "World control interrupted"}
+              </strong>
+              <p>{authorityIssue}</p>
+            </div>
+            {!authority && (
+              <button
+                className="button button-outline button-small"
+                disabled={Boolean(busy)}
+                onClick={() => void takeControl()}
+              >
+                Take control here
+              </button>
+            )}
+          </div>
+        )}
+        {faultIssue && (
+          <div className="notice notice-error recovery-notice" role="alert">
+            <RotateCcw size={20} />
+            <div>
+              <strong>World paused for recovery</strong>
+              <p>{faultIssue}</p>
+            </div>
+            <button
+              className="button button-outline button-small"
+              disabled={recoveringFault || !authority}
+              onClick={() => void recoverRuntimeFault()}
+            >
+              {recoveringFault ? "Saving recovery…" : "Retry recovery"}
+            </button>
+          </div>
+        )}
+        {checkpointIssue && (
+          <div className="notice recovery-notice" role="alert">
+            <Info size={20} />
+            <div>
+              <strong>Progress needs saving</strong>
+              <p>{checkpointIssue}</p>
+            </div>
+            <button
+              className="button button-outline button-small"
+              disabled={!authority || Boolean(busy) || Boolean(faultIssue)}
+              onClick={() => void saveCheckpoint()}
+            >
+              Retry save
+            </button>
+          </div>
+        )}
         {show.mode === "twitch" && chat?.status !== "connected" && (
           <div className="connection-strip">
             <div className="connection-info">
@@ -955,11 +1181,17 @@ export function Studio() {
                 onReady={onGameReady}
                 onSnapshot={onSnapshot}
                 onCheckpoint={onCheckpoint}
-                onFault={(message) => {
-                  setPaused(true);
-                  setError(message);
+                onAuthorityHeartbeat={() => {
+                  void renewAuthority.current();
                 }}
-                paused={paused || Boolean(preview) || sampleOpen || !authority}
+                onFault={onGameFault}
+                paused={
+                  paused ||
+                  Boolean(preview) ||
+                  sampleOpen ||
+                  !authority ||
+                  Boolean(faultIssue)
+                }
               />
               <div className="stage-topline">
                 <div>
@@ -1007,6 +1239,7 @@ export function Studio() {
                   <p>Your world is paused. The ember is safe.</p>
                   <button
                     className="button button-primary"
+                    disabled={!authority || Boolean(faultIssue)}
                     onClick={() => setPaused(false)}
                   >
                     <Play size={15} />
@@ -1044,6 +1277,7 @@ export function Studio() {
                   className="icon-button"
                   title={paused ? "Resume world" : "Pause world"}
                   aria-label={paused ? "Resume world" : "Pause world"}
+                  disabled={!authority || Boolean(faultIssue)}
                   onClick={() => setPaused((value) => !value)}
                 >
                   {paused ? <Play size={15} /> : <Pause size={15} />}
@@ -1094,11 +1328,15 @@ export function Studio() {
             <div className="scene-footer">
               <p>
                 <ShieldCheck size={13} />
-                {show.checkpoint
-                  ? "Recovery checkpoint saved"
-                  : authority
-                    ? "World authority connected"
-                    : "Connecting world authority"}
+                {checkpointIssue
+                  ? "Progress needs saving"
+                  : faultIssue
+                    ? "Recovery pending"
+                    : show.checkpoint
+                      ? "Recovery checkpoint saved"
+                      : authority
+                        ? "World authority connected"
+                        : "Connecting world authority"}
               </p>
               <button
                 onClick={() => {
@@ -1500,43 +1738,33 @@ export function Studio() {
                         live.
                       </p>
                     </>
-                  ) : show.mode === "practice" ? (
-                    <>
-                      <button
-                        className="button button-primary button-full"
-                        disabled={Boolean(busy)}
-                        onClick={() => void loadReused()}
-                      >
-                        {busy === "sample" ? (
-                          <LoaderCircle size={15} className="spinner" />
-                        ) : (
-                          <FlaskConical size={15} />
-                        )}
-                        Try a generated law
-                        <ArrowRight size={15} />
-                      </button>
-                      <p className="rail-footnote">
-                        Loads a previously generated artifact. No new model
-                        call. Invited Twitch hosts can generate fresh ideas.
-                      </p>
-                    </>
                   ) : (
-                    <>
-                      <button
-                        className="button button-outline button-full"
-                        onClick={() => setShowManagerOpen(true)}
-                      >
-                        <FlaskConical size={15} />
-                        Open a practice show
-                        <ArrowRight size={15} />
-                      </button>
-                      <p className="rail-footnote">
-                        {status?.generation.allowed
-                          ? "Fresh generation is temporarily unavailable. Try a previously generated law in a separate practice show."
-                          : "Fresh generation is available to invited Twitch hosts. Open a separate practice show to try a previously generated law."}
-                      </p>
-                    </>
+                    <p className="rail-footnote">
+                      {status?.generation.quota?.exhausted
+                        ? "Today’s fresh-generation allowance is used. Your world stays playable; reuse a verified law below or return after the UTC reset."
+                        : status?.generation.allowed
+                          ? "Fresh generation is temporarily unavailable. You can still reuse a verified law below."
+                          : "Connect a Twitch account to forge fresh ideas with a daily allowance. You can reuse a verified law without a model call."}
+                    </p>
                   )}
+                  {!status?.generation.allowed &&
+                    !status?.generation.quota?.exhausted && (
+                      <a
+                        className="button button-outline button-full"
+                        href={`/api/auth/twitch/login?showId=${show.id}`}
+                      >
+                        <Radio size={15} /> Connect a Twitch account
+                      </a>
+                    )}
+                  {status?.generation.quota &&
+                    !status.generation.quota.exempt && (
+                      <p className="rail-footnote">
+                        {status.generation.quota.userRemaining} of{" "}
+                        {status.generation.quota.perUserLimit} personal runs
+                        remain today · {status.generation.quota.globalRemaining}{" "}
+                        shared runs remain. Resets at 00:00 UTC.
+                      </p>
+                    )}
                   <div className="rail-info">
                     <ShieldCheck size={13} />
                     <span>
@@ -1548,6 +1776,24 @@ export function Studio() {
                 </div>
               </>
             )}
+            <div className="rail-fallback">
+              <button
+                className="button button-outline button-full"
+                disabled={Boolean(busy) || isWorking || Boolean(faultIssue)}
+                onClick={() => void loadReused()}
+              >
+                {busy === "sample" ? (
+                  <LoaderCircle size={15} className="spinner" />
+                ) : (
+                  <FlaskConical size={15} />
+                )}
+                Use a previously generated law
+              </button>
+              <p className="rail-footnote">
+                No AI call. A separate reused proposal keeps its original
+                provenance. Preview and approval are still required.
+              </p>
+            </div>
             <div className="rail-recovery">
               <span>
                 <LockKeyhole

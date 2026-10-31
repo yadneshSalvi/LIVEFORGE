@@ -18,7 +18,7 @@ export interface Proposal {
   id: string;
   text: string;
   author: string;
-  origin: "practice" | "twitch";
+  origin: "practice" | "twitch" | "sample";
   createdAt: string;
   votes: number;
   status: "open" | "selected" | "hidden";
@@ -45,6 +45,10 @@ export interface GenerationJob {
   reused?: boolean;
   revision?: string;
   priorCandidateId?: string;
+  /** Internal request fingerprint; stripped from host/public projections. */
+  requestHash?: string;
+  quotaDay?: string;
+  quotaExempt?: boolean;
   attemptEvidence?: Array<{
     attempt: number;
     status: "unsupported" | "verification-failed" | "verified";
