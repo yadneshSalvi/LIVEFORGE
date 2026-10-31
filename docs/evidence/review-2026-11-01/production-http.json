@@ -1,0 +1,83 @@
+{
+  "at": "2026-10-31T19:43:01.453284+00:00",
+  "sourceCommit": "2a7e01ac223270620bb29caead990ec0b8b87847",
+  "deploymentId": "dpl_GhnWJQHEWLHBgXjw4S6yBWfggQfa",
+  "requestsWithoutCookies": true,
+  "checks": [
+    {
+      "url": "https://liveforge-i987kfbwt-yadneshsalvis-projects.vercel.app/studio?review=engine2",
+      "method": "GET",
+      "status": 401,
+      "location": null,
+      "cacheControl": "no-store, max-age=0",
+      "body": {
+        "error": "Protected deployment",
+        "message": "Protected by Vercel Authentication"
+      }
+    },
+    {
+      "url": "https://liveforge-i987kfbwt-yadneshsalvis-projects.vercel.app/api/shows",
+      "method": "POST",
+      "status": 401,
+      "location": null,
+      "cacheControl": "no-store, max-age=0",
+      "body": {
+        "error": "Protected deployment",
+        "message": "Protected by Vercel Authentication"
+      }
+    },
+    {
+      "url": "https://liveforge-iota.vercel.app/api/status",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "cacheControl": "no-store",
+      "body": {
+        "service": "LIVEFORGE",
+        "storage": "postgres",
+        "generation": {
+          "configured": true,
+          "allowed": false,
+          "authorization": "Connect Twitch for fresh generation, or use a labeled previously generated law.",
+          "quota": null,
+          "provider": "official-codex-sdk-in-vercel-sandbox",
+          "model": "gpt-6.1-sol"
+        },
+        "twitch": {
+          "configured": true,
+          "transport": "host-browser-eventsub-websocket",
+          "chatRepliesAuthorized": false
+        }
+      }
+    }
+  ],
+  "authorizedAliasChecks": [
+    {
+      "route": "/studio?review=engine2",
+      "method": "GET",
+      "authorizedVercelCli": true,
+      "exitCode": 0,
+      "headers": {
+        "HTTP/2 308 ": "HTTP/2 308 ",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "location": "https://liveforge-iota.vercel.app/studio?review=engine2"
+      },
+      "bodyOmitted": true
+    },
+    {
+      "route": "/api/shows",
+      "method": "POST",
+      "authorizedVercelCli": true,
+      "exitCode": 0,
+      "headers": {
+        "HTTP/2 403 ": "HTTP/2 403 ",
+        "cache-control": "no-store"
+      },
+      "body": {
+        "error": "canonical_origin",
+        "message": "Open the canonical LIVEFORGE studio before changing this show.",
+        "studioUrl": "https://liveforge-iota.vercel.app/studio"
+      }
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 # Release verification
 
+## Engine 2 deployed review release — 1 November 2026
+
+Canonical app: https://liveforge-iota.vercel.app. Deployment: `dpl_GhnWJQHEWLHBgXjw4S6yBWfggQfa`; deployed source: `2a7e01ac223270620bb29caead990ec0b8b87847`. Runtime source `8a4683f` passed 287 tests in 32 files, typecheck, format, diff and isolated build; the final descendant adds only an evidence record. Vercel's remote build also passed 14 static tasks.
+
+[Production review evidence](evidence/review-2026-11-01/production-browser.md) records saved-world upgrade, vote reset, real Twitch reconnect, fresh Codex generation, playable preview, exact approval and activation, exported source/artifact verification and canonical-origin checks. [Independent review evidence](evidence/review-2026-11-01/README.md) retains all ten original behavior results, composition/recovery tests, background observations and all five latency pairs. Second-account OAuth/quota, optional replies/moderator/adaptation and OBS acceptance remain explicitly separate and pending; the earlier release record below remains historical.
+
 ## Engine 2 review branch — 1 November 2026
 
 The final review candidate passed typecheck, **287 tests in 32 files**, formatting, diff checks and an isolated optimized production build with **14 static page-generation tasks** on Node 22.22.3. Its simulation/compiler/worker files remain the evaluated `5ac7482` contract, with later compatibility, snapshot, idempotency and presentation corrections. The [review ledger](review-progress.md) records those checkpoints and remaining acceptance.
