@@ -17,12 +17,14 @@ export function ShowManager({
   currentId,
   onResume,
   onCreate,
+  disabled = false,
 }: {
   open: boolean;
   onClose: () => void;
   currentId: string;
   onResume: (show: ShowState) => Promise<void>;
   onCreate: (mode: ShowMode) => Promise<void>;
+  disabled?: boolean;
 }) {
   const [shows, setShows] = useState<Summary[]>([]),
     [error, setError] = useState<string | null>(null),
@@ -47,6 +49,7 @@ export function ShowManager({
     };
   }, [open]);
   const resume = async (id: string) => {
+    if (busy || disabled) return;
     setBusy(id);
     setError(null);
     try {
@@ -60,6 +63,7 @@ export function ShowManager({
     }
   };
   const create = async (mode: ShowMode) => {
+    if (busy || disabled) return;
     setBusy(mode);
     setError(null);
     try {
@@ -74,7 +78,9 @@ export function ShowManager({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        if (!busy) onClose();
+      }}
       title="A room for every what-if."
       eyebrow="YOUR SHOWS"
     >
@@ -87,6 +93,17 @@ export function ShowManager({
         Resume a saved world or start a fresh show. Each show keeps its own
         ideas, laws, and checkpoints.
       </p>
+      {busy && (
+        <p className="modal-copy" role="status">
+          Opening your world. Keep this dialog open until the transition
+          finishes.
+        </p>
+      )}
+      {disabled && !busy && (
+        <p className="modal-copy" role="status">
+          Finish the current show action before switching worlds.
+        </p>
+      )}
       <div className="show-list">
         {loading ? (
           <p className="modal-copy">Opening your saved shows…</p>
@@ -95,7 +112,7 @@ export function ShowManager({
             <button
               key={show.id}
               className={`show-list-item${show.id === currentId ? " current" : ""}`}
-              disabled={Boolean(busy) || show.id === currentId}
+              disabled={disabled || Boolean(busy) || show.id === currentId}
               onClick={() => void resume(show.id)}
             >
               <span className="show-list-icon">
@@ -130,7 +147,7 @@ export function ShowManager({
       <div className="modal-actions">
         <button
           className="button button-outline"
-          disabled={Boolean(busy)}
+          disabled={disabled || Boolean(busy)}
           onClick={() => void create("practice")}
         >
           <FlaskConical size={15} />
@@ -138,7 +155,7 @@ export function ShowManager({
         </button>
         <button
           className="button button-primary"
-          disabled={Boolean(busy)}
+          disabled={disabled || Boolean(busy)}
           onClick={() => void create("twitch")}
         >
           <Radio size={15} />

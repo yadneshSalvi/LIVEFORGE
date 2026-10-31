@@ -1061,6 +1061,7 @@ export function Studio() {
         </div>
         <button
           className="button button-outline button-small"
+          disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
           onClick={() => setShowManagerOpen(true)}
         >
           <FolderOpen size={13} /> Your shows
@@ -1085,6 +1086,7 @@ export function Studio() {
           <div className="button-group">
             <button
               className="button button-quiet"
+              disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
               onClick={() => setShowManagerOpen(true)}
             >
               <FolderOpen size={15} />
@@ -1230,6 +1232,7 @@ export function Studio() {
                   paused ||
                   Boolean(preview) ||
                   sampleOpen ||
+                  showManagerOpen ||
                   !authority ||
                   Boolean(faultIssue)
                 }
@@ -1879,6 +1882,7 @@ export function Studio() {
         open={showManagerOpen}
         onClose={() => setShowManagerOpen(false)}
         currentId={show.id}
+        disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
         onResume={resumeShow}
         onCreate={async (mode) => {
           await createShow(mode);
