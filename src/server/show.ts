@@ -587,11 +587,15 @@ export function addProposal(
   event(
     show,
     "proposal.received",
-    origin === "practice"
-      ? "A practice idea joined the board."
-      : origin === "sample"
-        ? "A previously generated sample joined the board."
-        : "A Twitch viewer proposed a new mechanic.",
+    ancestry?.kind === "adaptation"
+      ? "The host reviewed a separate alternative with the original contributor’s credit."
+      : origin === "library"
+        ? "A saved law joined the board for fresh review."
+        : origin === "practice"
+          ? "A practice idea joined the board."
+          : origin === "sample"
+            ? "A previously generated sample joined the board."
+            : "A Twitch viewer proposed a new mechanic.",
     { proposalId: proposal.id },
   );
   return proposal;

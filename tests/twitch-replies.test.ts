@@ -385,6 +385,58 @@ describe("optional restrained server replies", () => {
     await deliverRecentChatReplies(limited.id);
     expect(fetch).toHaveBeenCalledTimes(2);
   });
+  it.each([
+    [
+      "sample",
+      "Previously generated sample",
+      "Law live — from a previously generated sample (reused verified source).",
+    ],
+    [
+      "practice",
+      "Previously generated sample",
+      "Law live — from a previously generated sample (reused verified source).",
+    ],
+    [
+      "library",
+      "Library importer",
+      "Law live — original idea by @OriginalContributor (reused verified source).",
+    ],
+    ["twitch", "ActualViewer", "Law live — invented by @ActualViewer."],
+  ] as const)(
+    "uses truthful fixed activation credit for %s/%s",
+    async (origin, author, expected) => {
+      const show = await fixture();
+      const proposal = addProposal(
+        show,
+        "Nearby props glow while the courier walks.",
+        author,
+        "credit-fixture",
+        origin,
+      );
+      if (origin === "library")
+        proposal.ancestry = {
+          kind: "library",
+          originalAuthor: "OriginalContributor",
+          originalText: "PRIVATE ORIGINAL IDEA",
+        };
+      // Only template fields are needed; this is not an approval or provider fixture.
+      const candidate = {
+        id: "activation-template-fixture",
+        proposalId: proposal.id,
+        approvedAt: new Date().toISOString(),
+      } as ShowRecord["candidates"][number];
+      show.candidates.push(candidate);
+      event(show, "candidate.activated", "SYNTHETIC TEMPLATE EVENT", {
+        candidateId: candidate.id,
+      });
+      const reply = buildChatReply(show, show.events.at(-1)!);
+      expect(reply).toBe(expected);
+      expect(reply).not.toContain("@Previouslygeneratedsample");
+      expect(reply).not.toContain("PRIVATE");
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
+
   it("builds only fixed neutral refusal/adaptation text", async () => {
     const show = await fixture();
     event(show, "generation.failed", "PRIVATE RAW ERROR", { proposalId: "P1" });

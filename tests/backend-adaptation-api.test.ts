@@ -19,6 +19,7 @@ import { LocalFileStore } from "@/server/store";
 import * as stores from "@/server/store";
 import * as generation from "@/server/generation";
 import * as twitch from "@/server/twitch";
+import { buildChatReply } from "@/server/twitch-replies";
 import {
   acquireLease,
   addProposal,
@@ -163,6 +164,31 @@ async function verifiedCandidate(showId: string, jobId: string) {
 }
 
 describe("host-reviewed alternatives to failed generations", () => {
+  it.each(["twitch", "sample", "library"] as const)(
+    "keeps activity credit truthful when the original idea has %s origin",
+    async (origin) => {
+      const f = await fixture();
+      await f.change((show) => {
+        show.proposals[0].origin = origin;
+      });
+      expect((await f.post()).status).toBe(200);
+      const show = await f.read();
+      const received = show.events.find(
+        (item) => item.type === "proposal.received" && item.proposalId === "P2",
+      )!;
+      expect(received.message).toBe(
+        "The host reviewed a separate alternative with the original contributor’s credit.",
+      );
+      expect(received.message).not.toContain("Twitch viewer");
+      if (origin === "twitch") {
+        const reply = buildChatReply(show, received);
+        expect(reply).toContain("host-written alternative");
+        expect(reply).not.toContain("your idea is P2");
+        expect(reply).not.toContain(alternative);
+        expect(reply).not.toContain(failure);
+      }
+    },
+  );
   it.each([undefined, null, "", "   "])(
     "accepts a host-written alternative with model suggestion %s and preserves failed evidence",
     async (modelSuggestion) => {
@@ -566,6 +592,17 @@ describe("host-reviewed alternatives to failed generations", () => {
           .status,
       ).toBe(200);
       expect((await post(f.id, "activate", activation)).status).toBe(200);
+      const activeShow = await f.read();
+      const activationEvent = activeShow.events.find(
+        (item) =>
+          item.type === "candidate.activated" &&
+          item.candidateId === candidate.id,
+      )!;
+      const reply = buildChatReply(activeShow, activationEvent);
+      expect(reply).toContain(adaptationSource);
+      expect(reply).not.toContain("invented by");
+      expect(reply).not.toContain(failure);
+      expect(reply).not.toContain(text);
       expect(
         publicView(await f.read()).activeLaws![0].ancestry?.adaptationSource,
       ).toBe(adaptationSource);
@@ -589,6 +626,10 @@ describe("host-reviewed alternatives to failed generations", () => {
         author: "Original inventor",
         ancestry: { kind: "library", adaptationSource },
       });
+      expect(
+        importedShow.events.find((item) => item.type === "proposal.received")
+          ?.message,
+      ).toBe("A saved law joined the board for fresh review.");
       const publicImport = publicView(importedShow);
       expect(publicImport.proposals[0].ancestry).toEqual({
         kind: "library",

@@ -25,13 +25,24 @@ export function buildChatReply(
     const safe = name.replace(/[^\p{L}\p{N}_]/gu, "").slice(0, 25);
     return safe ? "@" + safe : "the community";
   };
+  const alternativeCredit = (source: string | undefined) =>
+    source === "model-suggested"
+      ? "model-suggested, host-reviewed"
+      : source === "host-written"
+        ? "host-written"
+        : source === "host-edited"
+          ? "host-edited"
+          : "host-reviewed";
   if (
     item.type === "proposal.received" &&
     proposal?.origin === "twitch" &&
     proposal.status !== "hidden" &&
     proposal.status !== "rejected"
-  )
+  ) {
+    if (proposal.ancestry?.kind === "adaptation")
+      return `${proposal.id} is a ${alternativeCredit(proposal.ancestry.adaptationSource)} alternative to ${mention(proposal.ancestry.originalAuthor)}'s idea — !back ${proposal.id} to support it.`;
     return `${mention(proposal.author)} your idea is ${proposal.id} — !back ${proposal.id} to support it. Try light, shadows, motion, materials, or a timed effect.`;
+  }
   if (item.type === "generation.queued" && proposal)
     return `${proposal.id} is selected. Codex is forging the next law; the current game continues.`;
   if (item.type === "candidate.activated") {
@@ -39,8 +50,21 @@ export function buildChatReply(
       (c) => c.id === item.candidateId && c.approvedAt,
     );
     const author = show.proposals.find((p) => p.id === candidate?.proposalId);
-    if (candidate && author)
-      return `Law live — invented by ${mention(author.author)}${author.origin === "sample" || author.origin === "library" ? " (reused verified source)" : ""}.`;
+    if (candidate && author) {
+      if (
+        author.ancestry?.kind === "adaptation" ||
+        author.ancestry?.adaptationSource
+      )
+        return `Law live — ${alternativeCredit(author.ancestry.adaptationSource)} alternative to ${mention(author.ancestry.originalAuthor)}'s idea${author.ancestry.kind === "library" ? " (reused verified source)" : ""}.`;
+      if (
+        author.origin === "sample" ||
+        author.author === "Previously generated sample"
+      )
+        return "Law live — from a previously generated sample (reused verified source).";
+      if (author.origin === "library")
+        return `Law live — original idea by ${mention(author.ancestry?.originalAuthor || author.author)} (reused verified source).`;
+      return `Law live — invented by ${mention(author.author)}.`;
+    }
   }
   if (item.type === "generation.failed") {
     const job = [...show.jobs]
