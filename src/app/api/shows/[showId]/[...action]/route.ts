@@ -144,6 +144,7 @@ export async function POST(request: Request, context: Context) {
         host.hostId,
         showId,
         body.candidateId,
+        idempotency,
       );
     }
     if (path === "generate") {
@@ -231,7 +232,7 @@ export async function POST(request: Request, context: Context) {
         body.sessionId,
         body.reconnect === true,
       );
-    } else {
+    } else if (path !== "library/save") {
       const result = await mutate(showId, host.hostId, idempotency, (show) => {
         if (path === "resume") return { resumed: true };
         if (path === "settings") {
@@ -244,14 +245,6 @@ export async function POST(request: Request, context: Context) {
           )?.sandboxId;
           upgradeShowEngine(show, body);
           return { upgraded: true, stopName };
-        }
-        if (path === "library/save") {
-          event(
-            show,
-            "private.library.saved",
-            "The host saved an approved exact-source law to their private library.",
-          );
-          return { entryId: savedLibraryEntry!.id };
         }
         if (path === "library/import") {
           const entry = libraryEntry!;
