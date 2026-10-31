@@ -33,7 +33,8 @@ import {
 } from "@/server/security";
 import { getStore } from "@/server/store";
 import {
-  generationConfigured,
+  captureSandboxCredentials,
+  type SandboxCredentials,
   runGeneration,
   stopGenerationSandbox,
 } from "@/server/generation";
@@ -75,10 +76,20 @@ export async function POST(request: Request, context: Context) {
     const body = await jsonBody(request);
     const idempotency = request.headers.get("x-idempotency-key") || undefined;
     const path = action.join("/");
+    let sandboxAuthentication: SandboxCredentials | undefined;
     let jobToRun: string | undefined;
     let stopName: string | undefined;
     if (path === "twitch/events") await maintainTwitchSession(owned);
-    if (path === "generate") await requireGenerationHost(host.hostId);
+    if (path === "generate") {
+      await requireGenerationHost(host.hostId);
+      assert(
+        process.env.OPENAI_API_KEY,
+        503,
+        "generation_unconfigured",
+        "Codex generation requires the OpenAI key and Vercel Sandbox identity. The baseline game remains playable.",
+      );
+      sandboxAuthentication = await captureSandboxCredentials();
+    }
     if (path === "twitch/session") {
       await mutate(showId, host.hostId, idempotency, (show) => {
         rate(show, "twitch-session", 8, 60_000);
@@ -147,12 +158,6 @@ export async function POST(request: Request, context: Context) {
           return {};
         }
         if (path === "generate") {
-          assert(
-            generationConfigured(),
-            503,
-            "generation_unconfigured",
-            "Codex generation requires the OpenAI key and Vercel Sandbox identity. The baseline game remains playable.",
-          );
           assert(
             typeof body.proposalId === "string",
             400,
@@ -283,11 +288,18 @@ export async function POST(request: Request, context: Context) {
     }
     if (jobToRun) {
       const jobId = jobToRun;
-      after(() => runGeneration(showId, jobId));
+      const authentication = sandboxAuthentication;
+      after(() => runGeneration(showId, jobId, authentication));
     }
     if (stopName) {
       const name = stopName;
-      after(() => stopGenerationSandbox(name));
+      try {
+        sandboxAuthentication ??= await captureSandboxCredentials();
+      } catch {
+        /* Durable cancellation still wins; sandbox also has a hard lifetime. */
+      }
+      const authentication = sandboxAuthentication;
+      after(() => stopGenerationSandbox(name, authentication));
     }
     const show = await ownedShow(showId, host.hostId);
     return Response.json(

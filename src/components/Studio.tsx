@@ -865,7 +865,7 @@ export function Studio() {
                 className={`pill ${show.mode === "practice" ? "pill-brass" : "pill-mint"}`}
               >
                 <span className="status-dot" />
-                {show.mode === "practice" ? "LOCAL PRACTICE" : "TWITCH SHOW"}
+                {show.mode === "practice" ? "PRACTICE" : "TWITCH SHOW"}
               </span>
             </div>
           </div>
@@ -1500,7 +1500,7 @@ export function Studio() {
                         live.
                       </p>
                     </>
-                  ) : (
+                  ) : show.mode === "practice" ? (
                     <>
                       <button
                         className="button button-primary button-full"
@@ -1518,6 +1518,22 @@ export function Studio() {
                       <p className="rail-footnote">
                         Loads a previously generated artifact. No new model
                         call. Invited Twitch hosts can generate fresh ideas.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="button button-outline button-full"
+                        onClick={() => setShowManagerOpen(true)}
+                      >
+                        <FlaskConical size={15} />
+                        Open a practice show
+                        <ArrowRight size={15} />
+                      </button>
+                      <p className="rail-footnote">
+                        {status?.generation.allowed
+                          ? "Fresh generation is temporarily unavailable. Try a previously generated law in a separate practice show."
+                          : "Fresh generation is available to invited Twitch hosts. Open a separate practice show to try a previously generated law."}
                       </p>
                     </>
                   )}

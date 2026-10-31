@@ -4,7 +4,7 @@ The control plane runs in Next.js Route Handlers. Neon Postgres stores versioned
 
 ## Configure and run
 
-Use Node.js 22 or later. Install with `npm ci`; start with `npm run dev` (port 3100). Configure `.env.local` locally or Vercel environment variables on deployment:
+Use Node.js 22.x. Install with `npm ci`; start with `npm run dev` (port 3100). Configure `.env.local` locally or Vercel environment variables on deployment:
 
 - `DATABASE_URL`: Neon/Postgres connection URL. Production refuses to fall back to memory or local disk.
 - `SESSION_SECRET`: at least 32 characters; signs host sessions and pseudonymizes Twitch voting identities.
@@ -14,7 +14,7 @@ Use Node.js 22 or later. Install with `npm ci`; start with `npm run dev` (port 3
 - `OPENAI_API_KEY`: runtime model access. Never use a `NEXT_PUBLIC_` variable.
 - `CODEX_MODEL`: defaults to `gpt-6.1-sol`; the configured account must actually support it.
 - `LIVEFORGE_GENERATION_HOST_IDS`: comma-separated allowed Twitch user IDs. Production model calls require a matching OAuth-authenticated host. Public practice visitors can import a real previously generated sample without model spend.
-- Vercel Sandbox identity: Vercel provides `VERCEL_OIDC_TOKEN` in deployments; use a fresh local OIDC token from the linked project, or all of `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID` locally.
+- Vercel Sandbox identity: Vercel provides trusted per-request OIDC context in deployments (a static `VERCEL_OIDC_TOKEN` variable is not required); use a fresh local OIDC token from the linked project, or all of `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID` locally.
 
 Without `DATABASE_URL`, development alone may persist to `.local/store`. This is a cross-process lock plus atomic-rename JSON store, not process memory. A crashed development process may leave `.local/store/.lock`; stop all local servers before removing that lock. No such fallback is permitted when `NODE_ENV=production` or `VERCEL` is set. Redis and Blob are not required.
 
@@ -86,6 +86,8 @@ The coordinator starts a genuine short-lived Vercel Sandbox microVM and installs
 The network firewall permits npm and OpenAI while bootstrapping, only OpenAI during generation, then denies all egress before reading the artifact. No candidate JavaScript executes anywhere. The application parses a restricted TypeScript literal into a bounded `RuleProgram` data tree; the separate trusted verifier simulates that tree through the capability-limited engine. Candidate-provided tests cannot replace this verifier. API keys are not available to candidate logic. This is bounded rule generation, not safe execution of arbitrary generated programs.
 
 Source hashes use SHA-256 of exact UTF-8 bytes; program and preview hashes use SHA-256 of canonical sorted-key JSON, stable across Postgres JSONB key reordering. Approval and activation recompile the exact source and independently check the stored program hash and the original approved identities. The trusted engine preflights activation against a copy of the acknowledged checkpoint. Cancellation wins over late outputs. A six-minute abandoned coordinator threshold is repaired durably on the next show read, so a killed serverless invocation cannot leave a show permanently forging; sandbox lifetime independently stops execution.
+
+The authenticated generation request resolves the current OIDC token with the official `@vercel/oidc` helper before scheduling `after()`. Its team/project/token are held only in that invocation’s closure and passed explicitly to the Sandbox SDK; they are never persisted, logged, placed in the guest, or written to global environment variables. This keeps authorization available even if request context is no longer accessible in the background callback. Each request resolves its own current token; no static expiring deployment token is uploaded. [Vercel runtime OIDC](https://vercel.com/docs/oidc).
 
 Next.js `after()` keeps queued generation running after the HTTP response, within a 300-second function budget. This is not a durable resumable job engine: after platform failure the interrupted job becomes a visible failure and must be retried. It never pretends to resume an incomplete SDK turn. [Codex SDK](https://developers.openai.com/codex/sdk/), [Vercel Sandbox SDK](https://vercel.com/docs/sandbox/sdk-reference).
 

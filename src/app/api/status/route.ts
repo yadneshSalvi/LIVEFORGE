@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       service: "LIVEFORGE",
       storage: process.env.DATABASE_URL ? "postgres" : "development-file",
       generation: {
-        configured: generationConfigured(),
+        configured: await generationConfigured(),
         allowed,
         authorization: allowed
           ? "Authorized host"
