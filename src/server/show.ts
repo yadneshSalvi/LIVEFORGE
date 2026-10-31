@@ -34,7 +34,15 @@ export interface ShowRecord extends ShowState {
   voters: Record<string, string>;
   seenMessages: string[];
   rates: Record<string, number[]>;
-  idempotency: Record<string, { at: number; result: unknown }>;
+  idempotency: Record<
+    string,
+    {
+      at: number;
+      result: unknown;
+      operation?: "generation/adapt";
+      requestHash?: string;
+    }
+  >;
   credentialId?: string;
   oauth?: { stateHash: string; expiresAt: number; writeChat?: boolean };
   replyDeliveries?: Record<
@@ -296,6 +304,17 @@ export function publicGenerationMessage(
   };
   return messages[status];
 }
+function publicAncestry(ancestry: ProposalAncestry) {
+  return {
+    kind: ancestry.kind,
+    originalAuthor: ancestry.originalAuthor,
+    ...(["model-suggested", "host-edited", "host-written"].includes(
+      ancestry.adaptationSource || "",
+    )
+      ? { adaptationSource: ancestry.adaptationSource }
+      : {}),
+  };
+}
 function publicProposal(proposal: Proposal): PublicProposal {
   const {
     messageId: _,
@@ -307,10 +326,7 @@ function publicProposal(proposal: Proposal): PublicProposal {
     ...rest,
     ...(ancestry
       ? {
-          ancestry: {
-            kind: ancestry.kind,
-            originalAuthor: ancestry.originalAuthor,
-          },
+          ancestry: publicAncestry(ancestry),
         }
       : {}),
   };
@@ -342,10 +358,7 @@ export function publicView(show: ShowRecord): PublicShowState {
           programHash: c.programHash,
           ...(p?.ancestry
             ? {
-                ancestry: {
-                  kind: p.ancestry.kind,
-                  originalAuthor: p.ancestry.originalAuthor,
-                },
+                ancestry: publicAncestry(p.ancestry),
               }
             : {}),
         };
@@ -440,6 +453,7 @@ export async function mutate<R>(
   key: string | undefined,
   fn: (show: ShowRecord) => R,
   store: DocumentStore = getStore(),
+  binding?: { operation: "generation/adapt"; requestHash: string },
 ): Promise<R> {
   assert(
     key &&
@@ -457,6 +471,16 @@ export async function mutate<R>(
       "This show was not found in your host session.",
     );
     if (Object.hasOwn(show.idempotency, key)) {
+      const receipt = show.idempotency[key];
+      assert(
+        binding
+          ? receipt.operation === binding.operation &&
+              receipt.requestHash === binding.requestHash
+          : receipt.operation !== "generation/adapt",
+        409,
+        "idempotency_conflict",
+        "This request key belongs to another command or reviewed alternative. Use a new key for a new command.",
+      );
       assert(
         (show.idempotency[key].result as { operation?: string } | undefined)
           ?.operation !== "twitch/session",
@@ -468,7 +492,7 @@ export async function mutate<R>(
     }
     const result = fn(show);
     show.updatedAt = now();
-    show.idempotency[key] = { at: Date.now(), result };
+    show.idempotency[key] = { at: Date.now(), result, ...binding };
     // Provider-side connection attempts must never become replayable after ordinary receipts rotate.
     const keys = Object.keys(show.idempotency).filter(
       (k) =>
@@ -1511,14 +1535,56 @@ export function upgradeShowEngine(
     "The host explicitly upgraded the engine. The old checkpoint and law history were archived; the new opening world is ready.",
   );
 }
-export function acceptAdaptation(show: ShowRecord, jobId: string) {
-  assertCurrentEngine(show);
+export interface ReviewedAdaptationInput {
+  text: unknown;
+  expectedRevision: unknown;
+  expectedJobUpdatedAt: unknown;
+}
+export function reviewedAdaptationRequest(
+  jobId: string,
+  input: ReviewedAdaptationInput,
+) {
+  const text = normalizeProposal(input.text);
+  assert(
+    typeof input.expectedRevision === "number" &&
+      Number.isInteger(input.expectedRevision) &&
+      input.expectedRevision >= 0,
+    400,
+    "adaptation_revision",
+    "Include the show revision you reviewed.",
+  );
+  assert(
+    typeof input.expectedJobUpdatedAt === "string" &&
+      Number.isFinite(Date.parse(input.expectedJobUpdatedAt)),
+    400,
+    "adaptation_job_token",
+    "Include the failed generation update time you reviewed.",
+  );
+  return {
+    text,
+    expectedRevision: input.expectedRevision,
+    expectedJobUpdatedAt: input.expectedJobUpdatedAt,
+    requestHash: hashData({
+      operation: "generation/adapt",
+      jobId,
+      text,
+      expectedRevision: input.expectedRevision,
+      expectedJobUpdatedAt: input.expectedJobUpdatedAt,
+    }),
+  };
+}
+export function acceptAdaptation(
+  show: ShowRecord,
+  jobId: string,
+  input: ReviewedAdaptationInput,
+) {
+  const reviewed = reviewedAdaptationRequest(jobId, input);
   const job = show.jobs.find((j) => j.id === jobId);
   assert(
-    job && job.status === "failed" && job.adaptedProposal,
+    job,
     409,
     "adaptation_unavailable",
-    "This generation has no supported adaptation to review.",
+    "This failed generation is unavailable for a reviewed alternative.",
   );
   if (job.adaptationProposalId) {
     const existing = show.proposals.find(
@@ -1530,24 +1596,75 @@ export function acceptAdaptation(show: ShowRecord, jobId: string) {
       "adaptation_missing",
       "The accepted adaptation is missing.",
     );
+    assert(
+      existing.text === reviewed.text,
+      409,
+      "adaptation_conflict",
+      "This failed generation already has an immutable reviewed alternative. Forge that proposal or review another failed generation.",
+    );
     return existing;
   }
-  const original = show.proposals.find((p) => p.id === job.proposalId);
+  assertCurrentEngine(show);
+  assert(
+    job.engineVersion === ENGINE_VERSION && job.status === "failed",
+    409,
+    "adaptation_unavailable",
+    "Only a failed generation from the current engine can receive a reviewed alternative.",
+  );
+  assert(
+    show.revision === reviewed.expectedRevision,
+    409,
+    "stale_revision",
+    "The world changed after you reviewed this alternative. Refresh and review it again.",
+  );
+  assert(
+    job.updatedAt === reviewed.expectedJobUpdatedAt,
+    409,
+    "stale_job",
+    "The generation changed after you reviewed this alternative. Refresh and review it again.",
+  );
+  assert(
+    !show.jobs.some((j) =>
+      ["queued", "starting", "generating", "verifying"].includes(j.status),
+    ),
+    409,
+    "generation_busy",
+    "A mechanic is already being forged.",
+  );
+  const original = show.proposals.find(
+    (p) =>
+      p.id === job.proposalId &&
+      p.status !== "hidden" &&
+      p.status !== "rejected",
+  );
   assert(
     original,
     404,
     "proposal_not_found",
-    "The original proposal is missing.",
+    "The original proposal is missing or unavailable.",
   );
+  const suggestion =
+    typeof job.adaptedProposal === "string"
+      ? job.adaptedProposal
+          .normalize("NFKC")
+          .replace(/[\u0000-\u001f\u007f-\u009f]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+      : "";
   const adapted = addProposal(
     show,
-    job.adaptedProposal,
+    reviewed.text,
     original.author,
     "adaptation:" + job.id,
     original.origin,
     undefined,
     {
       kind: "adaptation",
+      adaptationSource: suggestion
+        ? suggestion === reviewed.text
+          ? "model-suggested"
+          : "host-edited"
+        : "host-written",
       originalAuthor: original.ancestry?.originalAuthor || original.author,
       originalText: original.ancestry?.originalText || original.text,
       originalProposalId: original.id,
@@ -1558,7 +1675,7 @@ export function acceptAdaptation(show: ShowRecord, jobId: string) {
   event(
     show,
     "proposal.adapted",
-    "The host explicitly accepted an adaptation of the original contributor's idea.",
+    "The host saved a reviewed alternative to the original contributor's idea.",
     { proposalId: adapted.id },
   );
   return adapted;

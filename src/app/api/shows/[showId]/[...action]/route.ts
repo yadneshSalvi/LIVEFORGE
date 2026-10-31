@@ -32,6 +32,7 @@ import {
   importExactSource,
   upgradeShowEngine,
   acceptAdaptation,
+  reviewedAdaptationRequest,
   mutate,
   ownedShow,
   rate,
@@ -204,6 +205,16 @@ export async function POST(request: Request, context: Context) {
       "Include a unique x-idempotency-key for this command.",
     );
     const path = action.join("/");
+    const reviewedAdaptation =
+      action.length === 3 &&
+      action[0] === "generations" &&
+      action[2] === "adapt"
+        ? reviewedAdaptationRequest(action[1], {
+            text: body.text,
+            expectedRevision: body.expectedRevision,
+            expectedJobUpdatedAt: body.expectedJobUpdatedAt,
+          })
+        : undefined;
     let sandboxAuthentication: SandboxCredentials | undefined;
     let generationMetadata:
       | {
@@ -365,6 +376,20 @@ export async function POST(request: Request, context: Context) {
           throw error;
         }
       }
+    } else if (reviewedAdaptation) {
+      await mutate(
+        showId,
+        host.hostId,
+        idempotency,
+        (show) => ({
+          proposalId: acceptAdaptation(show, action[1], reviewedAdaptation).id,
+        }),
+        getStore(),
+        {
+          operation: "generation/adapt",
+          requestHash: reviewedAdaptation.requestHash,
+        },
+      );
     } else if (path !== "library/save") {
       const result = await mutate(showId, host.hostId, idempotency, (show) => {
         if (path === "resume") return { resumed: true };
@@ -388,14 +413,6 @@ export async function POST(request: Request, context: Context) {
             ancestry: libraryAncestry(entry),
           });
           return { candidateId: candidate.id };
-        }
-        if (
-          action.length === 3 &&
-          action[0] === "generations" &&
-          action[2] === "adapt"
-        ) {
-          const proposal = acceptAdaptation(show, action[1]);
-          return { proposalId: proposal.id };
         }
         if (path === "practice/sample") {
           assert(

@@ -24,6 +24,7 @@ export interface CandidateComposition {
 }
 export interface ProposalAncestry {
   kind: "adaptation" | "library";
+  adaptationSource?: "model-suggested" | "host-edited" | "host-written";
   originalAuthor: string;
   originalText: string;
   originalProposalId?: string;
@@ -238,7 +239,12 @@ export interface HostShowResponse {
 export type PublicProposal = Omit<
   Proposal,
   "ancestry" | "messageId" | "moderationReason"
-> & { ancestry?: Pick<ProposalAncestry, "kind" | "originalAuthor"> };
+> & {
+  ancestry?: Pick<
+    ProposalAncestry,
+    "kind" | "originalAuthor" | "adaptationSource"
+  >;
+};
 export interface PublicShowState {
   createdAt?: string;
   updatedAt?: string;
@@ -253,6 +259,7 @@ export interface PublicShowState {
     ancestry?: {
       kind: ProposalAncestry["kind"];
       originalAuthor: string;
+      adaptationSource?: ProposalAncestry["adaptationSource"];
     };
   }>;
   votingOpen: boolean;

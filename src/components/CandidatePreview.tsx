@@ -19,7 +19,7 @@ import type {
   VerificationReport,
 } from "@/game/contracts";
 import { errorMessage, shortHash } from "@/lib/api";
-import { ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import { adaptationLabel, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 
 export function CandidatePreview({
   open,
@@ -216,7 +216,9 @@ function PreviewContent({
           {proposal?.ancestry?.kind === "adaptation" && (
             <div className="preview-combination">
               <p className="field-label">
-                Explicit adaptation of {proposal.ancestry.originalAuthor}’s idea
+                {adaptationLabel(proposal.ancestry.adaptationSource)}{" "}
+                alternative
+                {" · "}original idea by {proposal.ancestry.originalAuthor}
               </p>
               <p>{proposal.ancestry.originalText}</p>
             </div>

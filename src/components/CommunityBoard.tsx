@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import { Heart, MessageCircle, Radio, Sparkles } from "lucide-react";
 import { Brand } from "./Brand";
 import { api, errorMessage } from "@/lib/api";
-import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import {
+  adaptationLabel,
+  proposalOrigin,
+  ruleCredit,
+  ruleDescription,
+} from "@/lib/rule-copy";
 import type { PublicShowState } from "@/server/contracts";
 
 export function CommunityBoard({ showId }: { showId: string }) {
@@ -100,7 +105,7 @@ export function CommunityBoard({ showId }: { showId: string }) {
                       {proposal.status === "rejected"
                         ? "NOT SELECTED THIS ROUND"
                         : proposal.ancestry?.kind === "adaptation"
-                          ? "APPROVED ADAPTATION"
+                          ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
                           : proposalOrigin(proposal.origin)}
                     </span>
                   </div>

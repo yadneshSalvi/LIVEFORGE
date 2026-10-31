@@ -1808,17 +1808,68 @@ button {
   border-radius: 7px;
   background: #28271e;
 }
-.adaptation-card > p:nth-child(2) {
+.adaptation-card h3 {
+  font-size: 19px;
+  line-height: 1.3;
+  margin: 8px 0 12px;
+  color: var(--cream);
+}
+.adaptation-card .field-label {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.adaptation-card label.field-label {
+  display: block;
+  font-size: 14px;
+  margin: 16px 0 8px;
+}
+.adaptation-text {
   font-size: 16px;
+  line-height: 1.65;
   color: var(--cream);
   margin: 12px 0;
+  overflow-wrap: anywhere;
 }
-.adaptation-card small {
-  display: block;
+.adaptation-help,
+.adaptation-credit,
+.adaptation-original {
   color: #d2cbb5;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
-  margin-bottom: 16px;
+  margin: 12px 0 16px;
+  overflow-wrap: anywhere;
+}
+.adaptation-original summary {
+  cursor: pointer;
+  color: var(--cream);
+}
+.adaptation-original p {
+  margin: 8px 0;
+}
+.adaptation-draft-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  color: #d2cbb5;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.adaptation-error {
+  color: var(--cream);
+  font-size: 14px;
+  line-height: 1.6;
+  border-left: 2px solid var(--rose);
+  padding-left: 12px;
+  margin: 14px 0;
+  overflow-wrap: anywhere;
+}
+.adaptation-card .button {
+  min-height: 44px;
+  white-space: normal;
+  text-align: center;
 }
 .library-grid {
   display: grid;

@@ -271,14 +271,19 @@ describe("durable generation races against late provider output", () => {
     expect(result.candidates).toEqual([]);
     expect(result.proposals).toHaveLength(1);
     expect(JSON.stringify(publicView(result))).not.toContain(adaptation);
-    const adapted = acceptAdaptation(result, job.id);
+    const reviewed = {
+      text: adaptation,
+      expectedRevision: result.revision,
+      expectedJobUpdatedAt: result.jobs[0].updatedAt,
+    };
+    const adapted = acceptAdaptation(result, job.id, reviewed);
     expect(adapted.author).toBe(result.proposals[0].author);
     expect(adapted.ancestry).toMatchObject({
       kind: "adaptation",
       originalText: result.proposals[0].text,
       sourceJobId: job.id,
     });
-    expect(acceptAdaptation(result, job.id).id).toBe(adapted.id);
+    expect(acceptAdaptation(result, job.id, reviewed).id).toBe(adapted.id);
     expect(result.jobs).toHaveLength(1);
     expect(result.jobs[0].status).toBe("failed");
     expect(Sandbox.create).toHaveBeenCalledOnce();

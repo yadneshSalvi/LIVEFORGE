@@ -41,8 +41,19 @@ import { Modal } from "./Modal";
 import { ShowManager } from "./ShowManager";
 import { LawLibrary } from "./LawLibrary";
 import { ModerationPanel } from "./ModerationPanel";
+import { AdaptationComposer } from "./AdaptationComposer";
+import {
+  keepNewerReviewState,
+  type AlternativeRequest,
+} from "@/lib/adaptation-review";
 import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
-import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import {
+  adaptationLabel,
+  proposalOrigin,
+  publicRuleAncestry,
+  ruleCredit,
+  ruleDescription,
+} from "@/lib/rule-copy";
 import { generationMilestones } from "@/lib/generation-progress";
 import { StudioViewFence } from "@/lib/view-fence";
 import {
@@ -143,6 +154,7 @@ export function Studio() {
     message: string;
   } | null>(null);
   const game = useRef<GameViewportHandle>(null);
+  const forgeAction = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const clientId = useRef("");
   const lease = useRef<AuthorityLease | null>(null);
@@ -458,7 +470,7 @@ export function Studio() {
             ),
             author: proposal?.author,
             origin: proposal?.origin,
-            ancestry: proposal?.ancestry,
+            ancestry: publicRuleAncestry(proposal?.ancestry),
           }
         : null,
     });
@@ -910,33 +922,81 @@ export function Studio() {
       );
     });
 
-  const forgeAdaptation = () =>
-    action("generate", async () => {
-      if (!show || !latestJob?.adaptedProposal) return;
-      const adapted = await api<HostShowResponse>(
-        `/api/shows/${show.id}/generations/${latestJob.id}/adapt`,
-        {},
+  const createAlternative = async (request: AlternativeRequest) => {
+    const ticket = viewFence.current.ticket(show?.id);
+    if (!show || request.showId !== show.id || !ticket)
+      throw new Error(
+        "The studio changed. Review the alternative in the current show.",
       );
-      currentShow.current = adapted.show;
-      setShow(adapted.show);
+    if (busy) throw new Error("Wait for the current studio action to finish.");
+    if (pendingFault.current)
+      throw new Error(
+        "Finish saving fault recovery before creating an alternative.",
+      );
+    setBusy("adapt");
+    setError(null);
+    try {
+      const adapted = await api<HostShowResponse>(
+        `/api/shows/${show.id}/generations/${request.jobId}/adapt`,
+        request.body,
+        undefined,
+        { idempotencyKey: request.idempotencyKey },
+      );
+      if (
+        !viewFence.current.accepts(
+          ticket,
+          currentShow.current?.id,
+          adapted.show.id,
+        )
+      )
+        return;
+      const reviewed = keepNewerReviewState(currentShow.current, adapted.show);
+      currentShow.current = reviewed;
+      setShow((current) => keepNewerReviewState(current, reviewed));
+      if (reviewed !== adapted.show) {
+        notify(
+          "Your alternative was saved. The world changed; review the current board before forging.",
+        );
+        return;
+      }
       const proposalId = adapted.show.jobs.find(
-        (job) => job.id === latestJob.id,
+        (job) => job.id === request.jobId,
       )?.adaptationProposalId;
       if (!proposalId)
         throw new Error(
           "The adapted proposal could not be located. Your original idea is preserved.",
         );
       setSelectedId(proposalId);
-      const result = await api<HostShowResponse>(
-        `/api/shows/${show.id}/generate`,
-        { proposalId, mode: activationMode },
-      );
-      setShow(result.show);
-      setNextRound(false);
+      setNextRound(true);
       notify(
-        "A distinct adaptation is being forged with the original contributor’s credit.",
+        `Reviewed alternative ${proposalId} is selected. Forge it when you are ready.`,
       );
-    });
+    } catch (cause) {
+      if (
+        !viewFence.current.accepts(
+          ticket,
+          currentShow.current?.id,
+          request.showId,
+        )
+      )
+        return;
+      if (
+        cause instanceof ApiError &&
+        ["stale_revision", "stale_job"].includes(cause.code || "")
+      )
+        void refresh().catch(() => undefined);
+      throw cause;
+    } finally {
+      if (
+        viewFence.current.accepts(
+          ticket,
+          currentShow.current?.id,
+          request.showId,
+        )
+      )
+        setBusy(null);
+    }
+  };
   const revise = async (revision: string) => {
     if (!show || !preview) return;
     setBusy("revise");
@@ -1982,33 +2042,43 @@ export function Studio() {
                         <div>{latestJob.message}</div>
                       </div>
                     )}
-                  {latestJob?.adaptedProposal &&
-                    latestJob.status === "failed" && (
-                      <div className="adaptation-card">
-                        <p className="field-label">
-                          A possible adaptation — your choice
-                        </p>
-                        <p>{latestJob.adaptedProposal}</p>
-                        <small>
-                          Your original idea remains unchanged. This creates a
-                          distinct proposal with the original contributor’s
-                          credit and uses a fresh generation run.
-                        </small>
-                        <button
-                          className="button button-outline button-full"
-                          disabled={
-                            Boolean(busy) ||
-                            needsUpgrade ||
-                            stackFull ||
-                            !status?.generation.allowed ||
-                            !status.generation.configured
-                          }
-                          onClick={() => void forgeAdaptation()}
-                        >
-                          Forge this adaptation <ArrowRight size={14} />
-                        </button>
-                      </div>
-                    )}
+                  {latestJob?.status === "failed" && (
+                    <AdaptationComposer
+                      key={`${show.id}:${latestJob.id}`}
+                      showId={show.id}
+                      job={latestJob}
+                      revision={show.revision}
+                      original={show.proposals.find(
+                        (item) => item.id === latestJob.proposalId,
+                      )}
+                      accepted={show.proposals.find(
+                        (item) => item.id === latestJob.adaptationProposalId,
+                      )}
+                      selected={selectedId === latestJob.adaptationProposalId}
+                      busy={Boolean(busy)}
+                      disabledReason={
+                        needsUpgrade ||
+                        latestJob.engineVersion !== ENGINE_VERSION
+                          ? "This failed run belongs to an older world. Start a current-engine idea after upgrading."
+                          : !show.votingOpen
+                            ? "Open idea intake before creating a reviewed alternative."
+                            : recoveringFault
+                              ? "Finish saving fault recovery before changing ideas."
+                              : undefined
+                      }
+                      onCreate={createAlternative}
+                      onSelect={() => {
+                        if (!latestJob.adaptationProposalId) return;
+                        setSelectedId(latestJob.adaptationProposalId);
+                        setNextRound(true);
+                        forgeAction.current?.scrollIntoView({
+                          block: "nearest",
+                          behavior: "smooth",
+                        });
+                        forgeAction.current?.focus({ preventScroll: true });
+                      }}
+                    />
+                  )}
                   <details className="capability-guide">
                     <summary>What can this world learn?</summary>
                     <div>
@@ -2028,7 +2098,12 @@ export function Studio() {
                     See what a little stillness can do
                   </button>
                 </div>
-                <div className="rail-action">
+                <div
+                  className="rail-action"
+                  ref={forgeAction}
+                  tabIndex={-1}
+                  aria-label="Forge the selected idea"
+                >
                   {status?.generation.allowed &&
                   status.generation.configured ? (
                     <>
@@ -2480,7 +2555,7 @@ function ProposalCard({
           <span className="proposal-id">{proposal.id}</span>
           <span className="proposal-origin">
             {proposal.ancestry?.kind === "adaptation"
-              ? "APPROVED ADAPTATION"
+              ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
               : proposalOrigin(proposal.origin)}
           </span>
           <span className="proposal-selected-dot" />

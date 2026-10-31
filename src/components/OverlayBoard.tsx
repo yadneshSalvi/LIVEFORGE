@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, Heart, Radio, Sparkles } from "lucide-react";
 import { ForgeMark } from "./Brand";
 import { overlayDuration, overlayView } from "@/lib/overlay";
-import { proposalOrigin, ruleCredit } from "@/lib/rule-copy";
+import { adaptationLabel, proposalOrigin, ruleCredit } from "@/lib/rule-copy";
 import type { PublicShowState } from "@/server/contracts";
 import styles from "./OverlayBoard.module.css";
 
@@ -178,9 +178,11 @@ export function OverlayBoard({
               <div className={styles.proposalTop}>
                 <b>{proposal.id}</b>
                 <span>
-                  {proposal.status === "selected"
-                    ? "CREATOR’S PICK"
-                    : proposalOrigin(proposal.origin)}
+                  {proposal.ancestry?.kind === "adaptation"
+                    ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
+                    : proposal.status === "selected"
+                      ? "CREATOR’S PICK"
+                      : proposalOrigin(proposal.origin)}
                 </span>
                 <small>{String(index + 1).padStart(2, "0")}</small>
               </div>

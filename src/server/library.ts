@@ -266,6 +266,9 @@ export function libraryAncestry(entry: LibraryEntry): ProposalAncestry {
     kind: "library",
     originalAuthor: entry.ancestry?.originalAuthor || entry.author,
     originalText: entry.ancestry?.originalText || entry.proposal,
+    ...(entry.ancestry?.adaptationSource
+      ? { adaptationSource: entry.ancestry.adaptationSource }
+      : {}),
     libraryEntryId: entry.id,
   };
 }
