@@ -1,0 +1,52 @@
+{
+  "sourceCommit": "b586ab1f823c11646db35a0d2b166fb3ef672385",
+  "at": "2026-10-31T20:08:26.019Z",
+  "showId": "37181d09-5e0c-41dc-8789-9eb1e5a7e689",
+  "fixture": "Synthetic no-provider failure",
+  "proposals": [
+    {
+      "id": "P1",
+      "text": "Synthetic QA: make gravity follow microphone pitch.",
+      "votes": 0,
+      "author": "Host",
+      "origin": "practice",
+      "status": "selected",
+      "createdAt": "2026-10-31T20:07:31.359Z"
+    },
+    {
+      "id": "P2",
+      "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+      "votes": 0,
+      "author": "Host",
+      "origin": "practice",
+      "status": "open",
+      "ancestry": {
+        "kind": "adaptation",
+        "sourceJobId": "a543a327-e6e3-4069-8fb4-7a17ac7c41a5",
+        "originalText": "Synthetic QA: make gravity follow microphone pitch.",
+        "originalAuthor": "Host",
+        "adaptationSource": "host-written",
+        "originalProposalId": "P1"
+      },
+      "createdAt": "2026-10-31T20:08:07.594Z"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "a543a327-e6e3-4069-8fb4-7a17ac7c41a5",
+      "model": "SYNTHETIC QA — no provider call",
+      "status": "failed",
+      "attempt": 0,
+      "message": "Synthetic QA fixture: the provider omitted a suggestion. No provider call occurred.",
+      "createdAt": "2026-10-31T20:07:43.402Z",
+      "updatedAt": "2026-10-31T20:07:43.402Z",
+      "proposalId": "P1",
+      "baseRevision": 0,
+      "engineVersion": "last-light/2.0.0",
+      "activationMode": "append",
+      "baseCandidateIds": [],
+      "adaptationProposalId": "P2"
+    }
+  ],
+  "candidateCount": 0
+}

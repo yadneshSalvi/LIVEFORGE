@@ -1,0 +1,57 @@
+{
+  "observedAt": "2026-10-31T20:13:39.407765+00:00",
+  "sourceCommit": "e02c25efb838a925b92002dcc940e438c76502fc",
+  "frozenEvaluationSource": "5ac7482fa346f5221416af8e2f1bb85d74b1f5b2",
+  "priorDeploymentSource": "2a7e01ac223270620bb29caead990ec0b8b87847",
+  "checks": [
+    {
+      "path": "src/game/contracts.ts",
+      "frozenSha256": "4a38be369aef78a8e32d30eec579781631f9afbe02981f8316fbe5734eb2b964",
+      "currentSha256": "4a38be369aef78a8e32d30eec579781631f9afbe02981f8316fbe5734eb2b964",
+      "identical": true
+    },
+    {
+      "path": "src/game/core.ts",
+      "frozenSha256": "9271aa7f877620a06758eac3d589cb8e2e0c34510ef2c8f5a66291e31d0b13a9",
+      "currentSha256": "9271aa7f877620a06758eac3d589cb8e2e0c34510ef2c8f5a66291e31d0b13a9",
+      "identical": true
+    },
+    {
+      "path": "src/game/rules.ts",
+      "frozenSha256": "d49cec87e1307a7af76107cb7b377ad49103bf43c81d08dd43c5da6dd4f05759",
+      "currentSha256": "d49cec87e1307a7af76107cb7b377ad49103bf43c81d08dd43c5da6dd4f05759",
+      "identical": true
+    },
+    {
+      "path": "src/game/runtime.ts",
+      "frozenSha256": "88a554824026db8559628009b6bf54ca5cf19e4f7ac073c43268ce8af9b5b7ec",
+      "currentSha256": "88a554824026db8559628009b6bf54ca5cf19e4f7ac073c43268ce8af9b5b7ec",
+      "identical": true
+    },
+    {
+      "path": "src/game/verifier.ts",
+      "frozenSha256": "7c6e616cad79998e3eab945a34c4f698e6006ce625505c747b0fbe5270901ab5",
+      "currentSha256": "7c6e616cad79998e3eab945a34c4f698e6006ce625505c747b0fbe5270901ab5",
+      "identical": true
+    },
+    {
+      "path": "src/game/game.worker.ts",
+      "frozenSha256": "d2e9c07942cfe293b237b79edd7a62415fb298da537f7d60d404c048da9d47c7",
+      "currentSha256": "d2e9c07942cfe293b237b79edd7a62415fb298da537f7d60d404c048da9d47c7",
+      "identical": true
+    },
+    {
+      "path": "src/server/composition.ts",
+      "frozenSha256": "67212606d61fb7ed2ae6fb572cee287e07fea249a3498cd2c517cb4f124f8602",
+      "currentSha256": "67212606d61fb7ed2ae6fb572cee287e07fea249a3498cd2c517cb4f124f8602",
+      "identical": true
+    },
+    {
+      "path": "src/server/generation.ts#buildGenerationPrompt",
+      "frozenSha256": "24c5f64cc1edfb26c3f255fed2ea512f349552c26a611a7e763b3653d9e00de7",
+      "currentSha256": "24c5f64cc1edfb26c3f255fed2ea512f349552c26a611a7e763b3653d9e00de7",
+      "identical": true
+    }
+  ],
+  "wholeGenerationFileUnchangedFromPriorDeployment": true
+}

@@ -1,0 +1,19 @@
+{
+  "showId": "37181d09-5e0c-41dc-8789-9eb1e5a7e689",
+  "mode": "practice",
+  "job": {
+    "id": "a543a327-e6e3-4069-8fb4-7a17ac7c41a5",
+    "proposalId": "P1",
+    "status": "failed",
+    "createdAt": "2026-10-31T20:07:43.402Z",
+    "updatedAt": "2026-10-31T20:07:43.402Z",
+    "attempt": 0,
+    "model": "SYNTHETIC QA — no provider call",
+    "engineVersion": "last-light/2.0.0",
+    "activationMode": "append",
+    "baseCandidateIds": [],
+    "baseRevision": 0,
+    "message": "Synthetic QA fixture: the provider omitted a suggestion. No provider call occurred."
+  },
+  "purpose": "Browser acceptance of omitted suggestion; not provider evidence"
+}

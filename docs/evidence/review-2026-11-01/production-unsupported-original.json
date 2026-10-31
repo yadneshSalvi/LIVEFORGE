@@ -12,12 +12,33 @@
     "id": "6b58b399-4b3c-ee2f-b4db-732ba7104a0a",
     "status": "failed",
     "createdAt": "2026-10-31T19:50:03.822Z",
-    "completedAt": null,
-    "message": "Microphone input and pitch detection are unavailable. Gravity can be modified, but no supported field exposes your microphone\u2019s pitch.",
+    "updatedAt": "2026-10-31T19:50:20.090Z",
+    "message": "Microphone input and pitch detection are unavailable. Gravity can be modified, but no supported field exposes your microphone’s pitch.",
     "adaptedProposal": null,
-    "attempts": null,
+    "attempt": 1,
     "model": "gpt-6.1-sol",
-    "timings": null
+    "threadId": "01a19383-1e60-7bb2-a467-422aaf0da7d7",
+    "sandboxTimings": {
+      "mode": "snapshot",
+      "setupMs": 1309,
+      "cacheHit": true,
+      "createMs": 1031,
+      "fallback": false,
+      "installMs": 0,
+      "snapshotMs": 0
+    },
+    "phases": [
+      {
+        "at": "2026-10-31T19:50:11.297Z",
+        "phase": "thread-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-10-31T19:50:16.316Z",
+        "phase": "turn-started",
+        "attempt": 1
+      }
+    ]
   },
   "observation": "First real unsupported attempt; host reason visible, but model omitted adaptation and UI offered no adaptation action. Base game and reused-law fallback remained available. Retained before follow-up fix; not an original-intent success."
 }

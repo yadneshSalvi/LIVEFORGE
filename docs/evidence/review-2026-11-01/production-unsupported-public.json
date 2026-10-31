@@ -1,0 +1,87 @@
+{
+  "httpStatus": 200,
+  "cacheControl": "no-store",
+  "hasPrivateFailureReason": false,
+  "hasAdaptedProposalKey": false,
+  "hasSourceJobIdKey": false,
+  "show": {
+    "id": "fb95f1f3-29be-4100-940c-2ff5b0ec0d3f",
+    "createdAt": "2026-10-31T19:49:52.676Z",
+    "updatedAt": "2026-10-31T19:56:03.207Z",
+    "engineVersion": "last-light/2.0.0",
+    "activeLaws": [],
+    "mode": "practice",
+    "votingOpen": true,
+    "phase": "collecting",
+    "round": 1,
+    "revision": 0,
+    "proposals": [
+      {
+        "id": "P1",
+        "text": "Make gravity follow the pitch of my microphone.",
+        "votes": 0,
+        "author": "Host",
+        "origin": "practice",
+        "status": "selected",
+        "createdAt": "2026-10-31T19:50:01.012Z"
+      }
+    ],
+    "active": null,
+    "generation": {
+      "status": "failed",
+      "createdAt": "2026-10-31T19:50:03.822Z",
+      "updatedAt": "2026-10-31T19:50:20.090Z",
+      "phases": [
+        {
+          "at": "2026-10-31T19:50:11.297Z",
+          "phase": "thread-started",
+          "attempt": 1
+        },
+        {
+          "at": "2026-10-31T19:50:16.316Z",
+          "phase": "turn-started",
+          "attempt": 1
+        }
+      ],
+      "proposal": {
+        "id": "P1",
+        "text": "Make gravity follow the pitch of my microphone.",
+        "author": "Host",
+        "origin": "practice"
+      },
+      "message": "The next law needs another attempt. The current game is preserved."
+    },
+    "twitch": {
+      "status": "disconnected"
+    },
+    "events": [
+      {
+        "at": "2026-10-31T19:49:52.676Z",
+        "id": "c6e34883-c87d-4382-893c-3f59177ed46f",
+        "type": "show.created",
+        "message": "Practice studio created. Inputs here are labeled practice."
+      },
+      {
+        "at": "2026-10-31T19:50:01.012Z",
+        "id": "5cdf85ec-48fe-48f5-930a-dcded4567eb9",
+        "type": "proposal.received",
+        "message": "A practice idea joined the board.",
+        "proposalId": "P1"
+      },
+      {
+        "at": "2026-10-31T19:50:03.822Z",
+        "id": "0775396d-8c32-413a-a27c-029980f4bf6d",
+        "type": "generation.queued",
+        "message": "The selected proposal is queued for Codex.",
+        "proposalId": "P1"
+      },
+      {
+        "at": "2026-10-31T19:50:20.090Z",
+        "id": "3f452725-eba3-4a50-9b62-8cd5e6a0b490",
+        "type": "generation.failed",
+        "message": "The next law needs another attempt. The current game is preserved.",
+        "proposalId": "P1"
+      }
+    ]
+  }
+}
