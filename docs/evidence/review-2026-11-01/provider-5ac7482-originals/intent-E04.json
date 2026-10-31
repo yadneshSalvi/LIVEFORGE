@@ -1,0 +1,42 @@
+{
+  "caseId": "E04",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "Every nearby crate moves right",
+      "passed": true,
+      "measurements": {
+        "displacement": [
+          2.9104092979430334,
+          2.9104092979430334,
+          0
+        ],
+        "fixture": "Two crates about 40 units from lamps; third more than 500 units away"
+      }
+    },
+    {
+      "name": "A distant crate does not receive the same wind",
+      "passed": true,
+      "measurements": {
+        "distantDisplacement": 0
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b"
+}

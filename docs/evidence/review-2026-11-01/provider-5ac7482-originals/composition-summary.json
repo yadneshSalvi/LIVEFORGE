@@ -1,0 +1,375 @@
+{
+  "recordedAt": "2026-10-31T19:25:22.006Z",
+  "input": "/Users/yadneshsalvi/code/hackathons/twitchcon_hackathon/LIVEFORGE/docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-summary.json",
+  "engineVersion": "last-light/2.0.0",
+  "note": "Synthetic controlled experiments on retained real sources. simulationIdentity is a test identity, not a server-approved context/activation artifact.",
+  "records": [
+    {
+      "id": "C02",
+      "members": [
+        "E01",
+        "E02"
+      ],
+      "intent": "Moon gravity and exactly one extra airborne jump both remain effective.",
+      "memberSourceHashes": [
+        "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+        "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a"
+      ],
+      "simulationIdentity": "e3f34dd7f813b89dbe04e76f43e0c468a0614764b086f94966a5d1e8110b1f36",
+      "verification": {
+        "passed": true,
+        "engineVersion": "last-light/2.0.0",
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "passed": true,
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Deterministic input replay",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          }
+        ],
+        "ticksSimulated": 4890,
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "effects": {
+          "surfacesCreated": 0,
+          "impulsesApplied": 0,
+          "cuesApplied": 0
+        }
+      },
+      "measurements": [
+        {
+          "caseId": "E01",
+          "engineVersion": "last-light/2.0.0",
+          "simulationIdentity": "e3f34dd7f813b89dbe04e76f43e0c468a0614764b086f94966a5d1e8110b1f36",
+          "verifierPassed": true,
+          "checks": [
+            {
+              "name": "Moon gravity visibly extends a jump",
+              "passed": true,
+              "measurements": {
+                "baseline": {
+                  "airtime": 47,
+                  "height": 129.7199999999999,
+                  "landed": true
+                },
+                "law": {
+                  "airtime": 158,
+                  "height": 445.55999999999966,
+                  "landed": true
+                }
+              }
+            },
+            {
+              "name": "The courier lands again",
+              "passed": true,
+              "measurements": {
+                "airtime": 158,
+                "height": 445.55999999999966,
+                "landed": true
+              }
+            },
+            {
+              "name": "Checkpoint replay is deterministic",
+              "passed": true,
+              "measurements": {
+                "replayTicks": 90
+              }
+            },
+            {
+              "name": "Rollback restores the exact pre-activation checkpoint",
+              "passed": true,
+              "measurements": null
+            }
+          ],
+          "automatedIntentPassed": true,
+          "browserObserved": false
+        },
+        {
+          "caseId": "E02",
+          "engineVersion": "last-light/2.0.0",
+          "simulationIdentity": "e3f34dd7f813b89dbe04e76f43e0c468a0614764b086f94966a5d1e8110b1f36",
+          "verifierPassed": true,
+          "checks": [
+            {
+              "name": "A second airborne press adds upward motion",
+              "passed": true,
+              "measurements": {
+                "withPress": -11.256,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "A third airborne press grants no extra jump",
+              "passed": true,
+              "measurements": {
+                "withPress": 0.26400000000000734,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "Landing replenishes the extra jump",
+              "passed": true,
+              "measurements": {
+                "landingTicks": 109,
+                "renewedVy": -11.256,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "Checkpoint replay is deterministic",
+              "passed": true,
+              "measurements": {
+                "replayTicks": 90
+              }
+            },
+            {
+              "name": "Rollback restores the exact pre-activation checkpoint",
+              "passed": true,
+              "measurements": null
+            }
+          ],
+          "automatedIntentPassed": true,
+          "browserObserved": false
+        }
+      ],
+      "automatedCombinationPassed": true,
+      "serverActivationObserved": false,
+      "browserObserved": false
+    },
+    {
+      "id": "C03",
+      "members": [
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "intent": "Moon gravity, exactly one extra airborne jump, and reversible held giant mode coexist.",
+      "memberSourceHashes": [
+        "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+        "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+        "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb"
+      ],
+      "simulationIdentity": "1f421d92480f02ee9aac0de635c9c589095c15bbaf304808cdd71a142132dde2",
+      "verification": {
+        "passed": true,
+        "engineVersion": "last-light/2.0.0",
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "passed": true,
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Deterministic input replay",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          }
+        ],
+        "ticksSimulated": 4890,
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "effects": {
+          "surfacesCreated": 0,
+          "impulsesApplied": 0,
+          "cuesApplied": 0
+        }
+      },
+      "measurements": [
+        {
+          "caseId": "E01",
+          "engineVersion": "last-light/2.0.0",
+          "simulationIdentity": "1f421d92480f02ee9aac0de635c9c589095c15bbaf304808cdd71a142132dde2",
+          "verifierPassed": true,
+          "checks": [
+            {
+              "name": "Moon gravity visibly extends a jump",
+              "passed": true,
+              "measurements": {
+                "baseline": {
+                  "airtime": 47,
+                  "height": 129.7199999999999,
+                  "landed": true
+                },
+                "law": {
+                  "airtime": 158,
+                  "height": 445.55999999999966,
+                  "landed": true
+                }
+              }
+            },
+            {
+              "name": "The courier lands again",
+              "passed": true,
+              "measurements": {
+                "airtime": 158,
+                "height": 445.55999999999966,
+                "landed": true
+              }
+            },
+            {
+              "name": "Checkpoint replay is deterministic",
+              "passed": true,
+              "measurements": {
+                "replayTicks": 90
+              }
+            },
+            {
+              "name": "Rollback restores the exact pre-activation checkpoint",
+              "passed": true,
+              "measurements": null
+            }
+          ],
+          "automatedIntentPassed": true,
+          "browserObserved": false
+        },
+        {
+          "caseId": "E02",
+          "engineVersion": "last-light/2.0.0",
+          "simulationIdentity": "1f421d92480f02ee9aac0de635c9c589095c15bbaf304808cdd71a142132dde2",
+          "verifierPassed": true,
+          "checks": [
+            {
+              "name": "A second airborne press adds upward motion",
+              "passed": true,
+              "measurements": {
+                "withPress": -11.256,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "A third airborne press grants no extra jump",
+              "passed": true,
+              "measurements": {
+                "withPress": 0.26400000000000734,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "Landing replenishes the extra jump",
+              "passed": true,
+              "measurements": {
+                "landingTicks": 109,
+                "renewedVy": -11.256,
+                "withoutPress": 0.26400000000000734
+              }
+            },
+            {
+              "name": "Checkpoint replay is deterministic",
+              "passed": true,
+              "measurements": {
+                "replayTicks": 90
+              }
+            },
+            {
+              "name": "Rollback restores the exact pre-activation checkpoint",
+              "passed": true,
+              "measurements": null
+            }
+          ],
+          "automatedIntentPassed": true,
+          "browserObserved": false
+        },
+        {
+          "caseId": "E03",
+          "engineVersion": "last-light/2.0.0",
+          "simulationIdentity": "1f421d92480f02ee9aac0de635c9c589095c15bbaf304808cdd71a142132dde2",
+          "verifierPassed": true,
+          "checks": [
+            {
+              "name": "Holding interact enlarges the courier",
+              "passed": true,
+              "measurements": {
+                "base": {
+                  "w": 25,
+                  "h": 48
+                },
+                "held": {
+                  "w": 40,
+                  "h": 76.80000000000001
+                }
+              }
+            },
+            {
+              "name": "Release restores ordinary dimensions",
+              "passed": true,
+              "measurements": {
+                "w": 25,
+                "h": 48
+              }
+            },
+            {
+              "name": "Growth cannot intersect an overhead solid",
+              "passed": true,
+              "measurements": {
+                "player": {
+                  "y": 462.144,
+                  "h": 48
+                },
+                "ceilingY": 448
+              }
+            },
+            {
+              "name": "Checkpoint replay is deterministic",
+              "passed": true,
+              "measurements": {
+                "replayTicks": 90
+              }
+            },
+            {
+              "name": "Rollback restores the exact pre-activation checkpoint",
+              "passed": true,
+              "measurements": null
+            }
+          ],
+          "automatedIntentPassed": true,
+          "browserObserved": false
+        }
+      ],
+      "automatedCombinationPassed": true,
+      "serverActivationObserved": false,
+      "browserObserved": false
+    }
+  ]
+}

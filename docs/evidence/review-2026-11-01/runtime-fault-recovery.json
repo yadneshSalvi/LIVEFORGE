@@ -1,0 +1,556 @@
+{
+  "at": "2026-10-31T19:36:31.386Z",
+  "label": "Real browser-triggered fault using explicitly hand-authored QA fixture",
+  "phase": "live",
+  "activeCandidateIds": [
+    "ee0b99c8-b7dd-45a8-815a-826d2875c285",
+    "2ee7951c-4e17-48a4-a70d-1d0baccb8a36"
+  ],
+  "activeSources": [
+    {
+      "sourceHash": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+      "name": "Moon Gravity"
+    },
+    {
+      "sourceHash": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+      "name": "Second Jump"
+    }
+  ],
+  "fixtureRetained": true,
+  "checkpoint": {
+    "program": {
+      "name": "Moon Gravity + Second Jump",
+      "rules": [
+        {
+          "id": "l0--moon-gravity",
+          "on": "tick",
+          "each": "player",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": 1,
+              "right": 1
+            }
+          },
+          "actions": [
+            {
+              "type": "physics",
+              "target": "self",
+              "gravityScale": 0.3
+            }
+          ]
+        },
+        {
+          "id": "l1--extra-airborne-jump",
+          "on": "tick",
+          "each": "player",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": 1,
+              "right": 1
+            }
+          },
+          "actions": [
+            {
+              "type": "physics",
+              "target": "self",
+              "airJumps": 1
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "composition": {
+        "members": [
+          {
+            "name": "Moon Gravity",
+            "rules": [
+              {
+                "id": "moon-gravity",
+                "on": "tick",
+                "each": "player",
+                "when": {
+                  "compare": {
+                    "op": "eq",
+                    "left": 1,
+                    "right": 1
+                  }
+                },
+                "actions": [
+                  {
+                    "type": "physics",
+                    "target": "self",
+                    "gravityScale": 0.3
+                  }
+                ]
+              }
+            ],
+            "version": 1,
+            "description": "Gentle gravity lets the courier stay airborne longer and float farther with each jump."
+          },
+          {
+            "name": "Second Jump",
+            "rules": [
+              {
+                "id": "extra-airborne-jump",
+                "on": "tick",
+                "each": "player",
+                "when": {
+                  "compare": {
+                    "op": "eq",
+                    "left": 1,
+                    "right": 1
+                  }
+                },
+                "actions": [
+                  {
+                    "type": "physics",
+                    "target": "self",
+                    "airJumps": 1
+                  }
+                ]
+              }
+            ],
+            "version": 1,
+            "description": "Jump once more in midair. Landing restores your extra jump."
+          }
+        ]
+      },
+      "description": "Ordered composition of 2 independently sourced laws. Later matching modifiers take precedence; creation and execution budgets are shared."
+    },
+    "snapshot": {
+      "tick": 12646,
+      "ember": true,
+      "input": {
+        "drop": false,
+        "jump": false,
+        "left": false,
+        "reset": false,
+        "right": false,
+        "pressed": {
+          "drop": false,
+          "jump": false,
+          "reset": false,
+          "interact": false
+        },
+        "interact": false
+      },
+      "deaths": 0,
+      "version": "last-light/2.0.0",
+      "entities": [
+        {
+          "h": 48,
+          "w": 25,
+          "x": 170,
+          "y": 400,
+          "id": "courier",
+          "vx": 0,
+          "vy": 0,
+          "kind": "player",
+          "baseH": 48,
+          "baseW": 25,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 1,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 0.3,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 170,
+          "previousY": 400,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 10000
+        },
+        {
+          "h": 64,
+          "w": 40,
+          "x": 510,
+          "y": 384,
+          "id": "counterweight",
+          "vx": 0,
+          "vy": 0,
+          "kind": "prop",
+          "baseH": 64,
+          "baseW": 40,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 510,
+          "previousY": 384,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 10000
+        },
+        {
+          "h": 91,
+          "w": 25,
+          "x": 320,
+          "y": 357,
+          "id": "lamp",
+          "vx": 0,
+          "vy": 0,
+          "kind": "lantern",
+          "baseH": 91,
+          "baseW": 25,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 320,
+          "previousY": 357,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 0
+        },
+        {
+          "h": 64,
+          "w": 40,
+          "x": 1130,
+          "y": 384,
+          "id": "hall-crate",
+          "vx": 0,
+          "vy": 0,
+          "kind": "prop",
+          "baseH": 64,
+          "baseW": 40,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 1130,
+          "previousY": 384,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 10000
+        },
+        {
+          "h": 64,
+          "w": 40,
+          "x": 1950,
+          "y": 384,
+          "id": "guardian-crate",
+          "vx": 0,
+          "vy": 0,
+          "kind": "prop",
+          "baseH": 64,
+          "baseW": 40,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 1950,
+          "previousY": 384,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 10000
+        },
+        {
+          "h": 91,
+          "w": 25,
+          "x": 1030,
+          "y": 357,
+          "id": "hall-lamp",
+          "vx": 0,
+          "vy": 0,
+          "kind": "lantern",
+          "baseH": 91,
+          "baseW": 25,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 1030,
+          "previousY": 357,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 0
+        },
+        {
+          "h": 91,
+          "w": 25,
+          "x": 1840,
+          "y": 357,
+          "id": "guardian-lamp",
+          "vx": 0,
+          "vy": 0,
+          "kind": "lantern",
+          "baseH": 91,
+          "baseW": 25,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": true,
+          "previousX": 1840,
+          "previousY": 357,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 0
+        },
+        {
+          "h": 12,
+          "w": 12,
+          "x": 200,
+          "y": 418,
+          "id": "ember",
+          "vx": 0,
+          "vy": 0,
+          "kind": "ember",
+          "baseH": 12,
+          "baseW": 12,
+          "timer": 0,
+          "bounce": 0,
+          "physics": {
+            "windX": 0,
+            "airJumps": 0,
+            "timeScale": 1,
+            "playerScale": 1,
+            "gravityScale": 1,
+            "jumpStrength": 1
+          },
+          "friction": 0.82,
+          "grounded": false,
+          "previousX": 201,
+          "previousY": 425,
+          "wasGrounded": true,
+          "airJumpsUsed": 0,
+          "stationaryTicks": 0
+        }
+      ],
+      "progress": 0,
+      "ruleName": "Moon Gravity + Second Jump",
+      "surfaces": [
+        {
+          "h": 60,
+          "w": 710,
+          "x": -100,
+          "y": 448,
+          "id": "arrival",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 60,
+          "w": 520,
+          "x": 950,
+          "y": 448,
+          "id": "foundry",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 60,
+          "w": 810,
+          "x": 1790,
+          "y": 448,
+          "id": "observatory",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 24,
+          "w": 80,
+          "x": 665,
+          "y": 535,
+          "id": "lower-1",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 24,
+          "w": 85,
+          "x": 810,
+          "y": 540,
+          "id": "lower-2",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 24,
+          "w": 75,
+          "x": 1515,
+          "y": 535,
+          "id": "lower-3",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 24,
+          "w": 80,
+          "x": 1655,
+          "y": 535,
+          "id": "lower-4",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 18,
+          "w": 60,
+          "x": 895,
+          "y": 490,
+          "id": "stair-1",
+          "solid": true,
+          "expires": 9007199254740991
+        },
+        {
+          "h": 18,
+          "w": 60,
+          "x": 1735,
+          "y": 490,
+          "id": "stair-2",
+          "solid": true,
+          "expires": 9007199254740991
+        }
+      ],
+      "completed": false,
+      "lanternOn": true,
+      "modifiers": [
+        {
+          "id": "l0--moon-gravity:courier:0",
+          "expires": 12646,
+          "physics": {
+            "gravityScale": 0.3
+          },
+          "entityId": "courier"
+        },
+        {
+          "id": "l1--extra-airborne-jump:courier:0",
+          "expires": 12646,
+          "physics": {
+            "airJumps": 1
+          },
+          "entityId": "courier"
+        }
+      ],
+      "activeHash": "871b623943701d273496d4468ca2ab2bb56f2c7a7538c4dcea6c18ac63bd2173",
+      "checkpoint": 0,
+      "encounters": {
+        "guardian": false,
+        "counterweight": false
+      },
+      "interaction": "Carry the last ember to the Astral Hearth.",
+      "emberCarried": true,
+      "previousInput": {
+        "drop": false,
+        "jump": false,
+        "left": false,
+        "reset": false,
+        "right": false,
+        "interact": false
+      }
+    },
+    "artifactHash": "871b623943701d273496d4468ca2ab2bb56f2c7a7538c4dcea6c18ac63bd2173"
+  },
+  "events": [
+    {
+      "at": "2026-10-31T19:22:44.975Z",
+      "id": "dcdbbae8-773f-4f1f-ae32-9bd154684594",
+      "type": "candidate.activated",
+      "message": "Moon Gravity entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+      "candidateId": "ee0b99c8-b7dd-45a8-815a-826d2875c285",
+      "programHash": "31a2982fcbb7377a5c34bb1c2b6fd6fd55e2004c321512f402495a930c35e833"
+    },
+    {
+      "at": "2026-10-31T19:27:52.301Z",
+      "id": "e5cc4483-5c56-44fb-aec7-7304f74783fb",
+      "type": "candidate.activated",
+      "message": "Second Jump entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+      "candidateId": "2ee7951c-4e17-48a4-a70d-1d0baccb8a36",
+      "programHash": "d9c22f3d25bd180f7a58cd00535e3cc2a93fe6d017d07aaedf5d4d5bd9156949"
+    },
+    {
+      "at": "2026-10-31T19:32:06.880Z",
+      "id": "a1630e9c-eb2c-4520-bf9f-d4a43711bf27",
+      "type": "candidate.activated",
+      "message": "Grow While Holding Interact entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+      "candidateId": "14632ffc-f512-4536-9ce7-dbe9c3a597e9",
+      "programHash": "929991d6406974eae4c375559b776ebe95a60567592206f684f18e98c1f8a2a4"
+    },
+    {
+      "at": "2026-10-31T19:35:18.345Z",
+      "id": "1825acc8-dcad-4a2d-bbe3-f70680e08fb9",
+      "type": "world.rollback",
+      "message": "The previous activation checkpoint was restored. Progress after that checkpoint is reset."
+    },
+    {
+      "at": "2026-10-31T19:36:11.642Z",
+      "id": "3c06fa80-6e9e-49c1-8010-52231a64c84b",
+      "type": "candidate.activated",
+      "message": "SYNTHETIC QA — NOT MODEL OUTPUT entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "d8ae7609f9b2c7be99cbe600bf3aa70d091677daac9a8053357a77ab9374828d",
+      "candidateId": "07f852c0-9bf7-44b9-a2a2-84e6523f1de4",
+      "programHash": "c062d6e20e3a948dd54b678873ceaa8852453ee7e7c2484e704954eb731670f3"
+    },
+    {
+      "at": "2026-10-31T19:36:18.075Z",
+      "id": "16848138-0226-4655-bad9-86b9c109e61d",
+      "type": "private.runtime.fault",
+      "message": "Rule action budget exceeded",
+      "sourceHash": "d8ae7609f9b2c7be99cbe600bf3aa70d091677daac9a8053357a77ab9374828d"
+    },
+    {
+      "at": "2026-10-31T19:36:18.075Z",
+      "id": "61b0f667-8ffb-46ca-865f-7b9298dc538f",
+      "type": "world.rollback",
+      "message": "Law retired after a runtime fault; world restored to the previous checkpoint."
+    }
+  ]
+}

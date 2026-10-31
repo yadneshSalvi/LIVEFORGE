@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-31T19:37:42.513Z",
+  "engineVersion": "last-light/2.0.0",
+  "activeCandidateIds": [],
+  "engineArchives": [
+    {
+      "engineVersion": "last-light/1.0.0",
+      "archivedAt": "2026-10-31T19:37:30.146Z",
+      "activeCandidateIds": ["4773fe5f-977b-41cd-a08e-169400208bbe"],
+      "hasCheckpoint": true
+    }
+  ],
+  "candidates": [
+    {
+      "id": "4773fe5f-977b-41cd-a08e-169400208bbe",
+      "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+      "approvedAt": "2026-10-31T18:52:18.629Z"
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-10-31T19:37:30.147Z",
+      "id": "c3f92bc2-b3c9-4949-a237-968e2ded42f8",
+      "type": "engine.upgraded",
+      "message": "The host explicitly upgraded the engine. The old checkpoint and law history were archived; the new opening world is ready."
+    }
+  ]
+}

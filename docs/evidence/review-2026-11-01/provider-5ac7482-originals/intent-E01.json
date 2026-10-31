@@ -1,0 +1,48 @@
+{
+  "caseId": "E01",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "Moon gravity visibly extends a jump",
+      "passed": true,
+      "measurements": {
+        "baseline": {
+          "airtime": 47,
+          "height": 129.7199999999999,
+          "landed": true
+        },
+        "law": {
+          "airtime": 158,
+          "height": 445.55999999999966,
+          "landed": true
+        }
+      }
+    },
+    {
+      "name": "The courier lands again",
+      "passed": true,
+      "measurements": {
+        "airtime": 158,
+        "height": 445.55999999999966,
+        "landed": true
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17"
+}

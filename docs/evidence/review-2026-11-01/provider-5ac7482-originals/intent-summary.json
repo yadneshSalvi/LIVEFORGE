@@ -1,0 +1,516 @@
+{
+  "recordedAt": "2026-10-31T19:25:22.838Z",
+  "input": "/Users/yadneshsalvi/code/hackathons/twitchcon_hackathon/LIVEFORGE/docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-summary.json",
+  "engineVersion": "last-light/2.0.0",
+  "note": "Trusted-interpreter measurements with synthetic control fixtures. These do not substitute for browser gameplay, human intent review, or proof of fresh provider generation.",
+  "results": [
+    {
+      "caseId": "E01",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "Moon gravity visibly extends a jump",
+          "passed": true,
+          "measurements": {
+            "baseline": {
+              "airtime": 47,
+              "height": 129.7199999999999,
+              "landed": true
+            },
+            "law": {
+              "airtime": 158,
+              "height": 445.55999999999966,
+              "landed": true
+            }
+          }
+        },
+        {
+          "name": "The courier lands again",
+          "passed": true,
+          "measurements": {
+            "airtime": 158,
+            "height": 445.55999999999966,
+            "landed": true
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+      "originalProposal": "Give the courier moon gravity so jumps float farther.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E02",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "A second airborne press adds upward motion",
+          "passed": true,
+          "measurements": {
+            "withPress": -10.92,
+            "withoutPress": 0.6000000000000059
+          }
+        },
+        {
+          "name": "A third airborne press grants no extra jump",
+          "passed": true,
+          "measurements": {
+            "withPress": 0.6000000000000059,
+            "withoutPress": 0.6000000000000059
+          }
+        },
+        {
+          "name": "Landing replenishes the extra jump",
+          "passed": true,
+          "measurements": {
+            "landingTicks": 32,
+            "renewedVy": -10.92,
+            "withoutPress": 0.6000000000000059
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+      "originalProposal": "Let the courier jump a second time in midair before landing.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E03",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "Holding interact enlarges the courier",
+          "passed": true,
+          "measurements": {
+            "base": {
+              "w": 25,
+              "h": 48
+            },
+            "held": {
+              "w": 40,
+              "h": 76.80000000000001
+            }
+          }
+        },
+        {
+          "name": "Release restores ordinary dimensions",
+          "passed": true,
+          "measurements": {
+            "w": 25,
+            "h": 48
+          }
+        },
+        {
+          "name": "Growth cannot intersect an overhead solid",
+          "passed": true,
+          "measurements": {
+            "player": {
+              "y": 462.48,
+              "h": 48
+            },
+            "ceilingY": 448
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+      "originalProposal": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E04",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "Every nearby crate moves right",
+          "passed": true,
+          "measurements": {
+            "displacement": [
+              2.9104092979430334,
+              2.9104092979430334,
+              0
+            ],
+            "fixture": "Two crates about 40 units from lamps; third more than 500 units away"
+          }
+        },
+        {
+          "name": "A distant crate does not receive the same wind",
+          "passed": true,
+          "measurements": {
+            "distantDisplacement": 0
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+      "originalProposal": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E05",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "Nearby motion is slower than the equal-speed control",
+          "passed": true,
+          "measurements": {
+            "baseline": {
+              "near": 12.203125,
+              "far": 12.203125
+            },
+            "changed": {
+              "near": 7.656088913245526,
+              "far": 12.203125
+            }
+          }
+        },
+        {
+          "name": "Far motion stays normal",
+          "passed": true,
+          "measurements": {
+            "baseline": {
+              "near": 12.203125,
+              "far": 12.203125
+            },
+            "changed": {
+              "near": 7.656088913245526,
+              "far": 12.203125
+            }
+          }
+        },
+        {
+          "name": "Moving out of range restores normal progression",
+          "passed": true,
+          "measurements": {
+            "law": 12.203125,
+            "control": 12.203125
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+      "originalProposal": "Movable crates near the courier move in slow motion, then return to normal speed farther away.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E06",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "A dropped ember rebounds from the floor",
+          "passed": true,
+          "measurements": {
+            "reboundTick": 45
+          }
+        },
+        {
+          "name": "Pickup stops independent motion and preserves the objective",
+          "passed": true,
+          "measurements": {
+            "carried": true,
+            "objectivePresent": true,
+            "velocity": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+      "originalProposal": "When the ember is dropped, let it bounce like a rubber ball until picked up again.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E07",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "An actual landing creates a nearby solid platform",
+          "passed": true,
+          "measurements": {
+            "before": 0,
+            "atLanding": [
+              {
+                "x": 234,
+                "y": 448,
+                "expires": 257,
+                "solid": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "Standing still does not create a platform flood",
+          "passed": true,
+          "measurements": {
+            "createdWhileStill": 0,
+            "maximum": 4
+          }
+        },
+        {
+          "name": "The temporary platform expires and repeated landings stay bounded",
+          "passed": true,
+          "measurements": {
+            "maxExpiry": 257,
+            "afterExpiry": 0,
+            "maximum": 4
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+      "originalProposal": "Every time the courier lands, create a temporary stepping platform beside them.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E08",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "Running speed produces a monotonic, bounded stronger jump",
+          "passed": true,
+          "measurements": [
+            {
+              "speed": 0,
+              "upwardVelocity": 10.92
+            },
+            {
+              "speed": 2,
+              "upwardVelocity": 12.06
+            },
+            {
+              "speed": 4.2,
+              "upwardVelocity": 13.314
+            }
+          ]
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+      "originalProposal": "The faster the courier is running, the stronger their next jump becomes.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E09",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "New contact makes the crate bouncy",
+          "passed": true,
+          "measurements": {
+            "touchedAt": 41,
+            "bounceAtTouch": 0.85
+          }
+        },
+        {
+          "name": "Bounce lasts three seconds, then normal material returns",
+          "passed": true,
+          "measurements": {
+            "ticksPerSecond": 60,
+            "bounceAt179": 0.85,
+            "bounceAt181": 0
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+      "originalProposal": "Touching a crate makes it bouncy for three seconds.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    },
+    {
+      "caseId": "E10",
+      "engineVersion": "last-light/2.0.0",
+      "simulationIdentity": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab",
+      "verifierPassed": true,
+      "checks": [
+        {
+          "name": "The shadow supports the courier over the gap",
+          "passed": true,
+          "measurements": {
+            "bridge": {
+              "x": 530,
+              "width": 320,
+              "y": 448
+            },
+            "courier": {
+              "x": 620,
+              "y": 400,
+              "grounded": true
+            }
+          }
+        },
+        {
+          "name": "Moving the crate dissolves its shadow bridge",
+          "passed": true,
+          "measurements": {
+            "remainedAfterMovingTicks": 8,
+            "remains": false
+          }
+        },
+        {
+          "name": "Checkpoint replay is deterministic",
+          "passed": true,
+          "measurements": {
+            "replayTicks": 90
+          }
+        },
+        {
+          "name": "Rollback restores the exact pre-activation checkpoint",
+          "passed": true,
+          "measurements": null
+        }
+      ],
+      "automatedIntentPassed": true,
+      "browserObserved": false,
+      "sourceHash": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab",
+      "originalProposal": "A still prop’s shadow becomes a solid bridge.",
+      "generationStatus": "ready",
+      "inputOrigin": "synthetic-practice-evaluation"
+    }
+  ]
+}

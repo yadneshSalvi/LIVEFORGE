@@ -1,0 +1,48 @@
+{
+  "caseId": "E02",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "A second airborne press adds upward motion",
+      "passed": true,
+      "measurements": {
+        "withPress": -10.92,
+        "withoutPress": 0.6000000000000059
+      }
+    },
+    {
+      "name": "A third airborne press grants no extra jump",
+      "passed": true,
+      "measurements": {
+        "withPress": 0.6000000000000059,
+        "withoutPress": 0.6000000000000059
+      }
+    },
+    {
+      "name": "Landing replenishes the extra jump",
+      "passed": true,
+      "measurements": {
+        "landingTicks": 32,
+        "renewedVy": -10.92,
+        "withoutPress": 0.6000000000000059
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a"
+}

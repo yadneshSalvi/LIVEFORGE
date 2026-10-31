@@ -1,0 +1,158 @@
+{
+  "id": "E05",
+  "proposal": "Movable crates near the courier move in slow motion, then return to normal speed farther away.",
+  "heldOut": false,
+  "category": "slow motion",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "343beb45-5117-4e7b-840d-88b9172c7411",
+  "jobId": "43d94e58-6f2a-4767-bb5c-3af0c39f3673",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a19367-293a-71a3-b1da-c35d01c932e9",
+  "createdAt": "2026-10-31T19:19:04.663Z",
+  "completedAt": "2026-10-31T19:19:55.964Z",
+  "elapsedMs": 51301,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 24761,
+    "cacheHit": false,
+    "createMs": 949,
+    "fallback": true,
+    "installMs": 14207,
+    "snapshotMs": 213
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:19:41.128Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:19:44.344Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:19:50.765Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10218,
+    "output_tokens": 319,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10218,
+        "output_tokens": 319,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 105,
+        "cache_write_input_tokens": 10215
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a19367-293a-71a3-b1da-c35d01c932e9",
+      "sourceHash": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Slow Nearby Crates\",\n  description: \"Movable crates within 200 units of you move at half speed. They return to normal speed farther away.\",\n  rules: [\n    {\n      id: \"slow-nearby-crates\",\n      each: \"prop\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"distanceToPlayer\" },\n          op: \"lte\",\n          right: 200\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          timeScale: 0.5,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+    "programHash": "6a1ed42da8d4ff3fb4b78a3fedc3ec9cfada26253a24ac63fef2c66819233924",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

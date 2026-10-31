@@ -1,0 +1,162 @@
+{
+  "startedAt": "2026-10-31T19:29:15.441Z",
+  "completedAt": "2026-10-31T19:30:13.636Z",
+  "sampleCount": 1,
+  "sandboxMode": "cold",
+  "casesFile": "../../docs/evidence/review-2026-11-01/latency-cd7ce27/cases-B03-cold.json",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "records": [
+    {
+      "id": "B03-cold",
+      "proposal": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+      "heldOut": false,
+      "inputOrigin": "synthetic-practice-evaluation",
+      "originalSuccess": true,
+      "showId": "a142a970-f073-462b-9da3-6aa44bb3d28f",
+      "jobId": "54b3e81e-4290-4f08-bd9c-6283b92d2e3f",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/2.0.0",
+      "threadId": "01a19370-7506-7a12-a42e-d7defee043f4",
+      "createdAt": "2026-10-31T19:29:20.629Z",
+      "completedAt": "2026-10-31T19:30:11.517Z",
+      "elapsedMs": 50888,
+      "sandboxMode": "cold",
+      "sandboxTimings": {
+        "mode": "cold",
+        "setupMs": 16956,
+        "cacheHit": false,
+        "createMs": 662,
+        "fallback": false,
+        "installMs": 11760,
+        "snapshotMs": 0
+      },
+      "phases": [
+        {
+          "at": "2026-10-31T19:29:50.353Z",
+          "phase": "thread-started",
+          "attempt": 1
+        },
+        {
+          "at": "2026-10-31T19:29:53.607Z",
+          "phase": "turn-started",
+          "attempt": 1
+        }
+      ],
+      "usage": {
+        "input_tokens": 10215,
+        "output_tokens": 306,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 10215,
+            "output_tokens": 306,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 91,
+            "cache_write_input_tokens": 10212
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a19370-7506-7a12-a42e-d7defee043f4",
+          "sourceHash": "2a3a28a6c36253cc649a09ba9f77c5996a4be838d9ea245cb645ab181e0fb007",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default {\n  version: 1,\n  name: \"Hold to Become a Giant\",\n  description: \"Hold interact to grow to 1.6 times normal size where space allows. Release it to return to normal size.\",\n  rules: [\n    {\n      id: \"grow-while-interacting\",\n      each: \"player\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"inputInteract\" },\n          op: \"eq\",\n          right: 1\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          playerScale: 1.6,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+        "sourceHash": "2a3a28a6c36253cc649a09ba9f77c5996a4be838d9ea245cb645ab181e0fb007",
+        "programHash": "6418616c009feb9fe1e1a9d572b9324eaab71e0ad550e1124905e8cc6adc4a16",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "JSON checkpoint continuation and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 0,
+            "impulsesApplied": 0,
+            "surfacesCreated": 0
+          },
+          "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+          "engineVersion": "last-light/2.0.0",
+          "ticksSimulated": 4890
+        }
+      }
+    }
+  ]
+}

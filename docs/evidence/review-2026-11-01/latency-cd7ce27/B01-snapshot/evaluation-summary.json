@@ -1,0 +1,162 @@
+{
+  "startedAt": "2026-10-31T19:27:05.658Z",
+  "completedAt": "2026-10-31T19:27:55.881Z",
+  "sampleCount": 1,
+  "sandboxMode": "snapshot",
+  "casesFile": "../../docs/evidence/review-2026-11-01/latency-cd7ce27/cases-B01-snapshot.json",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "records": [
+    {
+      "id": "B01-snapshot",
+      "proposal": "Give the courier moon gravity so jumps float farther.",
+      "heldOut": false,
+      "inputOrigin": "synthetic-practice-evaluation",
+      "originalSuccess": true,
+      "showId": "c0bec58f-838c-4bad-a6bb-2ef04121ec65",
+      "jobId": "7fdda748-fed3-4f32-9e41-6e80ddf22bbb",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/2.0.0",
+      "threadId": "01a1936e-7aea-78d1-ba5e-ec601ec7d415",
+      "createdAt": "2026-10-31T19:27:09.743Z",
+      "completedAt": "2026-10-31T19:27:53.772Z",
+      "elapsedMs": 44029,
+      "sandboxMode": "snapshot",
+      "sandboxTimings": {
+        "mode": "snapshot",
+        "setupMs": 20000,
+        "cacheHit": false,
+        "createMs": 1789,
+        "fallback": false,
+        "installMs": 6786,
+        "snapshotMs": 2308
+      },
+      "phases": [
+        {
+          "at": "2026-10-31T19:27:40.343Z",
+          "phase": "thread-started",
+          "attempt": 1
+        },
+        {
+          "at": "2026-10-31T19:27:44.129Z",
+          "phase": "turn-started",
+          "attempt": 1
+        }
+      ],
+      "usage": {
+        "input_tokens": 10209,
+        "output_tokens": 250,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 10209,
+            "output_tokens": 250,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 81,
+            "cache_write_input_tokens": 10206
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a1936e-7aea-78d1-ba5e-ec601ec7d415",
+          "sourceHash": "31324c66d5679ea10c4a5655b69e7dbb912bc4d0023207548d265dd71130d4a3",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default {\n  version: 1,\n  name: \"Moon Gravity\",\n  description: \"Low gravity lets the courier stay airborne longer and travel farther when jumping while moving.\",\n  rules: [\n    {\n      id: \"moon-gravity\",\n      each: \"player\",\n      on: \"tick\",\n      when: { compare: { left: 1, op: \"eq\", right: 1 } },\n      actions: [\n        { type: \"physics\", target: \"self\", gravityScale: 0.3 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+        "sourceHash": "31324c66d5679ea10c4a5655b69e7dbb912bc4d0023207548d265dd71130d4a3",
+        "programHash": "ea40174427c6bf1b4d930ca7ab5282ef5f5404e5814ded526e37bb5a5314a472",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "JSON checkpoint continuation and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 0,
+            "impulsesApplied": 0,
+            "surfacesCreated": 0
+          },
+          "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+          "engineVersion": "last-light/2.0.0",
+          "ticksSimulated": 4890
+        }
+      }
+    }
+  ]
+}

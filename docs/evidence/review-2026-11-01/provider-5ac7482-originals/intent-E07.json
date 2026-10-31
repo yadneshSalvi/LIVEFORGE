@@ -1,0 +1,55 @@
+{
+  "caseId": "E07",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "An actual landing creates a nearby solid platform",
+      "passed": true,
+      "measurements": {
+        "before": 0,
+        "atLanding": [
+          {
+            "x": 234,
+            "y": 448,
+            "expires": 257,
+            "solid": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Standing still does not create a platform flood",
+      "passed": true,
+      "measurements": {
+        "createdWhileStill": 0,
+        "maximum": 4
+      }
+    },
+    {
+      "name": "The temporary platform expires and repeated landings stay bounded",
+      "passed": true,
+      "measurements": {
+        "maxExpiry": 257,
+        "afterExpiry": 0,
+        "maximum": 4
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b"
+}

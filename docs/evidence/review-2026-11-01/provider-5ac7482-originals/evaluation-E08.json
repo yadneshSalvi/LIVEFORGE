@@ -1,0 +1,158 @@
+{
+  "id": "E08",
+  "proposal": "The faster the courier is running, the stronger their next jump becomes.",
+  "heldOut": false,
+  "category": "arithmetic",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "2b02f78b-2c2c-4e2c-a732-a234450472a9",
+  "jobId": "c0f06033-d937-42a9-a587-a8582426ffee",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a19369-dc16-7401-890a-e4f41e955c00",
+  "createdAt": "2026-10-31T19:21:52.270Z",
+  "completedAt": "2026-10-31T19:22:55.534Z",
+  "elapsedMs": 63264,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 31310,
+    "cacheHit": false,
+    "createMs": 803,
+    "fallback": true,
+    "installMs": 20865,
+    "snapshotMs": 211
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:22:36.942Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:22:43.013Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:22:50.846Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10213,
+    "output_tokens": 461,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10213,
+        "output_tokens": 461,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 224,
+        "cache_write_input_tokens": 10210
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a19369-dc16-7401-890a-e4f41e955c00",
+      "sourceHash": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Running jumps\",\n  description: \"The faster you run, the stronger your next jump becomes, up to 60% stronger than a standing jump.\",\n  rules: [\n    {\n      id: \"speed-strengthens-jumps\",\n      each: \"player\",\n      on: \"tick\",\n      when: { compare: { left: 1, op: \"eq\", right: 1 } },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          jumpStrength: {\n            clamp: {\n              value: { add: [1, { mul: [{ field: \"speed\" }, 0.05] }] },\n              min: 1,\n              max: 1.6\n            }\n          }\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+    "programHash": "e228cac405a4a319c1c9c9723777976e42726e417f497b218d09185e2c095d0f",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

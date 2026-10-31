@@ -1,0 +1,41 @@
+{
+  "caseId": "E08",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "Running speed produces a monotonic, bounded stronger jump",
+      "passed": true,
+      "measurements": [
+        {
+          "speed": 0,
+          "upwardVelocity": 10.92
+        },
+        {
+          "speed": 2,
+          "upwardVelocity": 12.06
+        },
+        {
+          "speed": 4.2,
+          "upwardVelocity": 13.314
+        }
+      ]
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710"
+}

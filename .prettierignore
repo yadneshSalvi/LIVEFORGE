@@ -8,3 +8,7 @@ plans
 package-lock.json
 # Keep single escaped pipes in the hand-checked two-column API table.
 docs/backend.md
+
+# Immutable raw acceptance records; preserve original bytes.
+docs/evidence/review-2026-11-01/provider-5ac7482-originals/
+docs/evidence/review-2026-11-01/latency-cd7ce27/

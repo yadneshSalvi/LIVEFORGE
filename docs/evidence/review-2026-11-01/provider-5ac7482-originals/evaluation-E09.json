@@ -1,0 +1,158 @@
+{
+  "id": "E09",
+  "proposal": "Touching a crate makes it bouncy for three seconds.",
+  "heldOut": false,
+  "category": "touch response",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "7683f545-cd99-47f1-909c-a453a5d01a53",
+  "jobId": "727babf2-e6c1-4da6-a2d6-3a60c70f8ace",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a1936a-bc88-7da2-87f6-0f289a49d059",
+  "createdAt": "2026-10-31T19:22:58.964Z",
+  "completedAt": "2026-10-31T19:23:54.767Z",
+  "elapsedMs": 55803,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 22212,
+    "cacheHit": false,
+    "createMs": 638,
+    "fallback": true,
+    "installMs": 12034,
+    "snapshotMs": 224
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:23:35.467Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:23:38.660Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:23:44.946Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10211,
+    "output_tokens": 283,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10211,
+        "output_tokens": 283,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 104,
+        "cache_write_input_tokens": 10208
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a1936a-bc88-7da2-87f6-0f289a49d059",
+      "sourceHash": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Bouncy Crates\",\n  description: \"Touch a crate to make it bouncy for three seconds.\",\n  rules: [\n    {\n      id: \"crate-touch-bounce\",\n      each: \"prop\",\n      on: \"touch\",\n      when: { compare: { left: 1, op: \"eq\", right: 1 } },\n      actions: [\n        { type: \"material\", target: \"self\", friction: 0.85, bounce: 0.85, lifetime: 180 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+    "programHash": "bab85b1e7ade259b186818e239f81080b45f1c4df674d533d39912b6b298805a",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

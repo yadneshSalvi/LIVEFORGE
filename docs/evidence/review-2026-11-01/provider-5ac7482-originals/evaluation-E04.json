@@ -1,0 +1,158 @@
+{
+  "id": "E04",
+  "proposal": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+  "heldOut": false,
+  "category": "wind",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "4fd7d997-3116-431f-9363-c119265c661a",
+  "jobId": "28aa89a2-75bb-4280-8897-1cca054dc685",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a19366-504e-7723-b570-416d87c3c440",
+  "createdAt": "2026-10-31T19:18:06.948Z",
+  "completedAt": "2026-10-31T19:19:01.212Z",
+  "elapsedMs": 54264,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 25896,
+    "cacheHit": false,
+    "createMs": 637,
+    "fallback": true,
+    "installMs": 15056,
+    "snapshotMs": 205
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:18:45.575Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:18:48.790Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:18:56.020Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10217,
+    "output_tokens": 325,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10217,
+        "output_tokens": 325,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 112,
+        "cache_write_input_tokens": 10214
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a19366-504e-7723-b570-416d87c3c440",
+      "sourceHash": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Lantern Gusts\",\n  description: \"A steady gust pushes every movable crate to the right while it is within 220 world units of a lantern.\",\n  rules: [\n    {\n      id: \"lantern-gust\",\n      each: \"prop\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"distanceToLantern\" },\n          op: \"lte\",\n          right: 220\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          windX: 0.08,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+    "programHash": "0ddd53640a6f23835f48185d4bf26cff0189b03ca12c7177133c382278d3bda0",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

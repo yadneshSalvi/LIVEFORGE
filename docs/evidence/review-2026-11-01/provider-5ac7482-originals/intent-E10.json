@@ -1,0 +1,47 @@
+{
+  "caseId": "E10",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "The shadow supports the courier over the gap",
+      "passed": true,
+      "measurements": {
+        "bridge": {
+          "x": 530,
+          "width": 320,
+          "y": 448
+        },
+        "courier": {
+          "x": 620,
+          "y": 400,
+          "grounded": true
+        }
+      }
+    },
+    {
+      "name": "Moving the crate dissolves its shadow bridge",
+      "passed": true,
+      "measurements": {
+        "remainedAfterMovingTicks": 8,
+        "remains": false
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab"
+}

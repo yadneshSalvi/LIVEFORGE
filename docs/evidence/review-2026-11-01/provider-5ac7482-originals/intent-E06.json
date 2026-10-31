@@ -1,0 +1,42 @@
+{
+  "caseId": "E06",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "A dropped ember rebounds from the floor",
+      "passed": true,
+      "measurements": {
+        "reboundTick": 45
+      }
+    },
+    {
+      "name": "Pickup stops independent motion and preserves the objective",
+      "passed": true,
+      "measurements": {
+        "carried": true,
+        "objectivePresent": true,
+        "velocity": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19"
+}

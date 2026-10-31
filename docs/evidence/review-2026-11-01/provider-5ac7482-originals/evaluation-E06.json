@@ -1,0 +1,158 @@
+{
+  "id": "E06",
+  "proposal": "When the ember is dropped, let it bounce like a rubber ball until picked up again.",
+  "heldOut": false,
+  "category": "ember physics",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "74984e5b-82f1-474c-85eb-e4abee682afc",
+  "jobId": "e054dd43-67f2-4848-8626-585b51dc0683",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a19367-fe3a-79d3-bd6c-38ab796f504d",
+  "createdAt": "2026-10-31T19:19:59.358Z",
+  "completedAt": "2026-10-31T19:20:50.609Z",
+  "elapsedMs": 51251,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 23083,
+    "cacheHit": false,
+    "createMs": 668,
+    "fallback": true,
+    "installMs": 12804,
+    "snapshotMs": 205
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:20:35.643Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:20:38.875Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:20:45.357Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10217,
+    "output_tokens": 321,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10217,
+        "output_tokens": 321,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 106,
+        "cache_write_input_tokens": 10214
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a19367-fe3a-79d3-bd6c-38ab796f504d",
+      "sourceHash": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Rubber Ember\",\n  description: \"The dropped ember bounces like a rubber ball until you pick it up again.\",\n  rules: [\n    {\n      id: \"dropped-ember-bounce\",\n      each: \"ember\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"emberCarried\" },\n          op: \"eq\",\n          right: 0\n        }\n      },\n      actions: [\n        {\n          type: \"material\",\n          target: \"self\",\n          friction: 0.95,\n          bounce: 0.9,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+    "programHash": "5ef73a4a11093393c284c2409d78c1db7c34f771511510da24362f75cbf95bed",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

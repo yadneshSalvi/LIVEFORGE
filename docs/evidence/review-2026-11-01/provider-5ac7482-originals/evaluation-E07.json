@@ -1,0 +1,158 @@
+{
+  "id": "E07",
+  "proposal": "Every time the courier lands, create a temporary stepping platform beside them.",
+  "heldOut": false,
+  "category": "temporary creation",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "2ec2f25d-67d2-4af6-b368-8b435e4e73a8",
+  "jobId": "288bcf26-6590-4232-8af3-c806091c3fc9",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a19368-e297-7e73-95bd-1ef68336b676",
+  "createdAt": "2026-10-31T19:20:54.141Z",
+  "completedAt": "2026-10-31T19:21:48.760Z",
+  "elapsedMs": 54619,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 25582,
+    "cacheHit": false,
+    "createMs": 667,
+    "fallback": true,
+    "installMs": 14520,
+    "snapshotMs": 204
+  },
+  "phases": [
+    {
+      "at": "2026-10-31T19:21:34.115Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:21:37.343Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-10-31T19:21:44.075Z",
+      "phase": "source-returned",
+      "attempt": 1
+    }
+  ],
+  "usage": {
+    "input_tokens": 10213,
+    "output_tokens": 301,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10213,
+        "output_tokens": 301,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 85,
+        "cache_write_input_tokens": 10210
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a19368-e297-7e73-95bd-1ef68336b676",
+      "sourceHash": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 29
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Landing Steps\",\n  description: \"Each landing creates a solid stepping platform beside the courier to the right. Each platform lasts three seconds, with up to eight present at once.\",\n  rules: [\n    {\n      id: \"landing-step\",\n      each: \"player\",\n      on: \"land\",\n      when: { compare: { left: 1, op: \"eq\", right: 1 } },\n      actions: [\n        {\n          type: \"spawnPlatform\",\n          offsetX: 64,\n          offsetY: 0,\n          width: 80,\n          lifetime: 180,\n          solid: true,\n          maxCount: 8\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+    "programHash": "5bad56a1a27ceb8d907ef075b5a26d5d53caf9261a03839f40337f5bf0d37e96",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 29
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    }
+  }
+}

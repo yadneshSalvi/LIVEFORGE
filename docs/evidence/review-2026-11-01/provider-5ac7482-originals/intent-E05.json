@@ -1,0 +1,59 @@
+{
+  "caseId": "E05",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "Nearby motion is slower than the equal-speed control",
+      "passed": true,
+      "measurements": {
+        "baseline": {
+          "near": 12.203125,
+          "far": 12.203125
+        },
+        "changed": {
+          "near": 7.656088913245526,
+          "far": 12.203125
+        }
+      }
+    },
+    {
+      "name": "Far motion stays normal",
+      "passed": true,
+      "measurements": {
+        "baseline": {
+          "near": 12.203125,
+          "far": 12.203125
+        },
+        "changed": {
+          "near": 7.656088913245526,
+          "far": 12.203125
+        }
+      }
+    },
+    {
+      "name": "Moving out of range restores normal progression",
+      "passed": true,
+      "measurements": {
+        "law": 12.203125,
+        "control": 12.203125
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467"
+}

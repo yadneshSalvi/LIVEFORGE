@@ -1,0 +1,104 @@
+{
+  "sourceCommit": "cd7ce2793ddef6ef0be9af26d4aa9460a29b5e99",
+  "engineVersion": "last-light/2.0.0",
+  "protocol": {
+    "declaredAt": "2026-10-31T19:09:39.069115+00:00",
+    "purpose": "Paired real-provider latency comparison, declared before measurements. Keep all attempts and failed jobs.",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "medium",
+    "sdkVersion": "0.166.0",
+    "engineVersion": "last-light/2.0.0",
+    "sourceCommit": "Must be one identical frozen source commit, recorded in the actual results.",
+    "concurrency": 1,
+    "sequence": [
+      {
+        "id": "B01-cold",
+        "pair": 1,
+        "originalCaseId": "E01",
+        "text": "Give the courier moon gravity so jumps float farther.",
+        "sandboxMode": "cold"
+      },
+      {
+        "id": "B01-snapshot",
+        "pair": 1,
+        "originalCaseId": "E01",
+        "text": "Give the courier moon gravity so jumps float farther.",
+        "sandboxMode": "snapshot"
+      },
+      {
+        "id": "B02-snapshot",
+        "pair": 2,
+        "originalCaseId": "E02",
+        "text": "Let the courier jump a second time in midair before landing.",
+        "sandboxMode": "snapshot"
+      },
+      {
+        "id": "B02-cold",
+        "pair": 2,
+        "originalCaseId": "E02",
+        "text": "Let the courier jump a second time in midair before landing.",
+        "sandboxMode": "cold"
+      },
+      {
+        "id": "B03-cold",
+        "pair": 3,
+        "originalCaseId": "E03",
+        "text": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+        "sandboxMode": "cold"
+      },
+      {
+        "id": "B03-snapshot",
+        "pair": 3,
+        "originalCaseId": "E03",
+        "text": "Holding interact makes the courier a giant; releasing it returns them to normal size.",
+        "sandboxMode": "snapshot"
+      },
+      {
+        "id": "B04-snapshot",
+        "pair": 4,
+        "originalCaseId": "E04",
+        "text": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+        "sandboxMode": "snapshot"
+      },
+      {
+        "id": "B04-cold",
+        "pair": 4,
+        "originalCaseId": "E04",
+        "text": "A gust of wind pushes every movable crate to the right while it is near a lantern.",
+        "sandboxMode": "cold"
+      },
+      {
+        "id": "B05-cold",
+        "pair": 5,
+        "originalCaseId": "E10",
+        "text": "A still prop\u2019s shadow becomes a solid bridge.",
+        "sandboxMode": "cold"
+      },
+      {
+        "id": "B05-snapshot",
+        "pair": 5,
+        "originalCaseId": "E10",
+        "text": "A still prop\u2019s shadow becomes a solid bridge.",
+        "sandboxMode": "snapshot"
+      }
+    ],
+    "report": [
+      "Median queue-to-verified duration per mode among verified runs, with failed/cancelled counts separately stated",
+      "Per-pair elapsed differences and all raw records",
+      "Sandbox preparation/install, Codex generation and verification stage timings when available",
+      "Snapshot creation time reported separately; never counted as zero-cost work",
+      "No comparisons against historical engine1 timings presented as controlled evidence"
+    ],
+    "criterion": "At least five real runs per mode; claim lower median only if measured. Cache hits or successful compilation alone are not a latency result."
+  },
+  "createdAt": "2026-10-31T19:26:18.540795+00:00",
+  "sourceHashes": {
+    "src/server/sandbox-runtime.ts": "c6c597c329e6e34d6a5d079b2347186bf59b7401e96398125d23c181b6107135",
+    "src/server/generation.ts": "f0da1df4f40af1853202516e1e6dc6b36113fe62786da20624ba5c2ee8edca44",
+    "src/game/contracts.ts": "4a38be369aef78a8e32d30eec579781631f9afbe02981f8316fbe5734eb2b964",
+    "src/game/core.ts": "9271aa7f877620a06758eac3d589cb8e2e0c34510ef2c8f5a66291e31d0b13a9",
+    "src/game/rules.ts": "d49cec87e1307a7af76107cb7b377ad49103bf43c81d08dd43c5da6dd4f05759",
+    "src/game/runtime.ts": "88a554824026db8559628009b6bf54ca5cf19e4f7ac073c43268ce8af9b5b7ec",
+    "src/game/verifier.ts": "7c6e616cad79998e3eab945a34c4f698e6006ce625505c747b0fbe5270901ab5"
+  }
+}

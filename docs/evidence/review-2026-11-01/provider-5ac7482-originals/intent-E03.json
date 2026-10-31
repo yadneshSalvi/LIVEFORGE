@@ -1,0 +1,56 @@
+{
+  "caseId": "E03",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "Holding interact enlarges the courier",
+      "passed": true,
+      "measurements": {
+        "base": {
+          "w": 25,
+          "h": 48
+        },
+        "held": {
+          "w": 40,
+          "h": 76.80000000000001
+        }
+      }
+    },
+    {
+      "name": "Release restores ordinary dimensions",
+      "passed": true,
+      "measurements": {
+        "w": 25,
+        "h": 48
+      }
+    },
+    {
+      "name": "Growth cannot intersect an overhead solid",
+      "passed": true,
+      "measurements": {
+        "player": {
+          "y": 462.48,
+          "h": 48
+        },
+        "ceilingY": 448
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb"
+}

@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "5ac7482fa346f5221416af8e2f1bb85d74b1f5b2",
+  "engineVersion": "last-light/2.0.0",
+  "sandboxMode": "snapshot",
+  "purpose": "All ten predeclared original requests, one frozen runtime, every result retained. Synthetic evaluation inputs; real provider calls. No real viewers claimed.",
+  "createdAt": "2026-10-31T19:15:32.454653+00:00",
+  "sha256": {
+    "src/game/contracts.ts": "4a38be369aef78a8e32d30eec579781631f9afbe02981f8316fbe5734eb2b964",
+    "src/game/core.ts": "9271aa7f877620a06758eac3d589cb8e2e0c34510ef2c8f5a66291e31d0b13a9",
+    "src/game/rules.ts": "d49cec87e1307a7af76107cb7b377ad49103bf43c81d08dd43c5da6dd4f05759",
+    "src/game/runtime.ts": "88a554824026db8559628009b6bf54ca5cf19e4f7ac073c43268ce8af9b5b7ec",
+    "src/game/verifier.ts": "7c6e616cad79998e3eab945a34c4f698e6006ce625505c747b0fbe5270901ab5",
+    "src/server/generation.ts": "71b8af4075478b0c3fd2e136f0992d1b11f30bf284013dbb59973014f0678ffb",
+    "src/server/composition.ts": "67212606d61fb7ed2ae6fb572cee287e07fea249a3498cd2c517cb4f124f8602",
+    "src/server/sandbox-runtime.ts": "25dfe87b8e04ab91c411df5a0a71ccc9ac30299a88bbde33fe3d4bd666a9528d",
+    "scripts/generation-evaluate.ts": "b5bb2e4a358dd718024b3996c9f9cfd84f34a95f06168e801867b63dcd1b44bf",
+    "docs/evidence/review-2026-11-01/evaluation-proposals.json": "e09145217677a4101594533dfd513d20cb15b4eb4203be8727ee166c534fe620"
+  }
+}

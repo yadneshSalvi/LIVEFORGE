@@ -1,0 +1,42 @@
+[
+  {
+    "id": "B01-cold",
+    "exitCode": 0
+  },
+  {
+    "id": "B01-snapshot",
+    "exitCode": 0
+  },
+  {
+    "id": "B02-snapshot",
+    "exitCode": 0
+  },
+  {
+    "id": "B02-cold",
+    "exitCode": 0
+  },
+  {
+    "id": "B03-cold",
+    "exitCode": 0
+  },
+  {
+    "id": "B03-snapshot",
+    "exitCode": 0
+  },
+  {
+    "id": "B04-snapshot",
+    "exitCode": 0
+  },
+  {
+    "id": "B04-cold",
+    "exitCode": 0
+  },
+  {
+    "id": "B05-cold",
+    "exitCode": 0
+  },
+  {
+    "id": "B05-snapshot",
+    "exitCode": 0
+  }
+]

@@ -1,0 +1,96 @@
+{
+  "format": "liveforge.browser-intent-observations/1",
+  "coreCommit": "5ac7482fa346f5221416af8e2f1bb85d74b1f5b2",
+  "records": [
+    {
+      "caseId": "E01",
+      "sourceHash": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+      "syntheticSetup": "Jump at tick 30, advance 60, then 180 ticks.",
+      "observed": "At tick 91 baseline had landed at y400 while candidate was airborne at y\u221223.1, vy\u22122.62. Candidate later landed; observed minimum y\u221245.56. Renderer clipping discovered and fixed without changing simulation source.",
+      "screenshot": "e01-moon-gravity-camera-fixed.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E02",
+      "sourceHash": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+      "syntheticSetup": "Jump, advance 30 ticks, request a second jump, then attempt a third and land.",
+      "observed": "Second press changed candidate vy to \u221210.92 versus baseline +3.96 and used one air jump. Third press did not reset velocity. Landing cleared air-jump usage.",
+      "screenshot": "e02-second-jump.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E03",
+      "sourceHash": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+      "syntheticSetup": "Hold/release interact; separately arrange courier beneath the existing foundry ceiling.",
+      "observed": "Holding grew 25\u00d748 to 40\u00d776.8. Release restored 25\u00d748. Ceiling arrangement stayed at 25\u00d748 instead of intersecting protected geometry.",
+      "screenshot": "e03-giant-held.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E04",
+      "sourceHash": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+      "syntheticSetup": "Place crates near lamps at x350 and x1060, with a distant crate at x2400; advance 60 ticks.",
+      "observed": "Near crates moved +18.24 each; distant crate remained at x2400. Baseline crates stayed still.",
+      "screenshot": "e04-nearby-wind.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E05",
+      "sourceHash": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+      "syntheticSetup": "Give near and far crates equal vx4; advance 30 ticks; move the near crate out of radius and run actual worker playback.",
+      "observed": "Near candidate displacement was lower with timeScale0.5. Far crate matched baseline at timeScale1. After moving away, timeScale returned to1 and motion matched baseline.",
+      "screenshot": "e05-nearby-slow-motion.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E06",
+      "sourceHash": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+      "syntheticSetup": "Drop ember, advance to floor contact, inspect a single rebound frame, then pick up near courier.",
+      "observed": "At tick64, grounded baseline ember had vy0 while candidate rebound had vy\u22124. Pickup restored carried state and preserved the objective.",
+      "screenshot": "e06-ember-upward-rebound.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E07",
+      "sourceHash": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+      "syntheticSetup": "Jump and land; inspect after standing and after lifetime expiry. Separately arrange courier at x500,y250 above a platform edge and let actual workers land.",
+      "observed": "One surface appeared on landing, standing did not flood surfaces, and the surface expired by tick301. In the edge arrangement at tick70, the candidate visibly extended the starting platform while baseline had none.",
+      "screenshot": "e07-landing-platform-edge.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E08",
+      "sourceHash": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+      "syntheticSetup": "Use explicit equal-state fixtures with initial horizontal velocities0,2,4.2 and request one jump.",
+      "observed": "Candidate jump vy was \u221210.92,\u221212.06,\u221213.31 respectively; baseline stayed\u221210.92. Height gain was monotonic and bounded.",
+      "screenshot": "e08-speed-jump.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E09",
+      "sourceHash": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+      "syntheticSetup": "Walk into a nearby crate, then move courier away and advance180ticks.",
+      "observed": "Touch enabled candidate bounce0.85 while baseline remained0. After waiting away, bounce and temporary modifier returned to0. Exact three-second boundary is covered separately by the independent probe.",
+      "screenshot": "e09-touch-bounce.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    },
+    {
+      "caseId": "E10",
+      "sourceHash": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab",
+      "syntheticSetup": "Allow props to settle; place courier above a real generated shadow and let workers run. Then nudge the owning prop.",
+      "observed": "Candidate landed at y400 while baseline fell to y496.8. Nudging the owner removed its bridge: surfaces fell from3 to2 and candidate began falling.",
+      "screenshot": "e10-shadow-support.jpg",
+      "browser": "Codex in-app browser",
+      "environment": "local ignored QA playground"
+    }
+  ]
+}

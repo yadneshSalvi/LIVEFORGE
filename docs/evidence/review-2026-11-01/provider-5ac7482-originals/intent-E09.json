@@ -1,0 +1,40 @@
+{
+  "caseId": "E09",
+  "engineVersion": "last-light/2.0.0",
+  "simulationIdentity": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+  "verifierPassed": true,
+  "checks": [
+    {
+      "name": "New contact makes the crate bouncy",
+      "passed": true,
+      "measurements": {
+        "touchedAt": 41,
+        "bounceAtTouch": 0.85
+      }
+    },
+    {
+      "name": "Bounce lasts three seconds, then normal material returns",
+      "passed": true,
+      "measurements": {
+        "ticksPerSecond": 60,
+        "bounceAt179": 0.85,
+        "bounceAt181": 0
+      }
+    },
+    {
+      "name": "Checkpoint replay is deterministic",
+      "passed": true,
+      "measurements": {
+        "replayTicks": 90
+      }
+    },
+    {
+      "name": "Rollback restores the exact pre-activation checkpoint",
+      "passed": true,
+      "measurements": null
+    }
+  ],
+  "automatedIntentPassed": true,
+  "browserObserved": false,
+  "sourceHash": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3"
+}
