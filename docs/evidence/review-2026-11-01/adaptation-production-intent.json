@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-31T20:18:08.154Z",
+  "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+  "proposal": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+  "purpose": "Independent intent measurements on exact real generated source; deterministic simulation, not a browser or viewer count",
+  "measurements": {
+    "idleScale": 1,
+    "held": [
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333
+    ],
+    "releasedScale": 1,
+    "baseline": {
+      "height": 129.7199999999999,
+      "airtime": 47,
+      "landed": true
+    },
+    "ordinary": {
+      "height": 129.7199999999999,
+      "airtime": 47,
+      "landed": true
+    },
+    "heldFlight": {
+      "height": 400.43999999999977,
+      "airtime": 142,
+      "landed": true
+    }
+  },
+  "checks": {
+    "heldNearOneThird": true,
+    "releaseRestoresNormal": true,
+    "unheldJumpMatchesBaseline": true,
+    "heldJumpHigherAndLonger": true,
+    "landsAgain": true
+  },
+  "passed": true
+}

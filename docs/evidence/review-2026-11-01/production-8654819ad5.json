@@ -1,0 +1,294 @@
+{
+  "format": "liveforge.evidence/2",
+  "exportedAt": "2026-10-31T20:16:19.570Z",
+  "mode": "practice",
+  "proposal": {
+    "id": "P2",
+    "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+    "author": "Host",
+    "origin": "practice",
+    "createdAt": "2026-10-31T20:14:45.525Z",
+    "ancestry": {
+      "kind": "adaptation",
+      "sourceJobId": "6b58b399-4b3c-ee2f-b4db-732ba7104a0a",
+      "originalText": "Make gravity follow the pitch of my microphone.",
+      "originalAuthor": "Host",
+      "adaptationSource": "host-written",
+      "originalProposalId": "P1"
+    }
+  },
+  "generation": {
+    "id": "85aacbb4-4e98-bf17-1041-30ebe597c8d0",
+    "model": "gpt-6.1-sol",
+    "threadId": "01a19399-d35d-7a73-95c5-6a5224bcea4c",
+    "createdAt": "2026-10-31T20:14:51.819Z",
+    "updatedAt": "2026-10-31T20:15:11.112Z",
+    "attempt": 1,
+    "usage": {
+      "input_tokens": 10217,
+      "output_tokens": 327,
+      "cached_input_tokens": 0
+    },
+    "reused": false,
+    "phases": [
+      {
+        "at": "2026-10-31T20:14:59.443Z",
+        "phase": "thread-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-10-31T20:15:04.457Z",
+        "phase": "turn-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-10-31T20:15:09.111Z",
+        "phase": "source-returned",
+        "attempt": 1
+      }
+    ],
+    "sandboxTimings": {
+      "mode": "snapshot",
+      "setupMs": 1489,
+      "cacheHit": true,
+      "createMs": 1111,
+      "fallback": false,
+      "installMs": 0,
+      "snapshotMs": 0
+    }
+  },
+  "candidate": {
+    "id": "dd584634-05f2-4668-bfd0-d1180e401c12",
+    "engineVersion": "last-light/2.0.0",
+    "source": "export default {\n  version: 1,\n  name: \"Hold E for Light Gravity\",\n  description: \"Hold E to reduce your gravity to one-third of normal. Release E to restore normal gravity.\",\n  rules: [\n    {\n      id: \"held-light-gravity\",\n      each: \"player\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"inputInteract\" },\n          op: \"eq\",\n          right: 1\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          gravityScale: 0.3333333333333333,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+    "program": {
+      "name": "Hold E for Light Gravity",
+      "rules": [
+        {
+          "id": "held-light-gravity",
+          "on": "tick",
+          "each": "player",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": {
+                "field": "inputInteract"
+              },
+              "right": 1
+            }
+          },
+          "actions": [
+            {
+              "type": "physics",
+              "target": "self",
+              "lifetime": 1,
+              "gravityScale": 0.3333333333333333
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "description": "Hold E to reduce your gravity to one-third of normal. Release E to restore normal gravity."
+    },
+    "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 4890
+    },
+    "provenance": {
+      "kind": "runtime-generation",
+      "model": "gpt-6.1-sol",
+      "threadId": "01a19399-d35d-7a73-95c5-6a5224bcea4c",
+      "generatedAt": "2026-10-31T20:15:10.558Z"
+    },
+    "composition": {
+      "mode": "append",
+      "members": [
+        {
+          "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+          "candidateId": "dd584634-05f2-4668-bfd0-d1180e401c12",
+          "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3"
+        }
+      ],
+      "program": {
+        "name": "Hold E for Light Gravity",
+        "rules": [
+          {
+            "id": "held-light-gravity",
+            "on": "tick",
+            "each": "player",
+            "when": {
+              "compare": {
+                "op": "eq",
+                "left": {
+                  "field": "inputInteract"
+                },
+                "right": 1
+              }
+            },
+            "actions": [
+              {
+                "type": "physics",
+                "target": "self",
+                "lifetime": 1,
+                "gravityScale": 0.3333333333333333
+              }
+            ]
+          }
+        ],
+        "version": 1,
+        "description": "Hold E to reduce your gravity to one-third of normal. Release E to restore normal gravity."
+      },
+      "baseMembers": [],
+      "contextHash": "c74411609d9fa43a25dbddd8546334e8cb56f11dd6a9404d6043474b8c8de0bf",
+      "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3",
+      "artifactHash": "198e834fdb0115a23a3131ba97d31556476eaee30ec2a22ebc504869e7991bf9",
+      "baseRevision": 0,
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 4890
+      },
+      "engineVersion": "last-light/2.0.0",
+      "compositionHash": "cfa1b4958fcd5f6ac7dae05d6e4267b3841d628a64f46414b0d6bafffd3b5951"
+    },
+    "approvedSourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+    "approvedProgramHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3",
+    "approvedPreviewHash": "b1e885219c9c88a333a488b12d5c1e0ad0a02542ec15505711ccd51a5619a8e6",
+    "approvedCompositionHash": "cfa1b4958fcd5f6ac7dae05d6e4267b3841d628a64f46414b0d6bafffd3b5951",
+    "approvedContextHash": "c74411609d9fa43a25dbddd8546334e8cb56f11dd6a9404d6043474b8c8de0bf",
+    "approvedArtifactHash": "198e834fdb0115a23a3131ba97d31556476eaee30ec2a22ebc504869e7991bf9",
+    "approvedAt": "2026-10-31T20:16:04.436Z",
+    "activatedAt": "2026-10-31T20:16:10.143Z"
+  },
+  "events": [
+    {
+      "at": "2026-10-31T20:14:45.525Z",
+      "id": "1ad09e03-6303-4e31-9eab-ab5d7bf41a6a",
+      "type": "proposal.received",
+      "message": "The host reviewed a separate alternative with the original contributor’s credit.",
+      "proposalId": "P2"
+    },
+    {
+      "at": "2026-10-31T20:14:45.525Z",
+      "id": "fe6451d6-0ba9-4e13-9648-11377016c1ee",
+      "type": "proposal.adapted",
+      "message": "The host saved a reviewed alternative to the original contributor's idea.",
+      "proposalId": "P2"
+    },
+    {
+      "at": "2026-10-31T20:14:51.819Z",
+      "id": "16135949-df5e-442a-83d3-a84e7a58c8b0",
+      "type": "generation.queued",
+      "message": "The selected proposal is queued for Codex.",
+      "proposalId": "P2"
+    },
+    {
+      "at": "2026-10-31T20:15:11.112Z",
+      "id": "8b41f9e8-99f7-44b3-83c9-be26a8c32987",
+      "type": "candidate.verified",
+      "message": "Generated source passed the trusted game verifier.",
+      "proposalId": "P2",
+      "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+      "candidateId": "dd584634-05f2-4668-bfd0-d1180e401c12",
+      "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3"
+    },
+    {
+      "at": "2026-10-31T20:16:04.436Z",
+      "id": "2e023980-cb49-4d57-b9be-5ea3d3426b8d",
+      "type": "candidate.approved",
+      "message": "The host approved the exact source, retained combination, and preview.",
+      "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+      "candidateId": "dd584634-05f2-4668-bfd0-d1180e401c12",
+      "previewHash": "b1e885219c9c88a333a488b12d5c1e0ad0a02542ec15505711ccd51a5619a8e6",
+      "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3"
+    },
+    {
+      "at": "2026-10-31T20:16:10.143Z",
+      "id": "fe8fc3bc-8d65-4b36-beea-d5e709241f86",
+      "type": "candidate.activated",
+      "message": "Hold E for Light Gravity entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+      "candidateId": "dd584634-05f2-4668-bfd0-d1180e401c12",
+      "programHash": "0eca2d76e8ead5657e486be954c1fafbfb8b70fd9a8f7b799af87c67c61f6cc3"
+    }
+  ]
+}

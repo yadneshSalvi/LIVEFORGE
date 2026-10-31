@@ -1,5 +1,11 @@
 # Release verification
 
+## Current release: explicit alternatives — 1 November 2026
+
+Canonical app: https://liveforge-iota.vercel.app. Deployment `dpl_8MZL2kezSB8rxFMhCTGnnuRsAjYk`; deployed source `5fe10fbcb441180bdefc719fb9cd83b4bdec0f90`; runtime source `e02c25efb838a925b92002dcc940e438c76502fc`. Typecheck, **357 tests in 34 files**, full formatting, diff checks and an isolated optimized build passed. Vercel’s remote build completed 14 static tasks. No generation prompt or simulation/compiler changes were made in this follow-up.
+
+The [adaptation acceptance record](evidence/review-2026-11-01/adaptation-followup.md) preserves the original real refusal, the explicitly synthetic local UI checks, and a separate successful real production alternative. Its exact source was previewed, approved, activated, exported, and independently checked for held gravity, release restoration and provenance. Anonymous access controls and the public credit/privacy boundary passed. Renewed second-account OAuth/quota, optional chat replies/moderation and actual OBS broadcast remain unverified. The sections below retain historical checkpoints.
+
 ## Engine 2 deployed review release — 1 November 2026
 
 Canonical app: https://liveforge-iota.vercel.app. Deployment: `dpl_GhnWJQHEWLHBgXjw4S6yBWfggQfa`; deployed source: `2a7e01ac223270620bb29caead990ec0b8b87847`. Runtime source `8a4683f` passed 287 tests in 32 files, typecheck, format, diff and isolated build; the final descendant adds only an evidence record. Vercel's remote build also passed 14 static tasks.

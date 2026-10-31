@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-31T20:14:37.872241+00:00",
+  "sourceCommit": "5fe10fb",
+  "runtimeCommit": "e02c25efb838a925b92002dcc940e438c76502fc",
+  "deploymentId": "dpl_8MZL2kezSB8rxFMhCTGnnuRsAjYk",
+  "url": "https://liveforge-iota.vercel.app",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "cacheControl": "public, max-age=0, must-revalidate"
+    },
+    {
+      "path": "/api/status",
+      "status": 200,
+      "cacheControl": "no-store",
+      "response": {
+        "service": "LIVEFORGE",
+        "storage": "postgres",
+        "generation": {
+          "configured": true,
+          "allowed": false,
+          "authorization": "Connect Twitch for fresh generation, or use a labeled previously generated law.",
+          "quota": null,
+          "provider": "official-codex-sdk-in-vercel-sandbox",
+          "model": "gpt-6.1-sol"
+        },
+        "twitch": {
+          "configured": true,
+          "transport": "host-browser-eventsub-websocket",
+          "chatRepliesAuthorized": false
+        }
+      }
+    },
+    {
+      "path": "/api/shows/current",
+      "status": 401,
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "/api/library",
+      "status": 401,
+      "cacheControl": "no-store"
+    }
+  ]
+}

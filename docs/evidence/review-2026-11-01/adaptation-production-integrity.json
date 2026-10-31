@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "5fe10fbcb441180bdefc719fb9cd83b4bdec0f90",
+  "deploymentId": "dpl_8MZL2kezSB8rxFMhCTGnnuRsAjYk",
+  "candidateSourceHash": "8654819ad5d79ca2fa24e7a4ff9a6d66bffadd800a9321954eae6c474599a60d",
+  "approvedAt": "2026-10-31T20:16:04.436Z",
+  "activatedAt": "2026-10-31T20:16:10.143Z",
+  "checks": {
+    "approvedSourceMatches": true,
+    "approvedProgramMatches": true,
+    "approvedArtifactMatches": true,
+    "approvedCompositionMatches": true,
+    "approvedContextMatches": true,
+    "approvedBeforeActivated": true,
+    "hostWrittenAncestry": true,
+    "separateOriginalProposal": true,
+    "freshGeneration": true
+  }
+}

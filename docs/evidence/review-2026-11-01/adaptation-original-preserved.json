@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-31T20:16:51.899Z",
+  "showId": "fb95f1f3-29be-4100-940c-2ff5b0ec0d3f",
+  "checks": {
+    "originalTextUnchanged": true,
+    "originalJobStillFailed": true,
+    "originalModelSuggestionStillAbsent": true,
+    "originalJobLinksDistinctAlternative": true,
+    "exactlyTwoProviderJobs": true
+  },
+  "originalProposal": {
+    "id": "P1",
+    "text": "Make gravity follow the pitch of my microphone."
+  },
+  "originalJob": {
+    "id": "6b58b399-4b3c-ee2f-b4db-732ba7104a0a",
+    "status": "failed",
+    "adaptationProposalId": "P2",
+    "updatedAt": "2026-10-31T19:50:20.090Z"
+  },
+  "latestJob": {
+    "id": "85aacbb4-4e98-bf17-1041-30ebe597c8d0",
+    "attempt": 1
+  }
+}
