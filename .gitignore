@@ -1,0 +1,26 @@
+# Local strategy and credentials
+/plans/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies, builds, caches, and local tools
+node_modules/
+.next/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+.turbo/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+
+# Runtime evidence may contain chat or credentials; export sanitized evidence explicitly
+/.local/
+/artifacts/private/
