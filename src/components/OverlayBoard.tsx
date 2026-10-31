@@ -134,6 +134,22 @@ export function OverlayBoard({
               <span>elapsed · real generation job</span>
             </p>
           )}
+          {view?.working && view.milestones.length > 0 && (
+            <ol
+              className={styles.phaseEvents}
+              aria-label="Recorded generation events"
+            >
+              {view.milestones.map((milestone) => (
+                <li key={milestone.key}>
+                  <Check size={13} />
+                  <span>{milestone.label}</span>
+                  <time dateTime={milestone.at}>
+                    +{overlayDuration(milestone.seconds)}
+                  </time>
+                </li>
+              ))}
+            </ol>
+          )}
           {show?.generation?.status === "ready" && show.phase === "preview" && (
             <p className={styles.phaseDetail}>
               The live world waits for an exact-version preview and approval.

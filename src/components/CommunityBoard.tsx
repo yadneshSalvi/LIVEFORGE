@@ -67,20 +67,19 @@ export function CommunityBoard({ showId }: { showId: string }) {
             {error}
           </div>
         )}
-        {show?.active && (
-          <div className="notice notice-success">
-            <Sparkles size={20} />
-            <div>
-              <strong>Now in the world: {show.active.name}</strong>
-              <p>
-                {ruleDescription(
-                  show.active.description,
-                  show.active.sourceHash,
-                )}{" "}
-                · {ruleCredit(show.activeLaws?.at(-1) || show.active)}
-              </p>
+        {(show?.activeLaws || (show?.active ? [show.active] : [])).map(
+          (law) => (
+            <div className="notice notice-success" key={law.sourceHash}>
+              <Sparkles size={20} />
+              <div>
+                <strong>Now in the world: {law.name}</strong>
+                <p>
+                  {ruleDescription(law.description, law.sourceHash)} ·{" "}
+                  {ruleCredit(law)}
+                </p>
+              </div>
             </div>
-          </div>
+          ),
         )}
         {show && show.proposals.length ? (
           <div className="community-grid">
@@ -124,16 +123,18 @@ export function CommunityBoard({ showId }: { showId: string }) {
             <h3>The forge is open.</h3>
             <p>
               {show
-                ? "The next idea could be yours. Send !forge in the connected Twitch chat."
+                ? show.mode === "practice"
+                  ? "The host is collecting practice ideas."
+                  : "The next idea could be yours. Send !forge in the connected Twitch chat."
                 : "Opening this community’s board…"}
             </p>
           </div>
         )}
         <p className="community-notice">
-          One current support choice per account, with no paid priority. The
-          creator chooses what enters the game. Every candidate is checked and
-          previewed before approval. Support counts are contributions, not
-          viewer counts.
+          One current support choice per account each round, with no paid
+          priority. The creator chooses what enters the game. Every candidate is
+          checked and previewed before approval. Support counts are
+          contributions, not viewer counts.
         </p>
       </main>
     </div>

@@ -1,4 +1,5 @@
 import type { PublicShowState } from "@/server/contracts";
+import { generationMilestones } from "./generation-progress";
 
 const PHASES = {
   queued: "An idea is on its way",
@@ -21,6 +22,7 @@ export function overlayView(show: PublicShowState, now = Date.now()) {
     .slice(0, 3);
   const maxVotes = Math.max(1, ...ranked.map((proposal) => proposal.votes));
   const job = show.generation;
+  const milestones = job ? generationMilestones(job) : [];
   const working = Boolean(
     job &&
     ["queued", "starting", "generating", "verifying"].includes(job.status),
@@ -55,10 +57,13 @@ export function overlayView(show: PublicShowState, now = Date.now()) {
     working,
     elapsedSeconds,
     moment,
+    milestones,
     phase: job
       ? show.phase === "live" && job.status === "ready"
         ? "A community law is live"
-        : PHASES[job.status]
+        : job.status === "generating" && milestones.length
+          ? milestones.at(-1)!.label
+          : PHASES[job.status]
       : show.votingOpen
         ? "The next idea could be yours"
         : "The creator is choosing",

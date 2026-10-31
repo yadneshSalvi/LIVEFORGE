@@ -13,6 +13,33 @@
   color: #f2eee2;
   overflow: hidden;
 }
+.phaseEvents {
+  display: grid;
+  gap: 9px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #b9c9be;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.phaseEvents li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.phaseEvents svg {
+  flex: 0 0 auto;
+  color: #b9f8cc;
+}
+.phaseEvents span {
+  flex: 1;
+}
+.phaseEvents time {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
 .background {
   background:
     radial-gradient(ellipse at 27% 78%, #34504c 0, transparent 47%),

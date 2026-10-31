@@ -12,7 +12,7 @@ import {
 import { AppHeader } from "./AppHeader";
 import { EvidencePanel, downloadEvidence } from "./EvidencePanel";
 import { api, ApiError, errorMessage, shortHash } from "@/lib/api";
-import { ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import type {
   Candidate,
   HostShowResponse,
@@ -50,8 +50,9 @@ export function Archive() {
             <p className="eyebrow">SMALL IDEAS. LASTING POSSIBILITIES.</p>
             <h1>The archive.</h1>
             <p>
-              The laws your community imagined, with the story of how they
-              became real.
+              This show’s laws and the story of how they became real. Save an
+              approved law from the studio to keep it in your private Law
+              library.
             </p>
           </div>
           <Link className="button button-outline" href="/studio">
@@ -90,8 +91,6 @@ export function Archive() {
                 const proposal = show.proposals.find(
                   (p) => p.id === candidate.proposalId,
                 );
-                const reused =
-                  candidate.provenance?.kind === "reused-generation";
                 return (
                   <article className="archive-card" key={candidate.id}>
                     <div className="archive-card-art">
@@ -123,11 +122,9 @@ export function Archive() {
                           {(proposal?.author || "H")[0]}
                         </span>
                         {ruleCredit(proposal)} ·{" "}
-                        {reused
-                          ? "reused generation"
-                          : proposal?.origin === "twitch"
-                            ? "Twitch idea"
-                            : "practice idea"}
+                        {proposalOrigin(
+                          proposal?.origin || "practice",
+                        ).toLowerCase()}
                       </span>
                       <div className="archive-card-footer">
                         <span className="mono muted" style={{ fontSize: 9 }}>

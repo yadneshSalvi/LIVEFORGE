@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Code2, Download, FileCheck2, GitBranch } from "lucide-react";
 import { Modal } from "./Modal";
 import { VerificationChecks } from "./CandidatePreview";
@@ -11,7 +11,7 @@ export function downloadEvidence(show: ShowState, candidate: Candidate) {
   );
   const job = show.jobs.find((item) => item.id === candidate.jobId);
   const bundle = {
-    format: "liveforge.evidence/1",
+    format: "liveforge.evidence/2",
     exportedAt: new Date().toISOString(),
     mode: show.mode,
     proposal: proposal
@@ -21,6 +21,7 @@ export function downloadEvidence(show: ShowState, candidate: Candidate) {
           author: proposal.author,
           origin: proposal.origin,
           createdAt: proposal.createdAt,
+          ancestry: proposal.ancestry,
         }
       : null,
     generation: job
@@ -32,22 +33,36 @@ export function downloadEvidence(show: ShowState, candidate: Candidate) {
           updatedAt: job.updatedAt,
           attempt: job.attempt,
           usage: job.usage,
+          reused: job.reused || false,
+          phases: job.phases,
+          sandboxTimings: job.sandboxTimings,
         }
       : null,
     candidate: {
       id: candidate.id,
+      engineVersion:
+        candidate.engineVersion || candidate.verification.engineVersion,
       source: candidate.source,
       sourceHash: candidate.sourceHash,
       program: candidate.program,
       programHash: candidate.programHash,
       verification: candidate.verification,
+      provenance: candidate.provenance,
+      composition: candidate.composition,
+      approvedSourceHash: candidate.approvedSourceHash,
+      approvedProgramHash: candidate.approvedProgramHash,
+      approvedPreviewHash: candidate.approvedPreviewHash,
+      approvedCompositionHash: candidate.approvedCompositionHash,
+      approvedContextHash: candidate.approvedContextHash,
+      approvedArtifactHash: candidate.approvedArtifactHash,
       approvedAt: candidate.approvedAt,
       activatedAt: candidate.activatedAt,
     },
     events: show.events.filter(
       (event) =>
-        event.candidateId === candidate.id ||
-        event.proposalId === candidate.proposalId,
+        !event.type.startsWith("private.") &&
+        (event.candidateId === candidate.id ||
+          event.proposalId === candidate.proposalId),
     ),
   };
   const url = URL.createObjectURL(
@@ -72,6 +87,7 @@ export function EvidencePanel({
   candidate?: Candidate | null;
 }) {
   const [tab, setTab] = useState<"story" | "source" | "checks">("story");
+  const tabId = useId();
   const selected = candidate || show.candidates.at(-1);
   const job = selected && show.jobs.find((item) => item.id === selected.jobId);
   return (
@@ -98,8 +114,29 @@ export function EvidencePanel({
             key={id}
             className={tab === id ? "active" : ""}
             role="tab"
+            id={`${tabId}-${id}`}
+            aria-controls={`${tabId}-${id}-panel`}
             aria-selected={tab === id}
+            tabIndex={tab === id ? 0 : -1}
             onClick={() => setTab(id)}
+            onKeyDown={(event) => {
+              const order = ["story", "source", "checks"] as const;
+              const index = order.indexOf(id);
+              const next =
+                event.key === "ArrowRight"
+                  ? (index + 1) % 3
+                  : event.key === "ArrowLeft"
+                    ? (index + 2) % 3
+                    : event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? 2
+                        : null;
+              if (next === null) return;
+              event.preventDefault();
+              setTab(order[next]);
+              document.getElementById(`${tabId}-${order[next]}`)?.focus();
+            }}
           >
             <Icon size={14} />
             {label}
@@ -107,7 +144,11 @@ export function EvidencePanel({
         ))}
       </div>
       {tab === "story" && (
-        <div role="tabpanel">
+        <div
+          role="tabpanel"
+          id={`${tabId}-story-panel`}
+          aria-labelledby={`${tabId}-story`}
+        >
           <p className="modal-copy">
             These events record what this show actually did. Practice events
             remain labeled; no viewer activity is simulated.
@@ -121,7 +162,7 @@ export function EvidencePanel({
               <dt>Mode</dt>
               <dd>
                 {show.mode === "practice"
-                  ? "Local practice / host-authored ideas"
+                  ? "Practice / host-authored ideas"
                   : `Twitch / ${show.twitch.channelLogin || "awaiting connection"}`}
               </dd>
             </div>
@@ -135,6 +176,31 @@ export function EvidencePanel({
                   <dt>Program SHA-256</dt>
                   <dd>{selected.programHash}</dd>
                 </div>
+                {selected.composition && (
+                  <>
+                    <div>
+                      <dt>Verified combination</dt>
+                      <dd>
+                        {selected.composition.members
+                          .map(
+                            (member) =>
+                              show.candidates.find(
+                                (item) => item.id === member.candidateId,
+                              )?.program.name || member.sourceHash.slice(0, 12),
+                          )
+                          .join(" → ")}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Runtime artifact SHA-256</dt>
+                      <dd>{selected.composition.artifactHash}</dd>
+                    </div>
+                    <div>
+                      <dt>Approval context SHA-256</dt>
+                      <dd>{selected.composition.contextHash}</dd>
+                    </div>
+                  </>
+                )}
               </>
             )}
             {job && (
@@ -144,7 +210,11 @@ export function EvidencePanel({
                   <dd>{job.model}</dd>
                 </div>
                 <div>
-                  <dt>Actual Codex thread</dt>
+                  <dt>
+                    {job.reused
+                      ? "Original Codex thread"
+                      : "Actual Codex thread"}
+                  </dt>
                   <dd>{job.threadId || "Not returned by this job yet"}</dd>
                 </div>
               </>
@@ -170,11 +240,15 @@ export function EvidencePanel({
         </div>
       )}
       {tab === "source" && (
-        <div role="tabpanel">
+        <div
+          role="tabpanel"
+          id={`${tabId}-source-panel`}
+          aria-labelledby={`${tabId}-source`}
+        >
           {selected ? (
             <>
               <p className="modal-copy">
-                Codex generated this TypeScript literal. The compiler accepts a
+                This is the artifact’s exact source. The compiler accepts a
                 bounded rule language; imports, functions, loops, and arbitrary
                 JavaScript are rejected.
               </p>
@@ -191,7 +265,11 @@ export function EvidencePanel({
         </div>
       )}
       {tab === "checks" && (
-        <div role="tabpanel">
+        <div
+          role="tabpanel"
+          id={`${tabId}-checks-panel`}
+          aria-labelledby={`${tabId}-checks`}
+        >
           {selected ? (
             <>
               <p className="modal-copy">

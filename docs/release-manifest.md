@@ -1,4 +1,10 @@
-# Release verification — 31 October 2026
+# Release verification
+
+## Engine 2 review branch — 1 November 2026
+
+Frozen implementation checkpoint `5ac7482` passed typecheck, **263 tests in 28 files**, formatting, diff checks and an isolated optimized build with 14 static page-generation tasks. The subsequent legacy-save compatibility fix is `e97182b`. The [review ledger](review-progress.md) records current acceptance and follow-ups. These review changes are not labeled as deployed until the release owner verifies and promotes them. Real original-intent and paired latency evaluations remain separate from deterministic gates.
+
+## Released application — 31 October 2026
 
 LIVEFORGE is deployed at [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app). Local and production browser verification passed; the remaining evidence limits are stated below.
 

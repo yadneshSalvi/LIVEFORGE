@@ -3927,6 +3927,38 @@ body {
 .pipeline-duration {
   font-size: 12px;
 }
+.pipeline-events {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  padding: 16px 0;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.pipeline-events li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.pipeline-events svg {
+  flex: 0 0 auto;
+  color: var(--mint);
+}
+.pipeline-events span {
+  flex: 1;
+}
+.pipeline-events time {
+  font-family: var(--font-mono), monospace;
+  white-space: nowrap;
+}
+.pipeline > .pipeline-note {
+  margin-top: 17px;
+  font-size: 14px;
+}
 .candidate-card > p,
 .active-description {
   font-size: 14px;

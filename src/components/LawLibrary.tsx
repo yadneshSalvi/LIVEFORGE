@@ -156,8 +156,8 @@ export function LawLibrary({
                   <dd>{new Date(entry.savedAt).toLocaleDateString()}</dd>
                 </div>
                 <div>
-                  <dt>Original engine</dt>
-                  <dd>{entry.originalEngineVersion}</dd>
+                  <dt>Verified when saved</dt>
+                  <dd>{entry.engineVersion}</dd>
                 </div>
               </dl>
               <div className="button-group">

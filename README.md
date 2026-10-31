@@ -1,14 +1,44 @@
 # LIVEFORGE — The Last Light
 
-**You play. Chat changes the rules.** An original airborne-foundry adventure where Twitch viewers invent bounded new mechanics, Codex generates a rule, and the creator previews and approves the exact version before it enters the running game.
+**You play. Chat changes the rules.** Twitch viewers invent a mechanic, Codex writes a bounded rule, and the creator plays and approves its exact version before it enters an original airborne-foundry adventure.
 
-The signature law turns a stationary prop’s projected shadow into a traversable bridge. This relationship comes from generated source, composed from the engine’s generic conditions and geometry primitives. It is not a named effect selected from a catalog.
+**[Open the live app](https://liveforge-iota.vercel.app)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
 
-Production target: [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app). The [release manifest](docs/release-manifest.md) records verification status; local evidence is linked below.
+![The real deployed adventure after beacon completion](docs/evidence/browser/production-completed.jpg)
 
-## Run the demonstrated experience
+_Actual production playthrough, 31 October 2026. The review ledger distinguishes that release from the engine 2 improvements and their ongoing acceptance._
 
-Requires **Node.js 22.x** and npm. No provider subscription is needed for the local baseline game or the clearly labeled reused-artifact practice path.
+## Try it in 60 seconds
+
+No Twitch sign-in or API key is needed for this path.
+
+1. Open **The studio → Enter practice**. Click the world; **A/D** move, **Space** jumps, **E** interacts, **Q** drops/picks up the ember, and **R** returns to the encounter checkpoint. Mobile has touch controls.
+2. Choose **Try a generated law**. This loads an actual previously Codex-generated artifact, clearly labeled **reused**; it makes no new AI call.
+3. Open **Preview & decide** and walk on the stationary prop’s solid shadow. Your live world pauses during review.
+4. Approve the exact version, then **Activate** while grounded. The source supplies the stillness/light/geometry relationship; the engine has no named shadow-bridge preset.
+5. **Restore previous law** returns to the prior combination and activation checkpoint. **Behind the law** shows exact source, hashes, checks and history.
+
+The complete lower route, Counterweight Hall and Beacon Guardian work without generated laws. Carry the ember to finish the beacon.
+
+## Let real chat invent the next law
+
+Create a **New Twitch show**, **Connect Twitch**, then **Listen to chat**. A viewer sends `!forge <idea>`; others send `!back P1`. One current support choice per account resets each round. The creator chooses what to forge, previews the result, approves its exact ordered combination and activates it separately.
+
+Fresh generation requires an independently authorized Twitch account and available daily quota. Defaults are **3 per account / 40 shared runs per UTC day**; explicitly exempt hosts are configurable. Anonymous visitors always retain the reused-artifact path. Optional server chat replies need separate write permission and an explicit switch; they start off, post as the host, and may appear in Shared Chat.
+
+Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. An unsupported idea can offer a **separate, explicitly accepted adaptation** with original credit; it is never silently replaced.
+
+## One world, up to three laws
+
+Choose **Add to this world** or **Replace** before forging. Up to three ordered originals share the same limits and are verified together. Approval binds the sources, engine, prior stack, combined program and preview. Later matching property modifiers take precedence. A changed combination requires fresh review.
+
+Save an approved law to the private **Law library** and import its exact source into another show with new verification and approval. **Moderation & chat** provides hide/reject actions and private blocked terms; broadcaster/moderator commands include `!hide P1` and `!reject P1`.
+
+**Show outputs** provides a transparent, independent **1920 × 1080 OBS Browser Source overlay** for proposals, genuine generation progress and approved laws. Capture the separate game projector with **OBS Window Capture** in the studio’s browser profile. The overlay does not contain or independently simulate the game; keep the studio open.
+
+## Run locally
+
+Requires **Node.js 22.x** and npm:
 
 ```sh
 npm ci
@@ -16,66 +46,29 @@ npm run setup
 npm run dev
 ```
 
-Open [localhost:3100](http://localhost:3100), enter **The studio → Enter practice**, and explore. The setup command creates local session/encryption secrets without printing or replacing existing values. Development persists shows to ignored `.local/store` when no database is configured. Production requires Postgres.
+Open [localhost:3100](http://localhost:3100). Setup creates local session/encryption secrets without printing or replacing existing values. Development can use the ignored atomic file store; production requires Postgres.
 
-1. Click the world to focus it. **A/D or arrows** move, **Space** jumps, **E** interacts, and **R** returns to the current encounter checkpoint. Touch controls appear on mobile.
-2. Explore The Broken Crossing, wind the Counterweight Hall crank, then awaken the Beacon Guardian and deliver the ember. A lower route makes the complete adventure playable with AI disabled.
-3. Choose **Try a generated law** to load an actual previously Codex-generated shadow artifact. It is visibly labeled **reused generation**; no AI call occurs in that run.
-4. Open **Preview & decide**. Switch between the original world and candidate, then click the preview to play. The live world pauses during review.
-5. Approve that exact version, then activate while grounded on a platform. The current world becomes the recovery checkpoint. Cross the new shadow bridge while the prop remains still.
-6. Use **Restore previous law** to restore the prior law and activation checkpoint. Progress after that checkpoint resets; source and contributor credit remain in the evidence ledger.
-7. Open **Behind the law** for source, actual independent checks, hashes, and history. **The archive** exports a sanitized evidence bundle.
+For genuine runtime generation, configure your OpenAI key and Vercel Sandbox identity using [.env.example](.env.example) and [backend setup](docs/backend.md). Production uses request-scoped OIDC, never an uploaded expiring token. Register the exact Twitch callback `${APP_BASE_URL}/api/auth/twitch/callback`. Keep all real credentials in ignored local files or the deployment environment.
 
-A separate **prewritten practice sample** is available for learning the engine. Its label explicitly distinguishes it from fresh or reused Codex output.
+## Codex and the runtime boundary
 
-## Run a fresh Codex generation
+Codex was used to build the application through real coordinating, implementation and worker threads. [Development evidence](docs/development-evidence.md) records those identifiers and observed engineering fixes. Separately, runtime generation uses the official pinned Codex SDK in an isolated, nonpersistent Vercel Sandbox.
 
-Configure an authorized model key and Vercel Sandbox identity in `.env.local`. See [.env.example](.env.example) and [backend setup](docs/backend.md). The coordinator runs the official `@openai/codex-sdk` in a short-lived isolated microVM. It passes only the selected proposal, public rule contract, and narrowly scoped model access; it never copies the app’s `.env`, Twitch grant, or database/deployment credentials into the guest.
+Generated source is a **TypeScript-shaped literal compiled to bounded data**, not arbitrary executable TypeScript. Events, conditions, arithmetic, reversible physics, timed materials and capped temporary objects can compose new relationships. No generated function, import, shell, network call, secret access or engine rewrite is permitted. The dependency snapshot is prepared before any proposal, model key, session or output exists. Trusted verification checks observable effects, budgets, deterministic replay, JSON continuation and rollback; a verifier pass does not establish every detail of natural-language intent.
 
-In local practice, add a new supported idea, select its card, and choose **Forge the selected idea**. Watch the actual stages, independently verified result, and immutable preview/approval flow. A failed or cancelled generation leaves the active game usable. The source must create an observable effect in the trusted fixtures before review.
+The fixed-step game runs in a worker with one fenced authority per show. Postgres persists checkpoints, exact approvals and recovery. Visible save/authority/fault errors preserve control. Interrupted generation fails visibly within bounded coordinator/VM lifetimes; it is not a durable resumable worker. [Architecture](docs/architecture.md), [rule contract](docs/rule-runtime.md) and [generation performance](docs/generation-performance.md) document these limits.
 
-Hosted fresh generation requires an OAuth-authenticated Twitch host listed in `LIVEFORGE_GENERATION_HOST_IDS`. Public visitors can use the free reused-artifact path. Model/Sandbox jobs have bounded concurrency, attempts and lifetime; an overall dollar budget is not claimed.
-
-## Run with real Twitch chat
-
-1. Register a Twitch application with the exact callback `${APP_BASE_URL}/api/auth/twitch/callback`. Configure client ID/secret and token encryption. Local default callback: `http://localhost:3100/api/auth/twitch/callback`.
-2. Use **Your shows → New Twitch show**, then **Connect Twitch** and authorize the displayed channel. Choose **Listen to chat** after returning.
-3. Have a real participant send `!forge <idea>` in that channel. Their proposal and Twitch display name appear in the shortlist. `!back P1` backs a proposal, with one current endorsement per account per round.
-4. Select, generate, preview, approve, and activate as above. Support informs the creator; it never activates code automatically.
-
-The host browser receives genuine EventSub WebSocket events. Token exchange, validation, refresh and subscriptions stay server-side. Only commands are forwarded; unrelated chat is not retained. A connection gap is visible because Twitch does not replay missed messages. The connector trusts its authorized host browser; it is not a cryptographically signed server-webhook provenance claim. The copied local bootstrap grant is never automatically refreshed.
-
-## Broadcast and community views
-
-**Show outputs** opens a clean projector and a public shortlist. The projector receives snapshots from the studio’s single authoritative worker through a same-browser channel. Open it in a separate window in the **same browser profile**, and use **OBS Window Capture**. Keep the studio open. A separate OBS Browser Source cannot receive that browser channel. The public community board polls filtered durable state and exposes no host controls or credentials.
-
-## What the implementation supports
-
-- Original Canvas2D scene, three authored encounters, fixed-step worker simulation, keyboard/touch input, muted-by-default original interface tones, checkpoint recovery and a clean broadcast projector.
-- Real Twitch OAuth/EventSub intake, bounded proposal/vote handling, deduplication, host selection and explicit connection-gap state.
-- Genuine isolated Codex source generation; six generic action primitives composed through a restricted rule language.
-- Independent schema, effect, determinism, serialization and rollback checks; exact source/program/preview hashes; human approval; fenced authority and durable Postgres checkpoints.
-- Cancellation, stale-job failure recovery, rejection, new revisions preserving credit, reusable generated artifacts and an inspectable evidence ledger.
-
-Generated source is **a restricted TypeScript literal compiled to a capability-limited data program**, not arbitrary TypeScript execution. The implementation deliberately uses this bounded interpreter instead of the planned QuickJS sandbox, and original Canvas2D instead of Phaser. [Architecture and limits](docs/architecture.md), [rule runtime](docs/rule-runtime.md), and [backend](docs/backend.md) describe the actual boundaries.
-
-## Verification and evidence
+## Verify and inspect
 
 ```sh
 npm run typecheck
 npm test
-npm run build
 npm run format:check
+npm run build
 ```
 
-[Evidence index](docs/evidence/README.md) distinguishes deterministic tests, real model/Sandbox runs, real database probes and browser observations. Real generated source, SDK thread identifiers, timings, usage and verifier outcomes are retained in [generation evidence](docs/evidence/generation/README.md). Acceptance targets from private plans are not presented as measured results.
+The [review ledger](docs/review-progress.md) separates implementation, deterministic gates, browser observations, real-provider measurements and remaining acceptance. The [ten predeclared original ideas](docs/evidence/review-2026-11-01/evaluation-proposals.json) and [paired latency protocol](docs/evidence/review-2026-11-01/latency-protocol.json) preserve failures and distinguish verifier acceptance from independently measured intent. Reused or adapted laws do not count as original-proposal successes.
 
-The coordinating development session is `01a190da-3cee-7a10-b7c1-e0cdbb379510`; the implementation lead thread is `01a191a4-623f-7533-9ef5-5f69ebeb704f`. These were read from the actual Codex environment. See [development evidence](docs/development-evidence.md).
+[MIT license](LICENSE) · [Original art, fonts and icon rights](docs/rights.md) · [Release manifest](docs/release-manifest.md)
 
-## Source, rights and deployment
-
-**Live:** [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app). The [production verification record](docs/evidence/browser/2026-10-31-production.md) includes a complete deployed playthrough and a fresh hosted Codex generation.
-
-The original code and procedural visuals are included. Bundled fonts and icons have their license notices in [asset rights](docs/rights.md). Source is licensed under [MIT](LICENSE). Private plans and credentials are intentionally ignored and are not needed to run the documented experience.
-
-Deploy the repository root as a **Next.js / Node 22** Vercel project with a Postgres database, server secrets, exact production origin/Twitch callback and Sandbox identity. Deployment, live-chat evidence and submission readiness are separate from a successful local build. Source/judge access and any final video publication remain release-owner actions.
+Private plans, credentials and local state are ignored. Canonical production origin: **https://liveforge-iota.vercel.app**. Source access, actual OBS capture and submission-video publication remain release-owner actions.

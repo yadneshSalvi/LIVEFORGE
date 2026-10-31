@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { RULE_CAPABILITY_HINTS } from "@/game/rules";
 export const metadata = { title: "Field guide" };
 
 export default function GuidePage() {
@@ -58,10 +59,10 @@ export default function GuidePage() {
               <div>
                 <h3>Make it playable.</h3>
                 <p>
-                  An invited host can run a fresh Codex generation. Public
-                  practice can load an actual previously generated artifact,
-                  labeled as reused. Generation runs in an isolated workspace
-                  while the baseline game remains playable.
+                  Connect a Twitch account for a fresh Codex generation within
+                  the daily limits shown in the studio. Anyone can load a
+                  previously generated law, clearly labeled as reused.
+                  Generation runs while your current world remains playable.
                 </p>
               </div>
             </li>
@@ -81,10 +82,11 @@ export default function GuidePage() {
                 <h3>Bring it into the world.</h3>
                 <p>
                   Approve the exact candidate. Return to a grounded platform and
-                  activate it at a checkpoint. The new law replaces the previous
-                  experimental law; progress and the ember remain intact.
-                  Restore previous law returns to the saved activation
-                  checkpoint.
+                  activate it at a checkpoint. Choose to add it to your existing
+                  laws or replace them. Up to three laws can shape the world
+                  together; the preview checks that exact ordered combination.
+                  Restore previous law returns to the previous combination and
+                  its saved activation checkpoint.
                 </p>
               </div>
             </li>
@@ -127,6 +129,15 @@ export default function GuidePage() {
               </tr>
               <tr>
                 <td>
+                  <code>Q</code>
+                </td>
+                <td>
+                  Drop the ember or pick it up when nearby. Carry it to complete
+                  the beacon.
+                </td>
+              </tr>
+              <tr>
+                <td>
                   <code>R</code>
                 </td>
                 <td>Return to the current encounter checkpoint.</td>
@@ -144,19 +155,15 @@ export default function GuidePage() {
         <section className="guide-section">
           <h2>What can a law change?</h2>
           <p>
-            Codex generates a new TypeScript literal that composes a bounded
-            rule language. It can query players, props, and lights; combine
-            conditions; project shadows; create temporary surfaces; apply
-            bounded impulses; change friction or bounce; add visual cues; and
-            use timers.
+            A law can change the courier, crates, lanterns and dropped ember
+            through a bounded set of capabilities. Try a clear relationship:
+            lighter gravity near a lamp, an extra jump in the air, a platform
+            after each landing, or a crate that stays bouncy for three seconds.
           </p>
           <div className="capability-chips">
-            <span>Conditions</span>
-            <span>Geometry</span>
-            <span>Light projection</span>
-            <span>Impulses</span>
-            <span>Materials</span>
-            <span>Cues & timers</span>
+            {RULE_CAPABILITY_HINTS.map((capability) => (
+              <span key={capability.title}>{capability.title}</span>
+            ))}
           </div>
           <p>
             For example: “A prop’s shadow is solid while the prop stands still”
@@ -166,26 +173,46 @@ export default function GuidePage() {
           </p>
           <div className="guide-callout">
             <p>
-              This is not arbitrary game generation. Rules cannot fetch the web,
-              install packages, edit the interface, read secrets, execute
-              JavaScript functions, or rewrite the game engine. A proposal
-              outside these capabilities needs an explicit revision.
+              Rules stay within the foundry’s physics and object limits. If an
+              idea needs an unsupported capability, the studio explains the
+              limitation. A suggested adaptation becomes a separate proposal
+              only when you choose it, with the original contributor credited.
             </p>
           </div>
         </section>
         <section className="guide-section">
           <h2>Give the audience a clear view.</h2>
           <p>
-            Open Show outputs from the studio. The broadcast projector receives
-            frames from the authoritative game in the same browser profile. Open
-            it in its own window, then use OBS Window Capture. Keep the studio
-            open. A separate OBS Browser Source does not share this browser’s
-            frame channel.
+            Open Show outputs and copy the transparent overlay URL into an OBS
+            Browser Source at 1920 × 1080. It shows the shortlist, genuine forge
+            progress and approved laws. Its preview has a background toggle so
+            you can check legibility before adding it to your stream.
           </p>
           <p>
-            The public community board is a read-only shortlist. Viewers can use
-            it on a phone and participate through Twitch chat. The board never
-            exposes credentials or the private host controls.
+            Capture the game through the separate broadcast projector in a
+            window of the same browser profile, using OBS Window Capture. Keep
+            the studio open to run the game. The overlay and the public
+            community board work independently in other browser contexts and
+            expose only public show state.
+          </p>
+        </section>
+        <section className="guide-section">
+          <h2>Keep a good room. Keep a good law.</h2>
+          <p>
+            Moderation & chat lets you hide or reject ideas and set private
+            blocked terms. Your broadcaster and channel moderators can use
+            <code> !hide P1</code> and <code>!reject P1</code>. Support counts
+            reset each round, giving the next idea a fresh start.
+          </p>
+          <p>
+            Optional chat replies are off by default. They need separate write
+            permission and an explicit switch in room settings. Replies post as
+            your account, are rate limited, and may appear in Shared Chat.
+          </p>
+          <p>
+            Save an approved law to your Law library, then import it into
+            another show. It retains its source and contributor credit and needs
+            fresh verification, preview and approval in the new world.
           </p>
         </section>
         <section className="guide-section">
@@ -202,21 +229,27 @@ export default function GuidePage() {
             activation. Progress after that moment resets. Contributor credit
             and the evidence history remain available.
           </p>
+          <p>
+            Progress needs saving means the checkpoint has not been acknowledged
+            yet; retry without closing the studio. An earlier-engine show offers
+            an explicit upgrade that archives its old save and starts the new
+            world. Historical laws keep their source, but require fresh
+            approval.
+          </p>
         </section>
         <section className="guide-section">
           <h2>Know what is real.</h2>
           <p>
-            Local practice, prewritten samples, reused generated artifacts, and
-            fresh runtime generations carry different labels. No audience
-            members, votes, checks, or source history are fabricated. The
-            evidence drawer links a proposal to source, verification, approval,
-            and activation.
+            Practice, prewritten samples, reused generated artifacts, and fresh
+            runtime generations carry different labels. No audience members,
+            votes, checks, or source history are fabricated. The evidence drawer
+            links a proposal to source, verification, approval, and activation.
           </p>
           <p>
-            Fresh hosted generation is limited to invited, authorized Twitch
-            hosts. Everyone can explore the baseline game and use the free
-            reused-artifact practice path. An invitation does not grant access
-            to another creator’s show.
+            Fresh generation requires your own authorized Twitch account and
+            available daily quota. Everyone can explore the complete baseline
+            game and use the reused-artifact path. Your host controls and saved
+            law library remain private.
           </p>
           <Link className="button button-primary" href="/studio">
             Put the guide into play <ArrowUpRight size={16} />

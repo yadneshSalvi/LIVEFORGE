@@ -43,6 +43,7 @@ import { LawLibrary } from "./LawLibrary";
 import { ModerationPanel } from "./ModerationPanel";
 import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
 import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import { generationMilestones } from "@/lib/generation-progress";
 import { StudioViewFence } from "@/lib/view-fence";
 import {
   retireFaultedLaw,
@@ -635,7 +636,10 @@ export function Studio() {
         const result = await api<HostShowResponse>("/api/shows", { mode });
         currentShow.current = result.show;
         setShow(result.show);
+        lease.current = null;
+        lostAuthority.current = false;
         setAuthority(null);
+        setPaused(false);
         setSelectedId(null);
         setSnapshot(null);
         setAuthorityIssue(null);
@@ -661,6 +665,8 @@ export function Studio() {
       setChatState(null);
       currentShow.current = resumed;
       setShow(resumed);
+      lease.current = null;
+      lostAuthority.current = false;
       setAuthority(null);
       setSnapshot(null);
       setAuthorityIssue(null);
@@ -1787,7 +1793,11 @@ export function Studio() {
                     Open the next what-if <ArrowRight size={15} />
                   </button>
                   <p className="rail-footnote">
-                    Each new law replaces the previous experimental law.
+                    {activationMode === "append"
+                      ? activeCandidates.length >= 3
+                        ? "Three laws are live. Choose Replace to start a new combination."
+                        : "Add mode keeps your current laws, up to three in one verified combination."
+                      : "Replace mode swaps the current combination for the next approved law."}
                   </p>
                 </div>
               </>
@@ -2523,6 +2533,7 @@ function Pipeline({
   onCancel: () => void;
   busy: boolean;
 }) {
+  const milestones = generationMilestones(job);
   const steps = [
     "Preparing the forge",
     "Writing a new law",
@@ -2563,7 +2574,18 @@ function Pipeline({
       <p className="pipeline-duration">
         {elapsed(job.createdAt)} ELAPSED · ATTEMPT {Math.max(1, job.attempt)}
       </p>
-      <p style={{ fontSize: 9, marginTop: 17 }}>
+      {milestones.length > 0 && (
+        <ol className="pipeline-events" aria-label="Recorded generation events">
+          {milestones.map((milestone) => (
+            <li key={milestone.key}>
+              <Check size={12} />
+              <span>{milestone.label}</span>
+              <time dateTime={milestone.at}>+{milestone.seconds}s</time>
+            </li>
+          ))}
+        </ol>
+      )}
+      <p className="pipeline-note">
         Keep playing while Codex works. This stage may take a minute or more.
       </p>
       <button

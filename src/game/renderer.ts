@@ -77,8 +77,24 @@ function glow(
   c.fillStyle = g;
   c.fillRect(x - r, y - r, r * 2, r * 2);
 }
+/** Keep ordinary traversal framing; high jumps enter a vertical dead zone below the HUD. */
+export function followHighJumpCamera(
+  currentY: number,
+  playerY: number,
+  playerHeight: number,
+  reducedMotion = false,
+): number {
+  if (![currentY, playerY, playerHeight].every(Number.isFinite)) return 0;
+  const desired = Math.min(0, playerY - 180);
+  const eased = currentY + (desired - currentY) * (reducedMotion ? 1 : 0.12);
+  // Hard visibility bounds also handle large restored/single-step position changes.
+  const lowest = Math.min(0, playerY + playerHeight - 560),
+    highest = Math.min(0, playerY - 120);
+  return Math.max(lowest, Math.min(highest, eased));
+}
 export class WorldRenderer {
   private camera = 0;
+  private cameraY = 0;
   draw(
     canvas: HTMLCanvasElement,
     world: GameSnapshot,
@@ -98,6 +114,12 @@ export class WorldRenderer {
     );
     this.camera += (target - this.camera) * (reducedMotion ? 1 : 0.09);
     if (world.entities[0].x < 220) this.camera = 0;
+    this.cameraY = followHighJumpCamera(
+      this.cameraY,
+      world.entities[0].y,
+      world.entities[0].h,
+      reducedMotion,
+    );
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.clearRect(0, 0, width, height);
     c.scale(scale, scale);
@@ -109,7 +131,7 @@ export class WorldRenderer {
     c.fillRect(0, 0, view, 650);
     this.background(c, view, time, reducedMotion);
     c.save();
-    c.translate(-this.camera, 0);
+    c.translate(-this.camera, -this.cameraY);
     this.machine(c, 770, 158, time, reducedMotion);
     this.city(c, view);
     // The deep cloud sea separates distant architecture from the playable plane.

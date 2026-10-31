@@ -95,4 +95,22 @@ describe("broadcast overlay projection", () => {
     expect(view.moment).toBe("A new possibility is live");
     expect(view.laws[0].description).toBe("The approved description");
   });
+
+  it("uses only recorded allowlisted events as progress, ignoring injected model text", () => {
+    const show = fixture();
+    show.generation!.phases = [
+      { phase: "thread-started", at: "2026-11-01T00:00:10Z", attempt: 1 },
+      { phase: "turn-started", at: "2026-11-01T00:00:12Z", attempt: 1 },
+      {
+        phase: "UNREVIEWED MODEL TEXT" as never,
+        at: "2026-11-01T00:00:14Z",
+        attempt: 1,
+      },
+      { phase: "source-returned", at: "invalid", attempt: 1 },
+    ];
+    const view = overlayView(show);
+    expect(view.phase).toBe("Codex began writing this idea");
+    expect(view.milestones.map((item) => item.seconds)).toEqual([10, 12]);
+    expect(JSON.stringify(view)).not.toContain("UNREVIEWED MODEL TEXT");
+  });
 });

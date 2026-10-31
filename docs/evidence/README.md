@@ -2,6 +2,12 @@
 
 This index separates tests, real integrations and browser observations. No synthetic participant is presented as a Twitch viewer, no stored sample is presented as a fresh generation, and planned acceptance targets are not reported as results.
 
+## Current review: predeclared experiments
+
+The [implementation ledger](../review-progress.md) tracks L1–L17 without treating code or mocked tests as external acceptance. The root froze [ten original intent requests](review-2026-11-01/evaluation-proposals.json), [independent intent experiments](review-2026-11-01/intent-experiments.md), [composition experiments](review-2026-11-01/composition-experiments.json) and a [paired latency protocol](review-2026-11-01/latency-protocol.json) before evaluating generated artifacts. All provider outcomes are retained; adaptation, reuse and verifier acceptance are reported separately from original intent success. The [original frozen engine 2 evaluation](review-2026-11-01/provider-5ac7482-originals/) contains ten fresh generations and ten independent intent/replay/rollback passes. Every original run fell back cold; those records are not a snapshot-speed result. The [engine 2 browser record](review-2026-11-01/engine2-browser.md) separately records observed behavior and follow-up defects.
+
+[P0 browser acceptance](review-2026-11-01/p0-browser.md) includes anonymous reused-artifact review/activation, a controlled checkpoint save failure with successful retry, and a real Chrome hidden-tab lease observation lasting 16.13 minutes with the same epoch. Its source is `177079c`; the report explicitly separates that result from later engine 2 acceptance. Independent intent-probe calibration uses labeled hand-authored positive and unrelated-law negative fixtures, not provider output.
+
 ## Real browser operation
 
 [Local in-app-browser walkthrough, 31 October 2026](browser/2026-10-31-local.md) records the coordinating operator’s actual journey through a fresh generated rule, interactive preview, exact approval, activation, all three game encounters, beacon completion and rollback. Its screenshots were captured from the actual application. The same review identified and drove fixes for renderer unmount cleanup, short key taps, lease recovery, nested interactive semantics and small instructional text.
