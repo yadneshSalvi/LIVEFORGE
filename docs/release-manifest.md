@@ -2,7 +2,9 @@
 
 ## Engine 2 review branch — 1 November 2026
 
-Frozen implementation checkpoint `5ac7482` passed typecheck, **263 tests in 28 files**, formatting, diff checks and an isolated optimized build with 14 static page-generation tasks. The subsequent legacy-save compatibility fix is `e97182b`. The [review ledger](review-progress.md) records current acceptance and follow-ups. These review changes are not labeled as deployed until the release owner verifies and promotes them. Real original-intent and paired latency evaluations remain separate from deterministic gates.
+The final review candidate passed typecheck, **287 tests in 32 files**, formatting, diff checks and an isolated optimized production build with **14 static page-generation tasks** on Node 22.22.3. Its simulation/compiler/worker files remain the evaluated `5ac7482` contract, with later compatibility, snapshot, idempotency and presentation corrections. The [review ledger](review-progress.md) records those checkpoints and remaining acceptance.
+
+Root evidence commit `074ab32` retains ten original real generations with independent intent/replay/rollback passes and separate browser observations, product two/three-law activation and rollback, legacy upgrade and synthetic fault recovery. Five corrected cold/snapshot pairs on `cd7ce27` measured 39.000 s versus 30.849 s medians including first preparation; [the audit](evidence/review-2026-11-01/latency-analysis.md) states the limits. These review changes are **not labeled deployed** until the release owner verifies and promotes them. New-account OAuth/quota, optional real chat replies, moderator commands, canonical production behavior and actual OBS capture remain separate acceptance tasks.
 
 ## Released application — 31 October 2026
 

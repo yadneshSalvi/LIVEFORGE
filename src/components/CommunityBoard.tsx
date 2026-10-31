@@ -68,8 +68,11 @@ export function CommunityBoard({ showId }: { showId: string }) {
           </div>
         )}
         {(show?.activeLaws || (show?.active ? [show.active] : [])).map(
-          (law) => (
-            <div className="notice notice-success" key={law.sourceHash}>
+          (law, index) => (
+            <div
+              className="notice notice-success"
+              key={`${index}-${law.sourceHash}`}
+            >
               <Sparkles size={20} />
               <div>
                 <strong>Now in the world: {law.name}</strong>

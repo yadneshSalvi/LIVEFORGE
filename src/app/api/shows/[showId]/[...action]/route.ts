@@ -14,6 +14,7 @@ import {
   reserveGenerationQuota,
 } from "@/server/generation-quota";
 import { after } from "next/server";
+import { randomUUID } from "node:crypto";
 import {
   addProposal,
   acquireLease,
@@ -66,6 +67,102 @@ import {
 export const runtime = "nodejs";
 export const maxDuration = 300;
 type Context = { params: Promise<{ showId: string; action: string[] }> };
+interface TwitchSessionReceipt {
+  operation: "twitch/session";
+  sessionId: string;
+  reconnect: boolean;
+  attemptOwner: string;
+  status: "pending" | "completed" | "unknown";
+}
+async function claimTwitchConnection(
+  showId: string,
+  ownerId: string,
+  key: string,
+  sessionId: string,
+  reconnect: boolean,
+) {
+  const attemptOwner = randomUUID();
+  return getStore().update<
+    ShowRecord,
+    { start: boolean; receipt: TwitchSessionReceipt }
+  >(showKey(showId), (show) => {
+    assert(
+      show.ownerId === ownerId,
+      404,
+      "show_not_found",
+      "This show was not found in your host session.",
+    );
+    const saved = show.idempotency[key]?.result as
+      TwitchSessionReceipt | undefined;
+    if (Object.hasOwn(show.idempotency, key)) {
+      assert(
+        saved?.operation === "twitch/session" &&
+          saved.sessionId === sessionId &&
+          saved.reconnect === reconnect,
+        409,
+        "idempotency_conflict",
+        "This request key belongs to another command or Twitch connection. Use a new key for a new connection.",
+      );
+      assert(
+        saved.status === "completed",
+        409,
+        "twitch_connection_attempt_consumed",
+        "This connection attempt is pending or has an unknown outcome. Open a fresh Twitch connection and use a new request key; this key will not retry a subscription.",
+      );
+      return { start: false, receipt: saved };
+    }
+    assert(
+      Object.values(show.idempotency).filter(
+        (entry) =>
+          (entry.result as Partial<TwitchSessionReceipt> | undefined)
+            ?.operation === "twitch/session",
+      ).length < 128,
+      429,
+      "twitch_connection_history_full",
+      "This show's bounded Twitch connection history is full. Preserve it and start another Twitch studio.",
+    );
+    rate(show, "twitch-session", 8, 60_000);
+    const receipt: TwitchSessionReceipt = {
+      operation: "twitch/session",
+      sessionId,
+      reconnect,
+      attemptOwner,
+      status: "pending",
+    };
+    show.idempotency[key] = { at: Date.now(), result: receipt };
+    show.updatedAt = new Date().toISOString();
+    return { start: true, receipt };
+  });
+}
+async function finishTwitchConnection(
+  showId: string,
+  ownerId: string,
+  key: string,
+  claimed: TwitchSessionReceipt,
+  status: "completed" | "unknown",
+) {
+  await getStore().update<ShowRecord, void>(showKey(showId), (show) => {
+    assert(
+      show.ownerId === ownerId,
+      404,
+      "show_not_found",
+      "This show was not found in your host session.",
+    );
+    const receipt = show.idempotency[key]?.result as
+      TwitchSessionReceipt | undefined;
+    // Fencing prevents a delayed finisher from completing another operation or attempt.
+    assert(
+      receipt?.operation === "twitch/session" &&
+        receipt.attemptOwner === claimed.attemptOwner &&
+        receipt.sessionId === claimed.sessionId &&
+        receipt.reconnect === claimed.reconnect,
+      409,
+      "twitch_connection_fenced",
+      "This connection receipt changed; open a fresh Twitch connection.",
+    );
+    if (receipt.status === "pending") receipt.status = status;
+  });
+}
 export async function GET(request: Request, context: Context) {
   try {
     const { showId, action } = await context.params;
@@ -216,22 +313,58 @@ export async function POST(request: Request, context: Context) {
       }
     }
     if (path === "twitch/session") {
-      await mutate(showId, host.hostId, idempotency, (show) => {
-        rate(show, "twitch-session", 8, 60_000);
-        return { requested: true };
-      });
       assert(
-        typeof body.sessionId === "string",
+        owned.mode === "twitch",
+        409,
+        "practice_mode",
+        "Live Twitch chat is available in Twitch studios.",
+      );
+      assert(
+        typeof body.sessionId === "string" &&
+          /^[A-Za-z0-9_=:.-]{8,300}$/.test(body.sessionId),
         400,
         "twitch_session",
-        "Open a Twitch WebSocket connection first.",
+        "Open a valid Twitch WebSocket connection first.",
       );
-      await connectTwitchSession(
+      assert(
+        body.reconnect === undefined || typeof body.reconnect === "boolean",
+        400,
+        "twitch_reconnect",
+        "Specify planned reconnect as a boolean.",
+      );
+      const claim = await claimTwitchConnection(
         showId,
         host.hostId,
+        idempotency,
         body.sessionId,
         body.reconnect === true,
       );
+      if (claim.start) {
+        try {
+          await connectTwitchSession(
+            showId,
+            host.hostId,
+            claim.receipt.sessionId,
+            claim.receipt.reconnect,
+          );
+          await finishTwitchConnection(
+            showId,
+            host.hostId,
+            idempotency,
+            claim.receipt,
+            "completed",
+          );
+        } catch (error) {
+          await finishTwitchConnection(
+            showId,
+            host.hostId,
+            idempotency,
+            claim.receipt,
+            "unknown",
+          ).catch(() => undefined);
+          throw error;
+        }
+      }
     } else if (path !== "library/save") {
       const result = await mutate(showId, host.hostId, idempotency, (show) => {
         if (path === "resume") return { resumed: true };

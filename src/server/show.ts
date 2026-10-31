@@ -456,12 +456,25 @@ export async function mutate<R>(
       "show_not_found",
       "This show was not found in your host session.",
     );
-    if (Object.hasOwn(show.idempotency, key))
+    if (Object.hasOwn(show.idempotency, key)) {
+      assert(
+        (show.idempotency[key].result as { operation?: string } | undefined)
+          ?.operation !== "twitch/session",
+        409,
+        "idempotency_conflict",
+        "This request key belongs to a Twitch connection. Use a new key for this command.",
+      );
       return show.idempotency[key].result as R;
+    }
     const result = fn(show);
     show.updatedAt = now();
     show.idempotency[key] = { at: Date.now(), result };
-    const keys = Object.keys(show.idempotency);
+    // Provider-side connection attempts must never become replayable after ordinary receipts rotate.
+    const keys = Object.keys(show.idempotency).filter(
+      (k) =>
+        (show.idempotency[k].result as { operation?: string } | undefined)
+          ?.operation !== "twitch/session",
+    );
     for (const k of keys.slice(0, Math.max(0, keys.length - 60)))
       delete show.idempotency[k];
     return result;
