@@ -40,6 +40,7 @@ import { Modal } from "./Modal";
 import { ShowManager } from "./ShowManager";
 import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
 import { ruleDescription } from "@/lib/rule-copy";
+import { StudioViewFence } from "@/lib/view-fence";
 import {
   retireFaultedLaw,
   type RuntimeRecoveryTarget,
@@ -140,6 +141,7 @@ export function Studio() {
   } | null>(null);
   const faultInFlight = useRef(false);
   const currentShow = useRef<ShowState | null>(null);
+  const viewFence = useRef(new StudioViewFence());
   const currentBusy = useRef<string | null>(null);
   const latestSnapshot = useRef<GameSnapshot | null>(null);
   const snapshotAt = useRef(0);
@@ -158,8 +160,18 @@ export function Studio() {
     setToast(message);
   }, []);
   const refresh = useCallback(async () => {
+    const ticket = viewFence.current.ticket(currentShow.current?.id);
+    if (!ticket) return currentShow.current;
     try {
       const result = await api<HostShowResponse>("/api/shows/current");
+      if (
+        !viewFence.current.accepts(
+          ticket,
+          currentShow.current?.id,
+          result.show.id,
+        )
+      )
+        return currentShow.current;
       setShow((current) =>
         current?.id === result.show.id &&
         current.revision > result.show.revision
@@ -273,6 +285,8 @@ export function Studio() {
     };
     const renew = async () => {
       if (!alive || renewing) return;
+      const ticket = viewFence.current.ticket(showId);
+      if (!ticket || currentShow.current?.id !== showId) return;
       renewing = true;
       try {
         const result = await api<HostShowResponse>(
@@ -280,7 +294,14 @@ export function Studio() {
           { clientId: clientId.current },
           AbortSignal.timeout(10000),
         );
-        if (alive) {
+        if (
+          alive &&
+          viewFence.current.accepts(
+            ticket,
+            currentShow.current?.id,
+            result.show.id,
+          )
+        ) {
           acquired = result.show.lease;
           lease.current = result.show.lease;
           setAuthority(result.show.lease);
@@ -298,7 +319,10 @@ export function Studio() {
           }
         }
       } catch (e) {
-        if (alive) {
+        if (
+          alive &&
+          viewFence.current.accepts(ticket, currentShow.current?.id, showId)
+        ) {
           const held = lease.current;
           if (
             (e instanceof ApiError && [401, 403, 409].includes(e.status)) ||
@@ -319,7 +343,10 @@ export function Studio() {
     };
     renewAuthority.current = renew;
     const release = () => {
-      const held = lease.current || acquired;
+      const held =
+        currentShow.current?.id === showId
+          ? lease.current || acquired
+          : acquired;
       if (!held || held.clientId !== clientId.current) return;
       void fetch(`/api/shows/${showId}/lease/release`, {
         method: "POST",
@@ -567,41 +594,55 @@ export function Studio() {
 
   const createShow = (mode: ShowMode) =>
     action("create", async () => {
+      const generation = viewFence.current.begin();
+      try {
+        twitch.current?.stop();
+        twitch.current = null;
+        setChatState(null);
+        const result = await api<HostShowResponse>("/api/shows", { mode });
+        currentShow.current = result.show;
+        setShow(result.show);
+        setAuthority(null);
+        setSelectedId(null);
+        setSnapshot(null);
+        setAuthorityIssue(null);
+        setCheckpointIssue(null);
+        setFaultIssue(null);
+        pendingFault.current = null;
+        setNextRound(false);
+        setStatus(await api<ServiceStatus>("/api/status"));
+        window.history.replaceState(null, "", "/studio");
+        window.scrollTo({ top: 0, behavior: "instant" });
+      } finally {
+        viewFence.current.finish(generation);
+        void renewAuthority.current();
+      }
+    });
+
+  const resumeShow = async (resumed: ShowState) => {
+    const generation = viewFence.current.begin();
+    try {
       twitch.current?.stop();
       twitch.current = null;
       setChatState(null);
-      const result = await api<HostShowResponse>("/api/shows", { mode });
-      setShow(result.show);
+      currentShow.current = resumed;
+      setShow(resumed);
       setAuthority(null);
-      setSelectedId(null);
       setSnapshot(null);
       setAuthorityIssue(null);
       setCheckpointIssue(null);
       setFaultIssue(null);
       pendingFault.current = null;
+      setSelectedId(null);
       setNextRound(false);
+      setPreview(null);
+      setPaused(false);
+      setError(null);
       setStatus(await api<ServiceStatus>("/api/status"));
-      window.history.replaceState(null, "", "/studio");
-      window.scrollTo({ top: 0, behavior: "instant" });
-    });
-
-  const resumeShow = async (resumed: ShowState) => {
-    twitch.current?.stop();
-    twitch.current = null;
-    setChatState(null);
-    setShow(resumed);
-    setAuthority(null);
-    setSnapshot(null);
-    setAuthorityIssue(null);
-    setCheckpointIssue(null);
-    setFaultIssue(null);
-    pendingFault.current = null;
-    setSelectedId(null);
-    setNextRound(false);
-    setPreview(null);
-    setPaused(false);
-    setError(null);
-    setStatus(await api<ServiceStatus>("/api/status"));
+    } finally {
+      viewFence.current.finish(generation);
+      void renewAuthority.current();
+    }
   };
 
   const submitProposal = (event: React.FormEvent) => {
