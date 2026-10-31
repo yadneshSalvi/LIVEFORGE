@@ -1,0 +1,68 @@
+{
+  "declaredAt": "2026-10-31T18:32:29.242890+00:00",
+  "clientDate": "2026-11-01",
+  "baselineCommit": "5832d42",
+  "purpose": "Predeclared L8 acceptance set, frozen before rule-language improvements. Run all ten against one frozen engine version; retain every result and failure. Adapted or reused artifacts do not count as success for the original proposal.",
+  "successCriteria": [
+    "A fresh real Codex run produces literal source for the original request",
+    "Schema and bounded compiler accept it",
+    "Observable effect, deterministic replay, rollback and serialization checks pass",
+    "Browser gameplay demonstrates the intended effect without a silent substitution"
+  ],
+  "target": {
+    "minimumSuccessfulOriginalProposals": 8,
+    "totalProposals": 10
+  },
+  "proposals": [
+    {
+      "id": "E01",
+      "category": "low gravity",
+      "text": "Give the courier moon gravity so jumps float farther."
+    },
+    {
+      "id": "E02",
+      "category": "double jump",
+      "text": "Let the courier jump a second time in midair before landing."
+    },
+    {
+      "id": "E03",
+      "category": "giant mode",
+      "text": "Holding interact makes the courier a giant; releasing it returns them to normal size."
+    },
+    {
+      "id": "E04",
+      "category": "wind",
+      "text": "A gust of wind pushes every movable crate to the right while it is near a lantern."
+    },
+    {
+      "id": "E05",
+      "category": "slow motion",
+      "text": "Movable crates near the courier move in slow motion, then return to normal speed farther away."
+    },
+    {
+      "id": "E06",
+      "category": "ember physics",
+      "text": "When the ember is dropped, let it bounce like a rubber ball until picked up again."
+    },
+    {
+      "id": "E07",
+      "category": "temporary creation",
+      "text": "Every time the courier lands, create a temporary stepping platform beside them."
+    },
+    {
+      "id": "E08",
+      "category": "arithmetic",
+      "text": "The faster the courier is running, the stronger their next jump becomes."
+    },
+    {
+      "id": "E09",
+      "category": "touch response",
+      "text": "Touching a crate makes it bouncy for three seconds."
+    },
+    {
+      "id": "E10",
+      "category": "persistent signature",
+      "text": "A still prop’s shadow becomes a solid bridge."
+    }
+  ]
+}

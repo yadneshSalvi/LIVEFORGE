@@ -11,7 +11,7 @@ LIVEFORGE is deployed at [liveforge-iota.vercel.app](https://liveforge-iota.verc
 | `npm run typecheck`    | Passed                                                                                                                             |
 | `npm test`             | 162 tests passed across 14 files                                                                                                   |
 | `npm run build`        | Passed with Turbopack; all 13 static page-generation tasks completed                                                               |
-| `npm run format:check` | Passed with the repository’s explicit ignore rules                                                                                 |
+| `npm run format:check` | Review baseline failed on the production Twitch export; formatting was corrected and rechecked on 1 November 2026                  |
 | `npm audit --omit=dev` | Zero reported vulnerabilities                                                                                                      |
 | `git diff --check`     | Passed                                                                                                                             |
 | Credential comparison  | No known local secret values found in non-ignored source/evidence files; credentials, private plans and local state remain ignored |
