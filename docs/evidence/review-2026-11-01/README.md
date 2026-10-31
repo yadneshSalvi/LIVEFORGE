@@ -11,6 +11,7 @@ This directory records the review improvements separately from the earlier deplo
 - [The paired latency audit](latency-analysis.md) retains all five cold/snapshot pairs, including the first snapshot preparation. Median complete job time was 39.000 s cold and 30.849 s snapshot in this sample. It states missing timing boundaries and avoids claiming universal speed or intent success for the separate timing artifacts.
 
 - [Real refusal → explicit alternative](adaptation-followup.md) preserves the no-suggestion failure, a labeled local fixture, and a distinct fresh production law with host-written ancestry, preview/approval/activation, exact export and independent held-gravity/release checks. Final runtime gates: 357 tests across 34 files.
+- [Final signed-out production practice](final-signed-out-practice.md) records Chrome on deployed `5fe10fb`: new practice show → explicitly reused law → preview → exact approval → checkpoint activation → restore, with the active-state screenshot. No fresh model call or public chat message was made, and no measured traversal or level completion is claimed.
 
 ## Frozen sources
 
@@ -20,4 +21,4 @@ After correcting snapshot retention/lifecycle, the paired experiment used `cd7ce
 
 ## Remaining acceptance boundaries
 
-At this checkpoint, new-account OAuth/quota, optional reply delivery, and a new-message production Twitch round are still pending a renewed Twitch browser sign-in. Automated route/security tests do not replace those observations. The OBS overlay was inspected in a separate browser context; no actual OBS recording or public broadcast is claimed. Release metadata and any subsequent production evidence will be recorded separately.
+New-account OAuth/quota, optional reply delivery, real second-account moderator behavior, and a new-message production Twitch round are still pending a renewed Twitch browser sign-in. Automated route/security tests do not replace those observations. The OBS overlay was inspected in a separate browser context; no actual OBS recording or public broadcast is claimed. The [release manifest](../../release-manifest.md) identifies the deployed source and completed production checks without treating these remaining items as accepted.

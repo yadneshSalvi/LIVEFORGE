@@ -10,6 +10,8 @@ The [five-pair latency audit](review-2026-11-01/latency-analysis.md) evaluates c
 
 [P0 browser acceptance](review-2026-11-01/p0-browser.md) includes anonymous reused-artifact review/activation, a controlled checkpoint save failure with successful retry, and a real Chrome hidden-tab lease observation lasting 16.13 minutes with the same epoch. Its source is `177079c`; the report explicitly separates that result from later engine 2 acceptance. Independent intent-probe calibration uses labeled hand-authored positive and unrelated-law negative fixtures, not provider output.
 
+The [final signed-out production walkthrough](review-2026-11-01/final-signed-out-practice.md) records the judge path on deployed `5fe10fb`: a new practice show, explicitly reused law, preview, exact approval, checkpoint activation and restoration. Its screenshot preserves active-state reuse credit. No fresh model call or public chat message occurred; new-account OAuth/quota, replies/moderator behavior and actual OBS acceptance remain separate.
+
 ## Real browser operation
 
 [Local in-app-browser walkthrough, 31 October 2026](browser/2026-10-31-local.md) records the coordinating operator’s actual journey through a fresh generated rule, interactive preview, exact approval, activation, all three game encounters, beacon completion and rollback. Its screenshots were captured from the actual application. The same review identified and drove fixes for renderer unmount cleanup, short key taps, lease recovery, nested interactive semantics and small instructional text.
