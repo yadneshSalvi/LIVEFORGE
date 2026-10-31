@@ -1,0 +1,107 @@
+# LIVEFORGE backend
+
+The control plane runs in Next.js Route Handlers. Neon Postgres stores versioned show documents using atomic compare-and-swap updates. The browser worker owns the fixed-step game; the server stores acknowledged checkpoints and controls exact-artifact approval and activation. A renewable 30-second authority lease carries a monotonically increasing fencing epoch. A second tab cannot publish a world while the first owns an unexpired lease.
+
+## Configure and run
+
+Use Node.js 22 or later. Install with `npm ci`; start with `npm run dev` (port 3100). Configure `.env.local` locally or Vercel environment variables on deployment:
+
+- `DATABASE_URL`: Neon/Postgres connection URL. Production refuses to fall back to memory or local disk.
+- `SESSION_SECRET`: at least 32 characters; signs host sessions and pseudonymizes Twitch voting identities.
+- `TOKEN_ENCRYPTION_KEY`: exactly 32 random bytes encoded as base64; encrypts OAuth grants with AES-256-GCM.
+- `APP_BASE_URL`: exact studio origin, such as `http://localhost:3100` or the production alias.
+- `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`: Twitch application. Register `${APP_BASE_URL}/api/auth/twitch/callback` exactly. The obsolete copied `TWITCH_REDIRECT_URI` is deliberately ignored.
+- `OPENAI_API_KEY`: runtime model access. Never use a `NEXT_PUBLIC_` variable.
+- `CODEX_MODEL`: defaults to `gpt-6.1-sol`; the configured account must actually support it.
+- `LIVEFORGE_GENERATION_HOST_IDS`: comma-separated allowed Twitch user IDs. Production model calls require a matching OAuth-authenticated host. Public practice visitors can import a real previously generated sample without model spend.
+- Vercel Sandbox identity: Vercel provides `VERCEL_OIDC_TOKEN` in deployments; use a fresh local OIDC token from the linked project, or all of `VERCEL_TOKEN`, `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID` locally.
+
+Without `DATABASE_URL`, development alone may persist to `.local/store`. This is a cross-process lock plus atomic-rename JSON store, not process memory. A crashed development process may leave `.local/store/.lock`; stop all local servers before removing that lock. No such fallback is permitted when `NODE_ENV=production` or `VERCEL` is set. Redis and Blob are not required.
+
+Read-only/setup probes (never print secrets):
+
+```sh
+node --env-file=.env --env-file=.env.local --import tsx scripts/db-check.ts
+```
+
+The following is a **real billable** Codex SDK generation, not a mock or prewritten rule selector:
+
+```sh
+node --env-file=.env --env-file=.env.local --import tsx scripts/generation-probe.ts 'When a stationary prop is close to the courier, create a temporary step to its right and make it glow brass.'
+```
+
+## HTTP contract
+
+All responses are JSON and `Cache-Control: no-store`. All show mutations require the signed HttpOnly `liveforge_host` cookie, an exact same-origin `Origin` header, and a unique `x-idempotency-key` (8–100 word/hyphen characters). Next.js browser `fetch` supplies Origin automatically on POST. Responses normally contain `{show: ShowState}`; private fields, grants and vote identities are omitted. Types live in `src/server/contracts.ts`.
+
+| Method/path                                     | Input or behavior                                                                                                                                                                                                       |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/status`                               | Configured services, model, transport, and session-scoped `generation.allowed`. This reports configuration/authorization, not a successful live provider health probe.                                                  |
+| `POST /api/shows`                               | `{mode:'practice' \| 'twitch'}`; creates studio and host cookie. Initial creation requires same origin; its cookie does not yet exist.                                                                                  |
+| `GET /api/shows`                                | Host-scoped studio summaries; latest 40 indexed shows plus current studio.                                                                                                                                              |
+| `POST /api/shows/:id/resume`                    | Resume an owned studio by updating the signed current-show cookie. Host identity persists across new studios.                                                                                                           |
+| `GET /api/shows/current`                        | Current authenticated private studio; 401 before creation.                                                                                                                                                              |
+| `GET /api/shows/:id`                            | Sanitized public board; no source, tokens, checkpoints, authority, or raw account identifiers.                                                                                                                          |
+| `POST /api/shows/:id/proposals`                 | Practice only: `{text,author?}`. Live ideas enter via real Twitch `!forge` commands.                                                                                                                                    |
+| `POST /api/shows/:id/votes`                     | Practice only: `{proposalId}`. One current endorsement per account per round.                                                                                                                                           |
+| `POST /api/shows/:id/practice/sample`           | Import actual previously Codex-generated source (default signature shadow bridge; optional `{sample:'step'}`), independently reverify, and label it reused; no provider call. Then use normal preview/approve/activate. |
+| `POST /api/shows/:id/generate`                  | `{proposalId,revision?,priorCandidateId?}`; explicit creator revision preserves original attribution; returns 202 `{show,job}`. Production requires an invited authenticated Twitch host.                               |
+| `GET /api/shows/:id/generations/:jobId`         | `{show,job}`; actual stage, attempt, SDK thread ID and diagnostics. No fabricated percentage.                                                                                                                           |
+| `POST /api/shows/:id/generations/:jobId/cancel` | Marks cancelled durably and stops its sandbox. Late responses cannot publish a candidate.                                                                                                                               |
+| `POST /api/shows/:id/candidates/:id/approve`    | `{sourceHash,programHash,previewCheckpoint}`. Exact generated preview checkpoint is mandatory and fully validated. Approval binds original source/program/preview hashes.                                               |
+| `POST /api/shows/:id/candidates/:id/reject`     | `{reason?}`; retain source/history, reject approval/activation, and reopen intake.                                                                                                                                      |
+| `POST /api/shows/:id/lease`                     | `{clientId,takeover?:boolean}`; acquire/renew. Explicit same-host takeover increments the fencing epoch. Response show contains epoch and expiry.                                                                       |
+| `POST /api/shows/:id/lease/release`             | `{clientId,epoch}`; release only a matching owner/epoch. A stale tab cannot release a newer owner.                                                                                                                      |
+| `POST /api/shows/:id/checkpoint`                | `{clientId,epoch,checkpoint}`; validates the full checkpoint and exact active artifact.                                                                                                                                 |
+| `POST /api/shows/:id/activate`                  | `{candidateId,sourceHash,programHash,clientId,epoch,checkpoint}`; verified/approved/current-revision candidate only. Trusted engine preflights activation, then commits a saved checkpoint and new revision.            |
+| `POST /api/shows/:id/rollback`                  | `{clientId,epoch}`; restores the exact checkpoint before the last activation. Progress after that checkpoint resets, visibly disclosed.                                                                                 |
+| `POST /api/shows/:id/round`                     | `{votingOpen:boolean}`; close/open intake.                                                                                                                                                                              |
+| `POST /api/shows/:id/proposals/:id/moderate`    | `{status:'hidden' \| 'open'}`; host editorial control.                                                                                                                                                                  |
+| `GET /api/auth/twitch/login?showId=...`         | Host-only OAuth redirect with expiring single-use state.                                                                                                                                                                |
+| `GET /api/auth/twitch/callback`                 | Exchanges code on server, validates identity/app/scope, encrypts grant. Redirects to studio.                                                                                                                            |
+| `POST /api/shows/:id/twitch/session`            | `{sessionId,reconnect?:boolean}` from genuine EventSub welcome. Creates server-authorized chat subscription. Planned reconnect inherits its subscription.                                                               |
+| `POST /api/shows/:id/twitch/events`             | Actual `channel.chat.message` notification envelope. Subscribed channel and subscription ID must match; max event age five minutes.                                                                                     |
+| `POST /api/shows/:id/twitch/health`             | `{status:'connected' \| 'gap' \| 'revoked' \| 'disconnected'}`; gap pauses live intake.                                                                                                                                 |
+
+Connected Twitch state expires in host/public responses when its last genuine subscription/event/health heartbeat is more than 70 seconds old or the host authority lease is missing/expired. The connector posts health at most every 25 seconds while genuinely receiving welcome/keepalive/events. A heartbeat updates transport freshness and never opens an intentionally closed round. Revoked or unvalidated OAuth cannot be restored by a transport heartbeat.
+
+The game revision changes only on activation/rollback. Lease renewal, routine snapshots, proposals and job progress cannot invalidate an otherwise current candidate. Checkpoints have strict schema validation, fixed entity identities, bounded finite geometry, protected ember/progress fields, exact active source/program identity, and trusted-engine restoration checks.
+
+## Twitch authorization and transport
+
+The host browser opens `wss://eventsub.wss.twitch.tv/ws`. It posts the welcome session ID; the server validates the user's token and creates the `channel.chat.message` subscription with `user:read:chat`. Tokens never enter browser JavaScript. The browser forwards bounded command envelopes and reports reconnect gaps. The server does not send chat messages automatically and includes no mass acknowledgement bot.
+
+This is a trusted-host connector: Twitch WebSocket messages forwarded by the authorized host browser are not independently signed server webhook evidence. A malicious authorized host can fabricate envelopes. Public visitors cannot post events to another host's show. Demonstration evidence should include the original Twitch chat alongside the resulting ledger rather than claim server-side cryptographic proof of a viewer event.
+
+The copied local bootstrap token is usable only in development, never on a Vercel deployment. The server never automatically refreshes that shared grant; the setup owner remains its sole refresh owner. New OAuth grants created through this application are encrypted, explicitly marked with authorization-code provenance and client ID, and renewed automatically under a per-grant database lease. Rotated access/refresh tokens are persisted encrypted as pending validation before a follow-up request; identity, application, and the exact original scopes must pass before use. Routine same-scope renewal does not require another prompt. A revoked/invalid refresh grant ends the Twitch session and requires reauthorization. Older unmarked records remain validation-only until one reauthorization. Production authorization is independent from copied development credentials.
+
+The active OAuth-backed studio polling path maintains token validation at least hourly, and subscription/model authorization validates before use. Renewal occurs when less than one minute of usable lifetime remains or validation reports 401. A 60-second fenced database lease serializes renewals across processes; a contender waits up to 15 seconds and then reports retryable busy. Transient provider failures pause intake and back off for 30 seconds; pending rotated tokens survive a crash and resume validation without discarding the new refresh token. No always-on worker or disconnected-browser Twitch session is claimed. [Twitch token renewal](https://dev.twitch.tv/docs/authentication/refresh-tokens/).
+
+A planned EventSub reconnect preserves subscriptions. An unexpected disconnect opens a connection gap and requires resubscription. Twitch does not replay missed messages; the UI must not invent missing votes. Keepalive and reconnect handling belongs to the browser connector. [Twitch WebSocket protocol](https://dev.twitch.tv/docs/eventsub/handling-websocket-events/), [chat authorization](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage), [token validation](https://dev.twitch.tv/docs/authentication/validate-tokens/), [OAuth flow](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#authorization-code-grant-flow).
+
+## Generation boundary and evidence
+
+The coordinator starts a genuine short-lived Vercel Sandbox microVM and installs pinned official `@openai/codex-sdk@0.166.0`. No application repository, `.env`, Twitch/DB/Git credentials or Vercel control-plane credentials are copied into the guest. Only the trusted SDK process receives the model API key. The guest has a fresh Codex home; shell and multi-agent/plugin capabilities are disabled, approvals are denied, and unexpected tool events abort the turn. It asks for source text only. Future rule names/descriptions use plain performer language and timing in seconds while retaining exact simulation thresholds in the immutable source; previously generated artifacts are unchanged. A trusted wrapper writes `rule.ts`, thread ID and usage from actual SDK events.
+
+The network firewall permits npm and OpenAI while bootstrapping, only OpenAI during generation, then denies all egress before reading the artifact. No candidate JavaScript executes anywhere. The application parses a restricted TypeScript literal into a bounded `RuleProgram` data tree; the separate trusted verifier simulates that tree through the capability-limited engine. Candidate-provided tests cannot replace this verifier. API keys are not available to candidate logic. This is bounded rule generation, not safe execution of arbitrary generated programs.
+
+Source hashes use SHA-256 of exact UTF-8 bytes; program and preview hashes use SHA-256 of canonical sorted-key JSON, stable across Postgres JSONB key reordering. Approval and activation recompile the exact source and independently check the stored program hash and the original approved identities. The trusted engine preflights activation against a copy of the acknowledged checkpoint. Cancellation wins over late outputs. A six-minute abandoned coordinator threshold is repaired durably on the next show read, so a killed serverless invocation cannot leave a show permanently forging; sandbox lifetime independently stops execution.
+
+Next.js `after()` keeps queued generation running after the HTTP response, within a 300-second function budget. This is not a durable resumable job engine: after platform failure the interrupted job becomes a visible failure and must be retried. It never pretends to resume an incomplete SDK turn. [Codex SDK](https://developers.openai.com/codex/sdk/), [Vercel Sandbox SDK](https://vercel.com/docs/sandbox/sdk-reference).
+
+## Actual limits
+
+- 60 visible proposals/show, 8–280 normalized characters; reject links, code blocks and credential-extraction instructions. Host selection remains the final moderation/capability gate; this is not a comprehensive abuse classifier.
+- Three proposals/account/minute, 60 proposals/channel/minute, 15 vote changes/account/minute. One endorsement/account/round; a later vote replaces it. Current dedup window retains 4,000 recent message identifiers; notification age is bounded to five minutes.
+- 12 studio creations/IP/hour; production generation additionally requires an allowlisted OAuth host. Six generation requests/show/hour, one active job/show, 30 jobs/show; at most two repairs. There is no claimed dollar/token spend cap.
+- 260-second sandbox lifetime; 60-second SDK install limit; 65-second SDK turn limit and 70-second command kill limit. Job/function timeout is a failure, not a success.
+- Two-megabyte show JSON budget, 96-kilobyte checkpoint budget, 128-kilobyte HTTP body budget; 150 retained operational events and 60 idempotency receipts/show.
+- The strict engine contract currently bounds literal source to 24,000 characters and IR depth/nodes; see the tracked game runtime documentation for actual capabilities and simulation budgets.
+
+Shows are bounded but retained until deployment/database owner cleanup; automatic retention/deletion/export is not implemented. The earlier planning retention targets are not product claims. Twitch grants remain encrypted; public board output excludes them and private actor hashes.
+
+## Verification and observed generation
+
+Run `npm test`. The backend suite covers cross-process serialization, idempotency, show authorization, one-account voting, lease fencing, source/program/approval tampering, strict checkpoint failures, activation/rollback, cancelled jobs, stale coordinator recovery, encrypted grants, OAuth state replay, chat deduplication and production generation authorization. Provider/network behavior is mocked only in the deterministic OAuth tests; the separate generation evidence records actual model calls and Sandbox execution.
+
+See `docs/evidence/generation/` for sanitized real-run evidence and its actual sample count. A reused practice sample is labeled reused and retains the original SDK thread/model/time. Neither a stored fixture nor one success establishes broad generation reliability or live Twitch operation.

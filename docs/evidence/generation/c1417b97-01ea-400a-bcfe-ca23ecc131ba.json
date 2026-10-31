@@ -1,0 +1,28 @@
+{
+  "showId": "c1417b97-01ea-400a-bcfe-ca23ecc131ba",
+  "mode": "practice",
+  "recordedAt": "2026-10-31T11:20:00.523Z",
+  "records": [
+    {
+      "proposal": "When the courier is near a stationary prop, let the prop leave a temporary low-friction platform and glow brass.",
+      "origin": "practice",
+      "revision": null,
+      "jobId": "91f88b44-d2d7-4e68-8bf4-f2429c672f19",
+      "status": "failed",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdk": {
+        "package": "@openai/codex-sdk",
+        "version": "0.166.0"
+      },
+      "threadId": "01a191aa-9984-78e3-b86a-7b9fb27b8d23",
+      "sandboxName": "peach-smooth-bandicoot-HTDzDj",
+      "createdAt": "2026-10-31T11:13:45.961Z",
+      "completedAt": "2026-10-31T11:14:21.059Z",
+      "elapsedMs": 35098,
+      "message": "Proximity, stationary-prop detection, temporary platform creation, and a brass glow are supported, but low-friction generated platforms are not. createSurface has no friction setting, and material can target only the source entity or player, not the created platform.",
+      "usage": null,
+      "candidate": null
+    }
+  ]
+}

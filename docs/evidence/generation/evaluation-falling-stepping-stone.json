@@ -1,0 +1,130 @@
+{
+  "id": "falling-stepping-stone",
+  "heldOut": true,
+  "proposal": "Only while the courier is falling faster than 1 unit per tick, create a one-tick solid stepping stone 70 units to their right and 15 units below their feet, and give the courier a mint glow. The stone should stop renewing when they rise or land.",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "showId": "0b113a0f-658d-4c4e-81a1-2764a89a643d",
+  "jobId": "60572dc4-367c-47d8-a043-78d6fde55565",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/1.0.0",
+  "threadId": "01a191b4-8791-76f2-a80b-a5a6a5fa4e20",
+  "sandboxName": "peach-interim-whale-ZY3aeB",
+  "createdAt": "2026-10-31T11:24:37.889Z",
+  "completedAt": "2026-10-31T11:25:13.101Z",
+  "elapsedMs": 35212,
+  "usage": {
+    "input_tokens": 9368,
+    "output_tokens": 278,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 9368,
+        "output_tokens": 278,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 56,
+        "cache_write_input_tokens": 9365
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a191b4-8791-76f2-a80b-a5a6a5fa4e20",
+      "sourceHash": "893e498b5f16219d94f7d59822336f6087cb6604c62b5b79d1e89c622ef9b730",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Checkpoint round trip and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 386,
+          "impulsesApplied": 0,
+          "surfacesCreated": 386
+        },
+        "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+        "engineVersion": "last-light/1.0.0",
+        "ticksSimulated": 3490
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default { version: 1, name: \"Falling Courier Stepping Stone\", description: \"While the courier is airborne and falling faster than 1 unit per tick, renew a one-tick solid stone 70 units right and 15 units below their feet and apply a mint glow. Renewal stops when they rise or land.\", rules: [{ id: \"falling-step\", each: \"player\", when: { all: [{ compare: { left: { field: \"vy\" }, op: \"gt\", right: 1 } }, { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 0 } }] }, actions: [{ type: \"createSurface\", offsetX: 70, offsetY: 15, width: 48, lifetime: 1, solid: true }, { type: \"cue\", target: \"self\", color: \"mint\", intensity: 1 }] }] } satisfies RuleModule;",
+    "sourceHash": "893e498b5f16219d94f7d59822336f6087cb6604c62b5b79d1e89c622ef9b730",
+    "programHash": "f54e879b8069705f5fac012013408a2ee2542ebfd83ea12d3cb32aea8afbc958",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Checkpoint round trip and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 386,
+        "impulsesApplied": 0,
+        "surfacesCreated": 386
+      },
+      "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+      "engineVersion": "last-light/1.0.0",
+      "ticksSimulated": 3490
+    }
+  }
+}

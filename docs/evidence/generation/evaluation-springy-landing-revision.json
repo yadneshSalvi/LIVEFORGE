@@ -1,0 +1,136 @@
+{
+  "inputOrigin": "synthetic-practice-evaluation",
+  "case": "springy-landing-explicit-creator-revision",
+  "originalJobId": "0fb1d157-b3f8-4a49-b456-72ba8419ec2d",
+  "originalIntentReview": "Airborne material friction differs from the requested baseline.",
+  "showId": "a614bf6e-a09a-4a55-8be2-a8ef49d8b235",
+  "job": {
+    "id": "d3de8763-c985-43d3-93d6-7de0c88e5979",
+    "model": "gpt-6.1-sol",
+    "usage": {
+      "input_tokens": 9385,
+      "output_tokens": 364,
+      "cached_input_tokens": 0
+    },
+    "status": "ready",
+    "attempt": 1,
+    "message": "Independent checks passed. Preview this candidate before approval.",
+    "revision": "When grounded use friction 0.9 and bounce 0.45 with a brass glow. When airborne restore baseline friction exactly 0.82, bounce 0, and no visible glow.",
+    "threadId": "01a191b6-453b-7043-ba73-3d45791a2a24",
+    "createdAt": "2026-10-31T11:26:29.144Z",
+    "sandboxId": "chocolate-dynamic-mongoose-LKNJWJ",
+    "updatedAt": "2026-10-31T11:27:05.174Z",
+    "proposalId": "P1",
+    "candidateId": "74303753-a423-4694-8e81-0fd636bef0bf",
+    "baseRevision": 0,
+    "attemptEvidence": [
+      {
+        "usage": {
+          "input_tokens": 9385,
+          "output_tokens": 364,
+          "cached_input_tokens": 0,
+          "reasoning_output_tokens": 28,
+          "cache_write_input_tokens": 9382
+        },
+        "status": "verified",
+        "attempt": 1,
+        "threadId": "01a191b6-453b-7043-ba73-3d45791a2a24",
+        "sourceHash": "9c0eae1a6d716081529805a33ca54fab24d9eaa8648610f6df175f17f09af556",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 1440,
+            "impulsesApplied": 0,
+            "surfacesCreated": 0
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    ],
+    "priorCandidateId": "75ab55b4-099b-49bf-8a8a-19d5b4051cc8"
+  },
+  "sdkVersion": "0.166.0",
+  "elapsedMs": 36030,
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Grounded Spring\",\n  description: \"While grounded, the courier has friction 0.9, bounce 0.45, and a brass glow. While airborne, friction returns to 0.82, bounce to 0, and the glow disappears.\",\n  rules: [\n    {\n      id: \"grounded-spring\",\n      each: \"player\",\n      when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 1 } },\n      actions: [\n        { type: \"material\", target: \"self\", friction: 0.9, bounce: 0.45 },\n        { type: \"cue\", target: \"self\", color: \"brass\", intensity: 1 }\n      ]\n    },\n    {\n      id: \"airborne-baseline\",\n      each: \"player\",\n      when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 0 } },\n      actions: [\n        { type: \"material\", target: \"self\", friction: 0.82, bounce: 0 },\n        { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "9c0eae1a6d716081529805a33ca54fab24d9eaa8648610f6df175f17f09af556",
+    "programHash": "05f94b2158665bf7808e6477b6be804d93f4b03432bc6a4fab422099e97e4528",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Checkpoint round trip and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 1440,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+      "engineVersion": "last-light/1.0.0",
+      "ticksSimulated": 3490
+    }
+  }
+}

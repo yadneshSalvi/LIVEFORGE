@@ -24,3 +24,4 @@ __pycache__/
 # Runtime evidence may contain chat or credentials; export sanitized evidence explicitly
 /.local/
 /artifacts/private/
+*.tsbuildinfo

@@ -1,0 +1,28 @@
+{
+  "showId": "a13ae789-71af-47a2-8ca2-1a0d6923a25e",
+  "mode": "practice",
+  "recordedAt": "2026-10-31T11:20:00.159Z",
+  "records": [
+    {
+      "proposal": "When the courier is near a stationary prop, let the prop leave a temporary low-friction platform and glow brass.",
+      "origin": "practice",
+      "revision": null,
+      "jobId": "fd32a768-8f9b-4032-ba00-7bb3693a9870",
+      "status": "failed",
+      "attempts": 0,
+      "model": "gpt-6.1-sol",
+      "sdk": {
+        "package": "@openai/codex-sdk",
+        "version": "0.166.0"
+      },
+      "threadId": null,
+      "sandboxName": null,
+      "createdAt": "2026-10-31T11:13:20.361Z",
+      "completedAt": "2026-10-31T11:13:22.045Z",
+      "elapsedMs": 1684,
+      "message": "The isolated generator became unavailable. Your active game is preserved; retry when ready.",
+      "usage": null,
+      "candidate": null
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "springy-landing",
+  "heldOut": false,
+  "proposal": "While the courier is grounded, make their material springy with bounce 0.45 and a brass glow; keep normal material while airborne.",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "showId": "a614bf6e-a09a-4a55-8be2-a8ef49d8b235",
+  "jobId": "0fb1d157-b3f8-4a49-b456-72ba8419ec2d",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/1.0.0",
+  "threadId": "01a191b3-450d-7283-bf24-e8fa9679cdbb",
+  "sandboxName": "silver-architectural-walrus-9n2qCL",
+  "createdAt": "2026-10-31T11:23:13.008Z",
+  "completedAt": "2026-10-31T11:23:56.785Z",
+  "elapsedMs": 43777,
+  "usage": {
+    "input_tokens": 9341,
+    "output_tokens": 343,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 9341,
+        "output_tokens": 343,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 76,
+        "cache_write_input_tokens": 9338
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a191b3-450d-7283-bf24-e8fa9679cdbb",
+      "sourceHash": "08fce3336ce354ba1aa9ca1798541d55dd71da9a1b32fc05378129835b3ae641",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Checkpoint round trip and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 1440,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+        "engineVersion": "last-light/1.0.0",
+        "ticksSimulated": 3490
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default { version: 1, name: \"Grounded Spring\", description: \"While grounded, the courier has bounce 0.45 and a brass glow. While airborne, bounce returns to 0 and the glow fades completely. Friction stays at 0.9.\", rules: [{ id: \"grounded-spring\", each: \"player\", when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 1 } }, actions: [{ type: \"material\", target: \"self\", friction: 0.9, bounce: 0.45 }, { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0.65 }] }, { id: \"airborne-normal\", each: \"player\", when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 0 } }, actions: [{ type: \"material\", target: \"self\", friction: 0.9, bounce: 0 }, { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0 }] }] } satisfies RuleModule;",
+    "sourceHash": "08fce3336ce354ba1aa9ca1798541d55dd71da9a1b32fc05378129835b3ae641",
+    "programHash": "19ec9ae1a7b0702de2d2407bcdedef3af155df101fddeb9f160a2ce852be52ab",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Checkpoint round trip and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 1440,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+      "engineVersion": "last-light/1.0.0",
+      "ticksSimulated": 3490
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "id": "timed-proximity-lift",
+  "heldOut": false,
+  "proposal": "When the courier is within 100 units of the stationary prop and its timer is zero, give the courier a small upward impulse and set the prop timer to 90 ticks; mark the prop coral.",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "showId": "6be73c97-8615-41fe-afc6-e14f4e903a6d",
+  "jobId": "11c35c9c-570d-444b-b0a8-10982ec4048a",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/1.0.0",
+  "threadId": "01a191b3-f5f3-7c23-92a5-0d2525d32486",
+  "sandboxName": "coral-upset-trout-B1dL8n",
+  "createdAt": "2026-10-31T11:23:59.525Z",
+  "completedAt": "2026-10-31T11:24:35.497Z",
+  "elapsedMs": 35972,
+  "usage": {
+    "input_tokens": 9353,
+    "output_tokens": 323,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 9353,
+        "output_tokens": 323,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 91,
+        "cache_write_input_tokens": 9350
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a191b3-f5f3-7c23-92a5-0d2525d32486",
+      "sourceHash": "fac8e19064f7f99cf36e2dd3598b860347af90278f577df8a363593ccd0ee11d",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Checkpoint round trip and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 2,
+          "impulsesApplied": 2,
+          "surfacesCreated": 0
+        },
+        "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+        "engineVersion": "last-light/1.0.0",
+        "ticksSimulated": 3490
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default { version: 1, name: \"Courier Lift\", description: \"A stationary prop lifts the courier slightly when within 100 units and its cooldown is zero, then starts a 90-tick cooldown and glows coral.\", rules: [{ id: \"prop-lift\", each: \"prop\", when: { all: [{ compare: { left: { field: \"distanceToPlayer\" }, op: \"lte\", right: 100 } }, { compare: { left: { field: \"stationaryTicks\" }, op: \"gte\", right: 1 } }, { compare: { left: { field: \"timer\" }, op: \"eq\", right: 0 } }] }, actions: [{ type: \"impulse\", target: \"player\", x: 0, y: -0.8 }, { type: \"timer\", value: 90 }, { type: \"cue\", target: \"self\", color: \"coral\", intensity: 1 }] }] } satisfies RuleModule;",
+    "sourceHash": "fac8e19064f7f99cf36e2dd3598b860347af90278f577df8a363593ccd0ee11d",
+    "programHash": "e3126d6c167247774dff907198d40e73bdf54baf07c53f1dfd1f9129e473f023",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Checkpoint round trip and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 2,
+        "impulsesApplied": 2,
+        "surfacesCreated": 0
+      },
+      "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+      "engineVersion": "last-light/1.0.0",
+      "ticksSimulated": 3490
+    }
+  }
+}

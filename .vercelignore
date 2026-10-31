@@ -1,0 +1,16 @@
+.git/
+.vercel/
+.next/
+node_modules/
+plans/
+.local/
+artifacts/private/
+.env
+.env.*
+*.pem
+*.key
+*.log
+*.tsbuildinfo
+coverage/
+test-results/
+playwright-report/

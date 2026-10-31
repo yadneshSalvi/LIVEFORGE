@@ -1,0 +1,77 @@
+{
+  "showId": "00d438b5-1f4f-48bf-950f-3cad0e12b2e0",
+  "mode": "practice",
+  "recordedAt": "2026-10-31T11:20:01.374Z",
+  "records": [
+    {
+      "proposal": "When the courier stands close to a stationary prop, create a temporary step on its right and make the prop glow brass; remove the step when the courier moves away.",
+      "origin": "practice",
+      "revision": null,
+      "jobId": "d58f432a-3a6b-446b-8b5e-eb8397e0f34d",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdk": {
+        "package": "@openai/codex-sdk",
+        "version": "0.166.0"
+      },
+      "threadId": "01a191ab-a99b-7363-a29b-0fafc45f5d0b",
+      "sandboxName": "salmon-damaged-lemur-5n6oz6",
+      "createdAt": "2026-10-31T11:14:52.163Z",
+      "completedAt": "2026-10-31T11:15:33.275Z",
+      "elapsedMs": 41112,
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "usage": {
+        "input_tokens": 9346,
+        "output_tokens": 428,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 137,
+        "cache_write_input_tokens": 9343
+      },
+      "candidate": {
+        "source": "export default {\n  version: 1,\n  name: \"Brass Prop Step\",\n  description: \"A stationary prop glows brass while the courier is within 90 units. A solid step appears to its right, 32 units above its feet. The step lasts one tick and is renewed only while the courier remains nearby, so it expires when the courier moves away.\",\n  rules: [\n    {\n      id: \"nearby-stationary-prop-step\",\n      each: \"prop\",\n      when: {\n        all: [\n          { compare: { left: { field: \"speed\" }, op: \"eq\", right: 0 } },\n          { compare: { left: { field: \"distanceToPlayer\" }, op: \"lte\", right: 90 } }\n        ]\n      },\n      actions: [\n        { type: \"createSurface\", offsetX: 56, offsetY: -32, width: 72, lifetime: 1, solid: true },\n        { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0.8 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+        "sourceHash": "94c0c2a1b2ac51ac2b88726bdf4b9bf2548466b4354b6e6e6651b320b190de4d",
+        "recordedProgramHash": "26455e8381974e1a7197dcf33a6ac59741d55308c03b9b157dab2a196ee753be",
+        "canonicalProgramHash": "2a93f7338748f89ac78e74e76cd6d56777e3a359d6e49018d412ad25defc1263",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 184,
+            "impulsesApplied": 0,
+            "surfacesCreated": 184
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 2050
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules
+.next
+.vercel
+.local
+plans
+.env
+.env.*
+package-lock.json
+# Keep single escaped pipes in the hand-checked two-column API table.
+docs/backend.md

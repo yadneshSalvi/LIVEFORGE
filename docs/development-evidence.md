@@ -1,0 +1,16 @@
+# Codex development evidence
+
+The actual coordinating development session is `01a190da-3cee-7a10-b7c1-e0cdbb379510`. The implementation lead thread is `01a191a4-623f-7533-9ef5-5f69ebeb704f`. The root read its IDs from the trusted Codex environment; the implementation lead independently read `CODEX_THREAD_ID` and `CODEX_SESSION_ID`. These identify real build conversations, not reconstructed examples. The release owner should confirm the main submission thread with `/status` when preparing the submission.
+
+The user explicitly requested a GPT-6 Astra lead and GPT-6.1 Sol implementation workers. The lead divided disjoint responsibilities between game/runtime and backend/integrations, then owned product UI, integration, review and release documentation. The coordinating root owned actual in-app-browser testing, provider/account provisioning and deployment. No private transcripts, keys or whole environment files are committed.
+
+Concrete Codex-assisted engineering iterations retained in this repository include:
+
+1. **Bounded novel behavior.** Codex built the literal compiler and generic rule interpreter. Independent malicious-syntax tests prove attempted executable code is rejected. The generated stationary-shadow artifact uses stillness and grounded conditions plus projected geometry; the engine has no named shadow-bridge preset.
+2. **Persistence-correct identity.** A real Postgres probe exposed that JSONB reorders object keys. The implementation changed program/preview identities to canonical sorted-key JSON and added a regression test. Exact source bytes still use their own SHA-256 hash.
+3. **Real input-to-tick correctness.** The browser operator observed that a fast E tap could vanish between simulation ticks. The game worker gained rising-edge latching for jump/interact/reset, with a real gate-interaction regression test. Held movement and prop pushing were preserved.
+4. **Navigation cleanup.** The first browser walkthrough exposed a queued ResizeObserver reading a null ref after navigation. The renderer now captures its mounted container and guards queued resize/render callbacks after disposal.
+5. **Creator control under real play.** The browser operator generated an actual shadow rule, played it in an isolated preview, approved its exact version, crossed its live bridge, operated the counterweight, awakened the guardian, completed the beacon and restored the previous checkpoint. Source, tests and browser evidence are linked below.
+6. **Model honesty.** The real generation evaluation distinguished verifier acceptance from intent fidelity. One material rule passed structural checks but altered airborne friction; it was explicitly rejected and corrected through a real creator-style revision. The original artifact and correction remain in the evidence.
+
+Runtime Codex generation is a separate claim. Actual SDK threads, source artifacts, usage and elapsed timing are stored in [generation evidence](evidence/generation/README.md). Those runtime jobs do not substitute for this development history. [Browser evidence](evidence/browser/2026-10-31-local.md) records the observed product journey and corresponding fixes.

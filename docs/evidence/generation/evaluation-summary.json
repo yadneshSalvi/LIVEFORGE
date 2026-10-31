@@ -1,0 +1,527 @@
+{
+  "startedAt": "2026-10-31T11:22:23.674Z",
+  "completedAt": "2026-10-31T11:25:15.535Z",
+  "sampleCount": 4,
+  "records": [
+    {
+      "id": "stationary-shadow",
+      "heldOut": false,
+      "proposal": "A movable prop casts a solid shadow only after staying still for 30 ticks; moving it should dissolve the shadow bridge immediately.",
+      "inputOrigin": "synthetic-practice-evaluation",
+      "showId": "cac2a05f-6cbb-4706-9296-dc6a26821fe7",
+      "jobId": "938f98dd-0530-4eb6-a593-395a0077b50a",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/1.0.0",
+      "threadId": "01a191b2-a2cc-7aa2-ba97-bbf55d328fcf",
+      "sandboxName": "gold-suspicious-tortoise-azTxbC",
+      "createdAt": "2026-10-31T11:22:28.517Z",
+      "completedAt": "2026-10-31T11:23:10.573Z",
+      "elapsedMs": 42056,
+      "usage": {
+        "input_tokens": 9338,
+        "output_tokens": 407,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 9338,
+            "output_tokens": 407,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 160,
+            "cache_write_input_tokens": 9335
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a191b2-a2cc-7aa2-ba97-bbf55d328fcf",
+          "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Checkpoint round trip and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 1165
+            },
+            "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+            "engineVersion": "last-light/1.0.0",
+            "ticksSimulated": 3490
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default {\n  version: 1,\n  name: \"Settled Prop Shadow Bridge\",\n  description: \"After a prop stays still for 30 ticks, its lantern-cast shadow becomes solid. The shadow lasts one tick and refreshes only while the prop remains still, so movement dissolves the bridge on the next simulation tick.\",\n  rules: [\n    {\n      id: \"settled-prop-shadow\",\n      each: \"prop\",\n      when: {\n        all: [\n          { compare: { left: { field: \"stationaryTicks\" }, op: \"gte\", right: 30 } },\n          { compare: { left: { field: \"speed\" }, op: \"eq\", right: 0 } }\n        ]\n      },\n      actions: [\n        { type: \"projectShadow\", maxLength: 480, thickness: 12, lifetime: 1, solid: true }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+        "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+        "programHash": "e2c587406b146dbed283c9bcec7fb620d377970a07211bc23ec907ef35956a6c",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 0,
+            "impulsesApplied": 0,
+            "surfacesCreated": 1165
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    },
+    {
+      "id": "springy-landing",
+      "heldOut": false,
+      "proposal": "While the courier is grounded, make their material springy with bounce 0.45 and a brass glow; keep normal material while airborne.",
+      "inputOrigin": "synthetic-practice-evaluation",
+      "showId": "a614bf6e-a09a-4a55-8be2-a8ef49d8b235",
+      "jobId": "0fb1d157-b3f8-4a49-b456-72ba8419ec2d",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/1.0.0",
+      "threadId": "01a191b3-450d-7283-bf24-e8fa9679cdbb",
+      "sandboxName": "silver-architectural-walrus-9n2qCL",
+      "createdAt": "2026-10-31T11:23:13.008Z",
+      "completedAt": "2026-10-31T11:23:56.785Z",
+      "elapsedMs": 43777,
+      "usage": {
+        "input_tokens": 9341,
+        "output_tokens": 343,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 9341,
+            "output_tokens": 343,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 76,
+            "cache_write_input_tokens": 9338
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a191b3-450d-7283-bf24-e8fa9679cdbb",
+          "sourceHash": "08fce3336ce354ba1aa9ca1798541d55dd71da9a1b32fc05378129835b3ae641",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Checkpoint round trip and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 1440,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+            "engineVersion": "last-light/1.0.0",
+            "ticksSimulated": 3490
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default { version: 1, name: \"Grounded Spring\", description: \"While grounded, the courier has bounce 0.45 and a brass glow. While airborne, bounce returns to 0 and the glow fades completely. Friction stays at 0.9.\", rules: [{ id: \"grounded-spring\", each: \"player\", when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 1 } }, actions: [{ type: \"material\", target: \"self\", friction: 0.9, bounce: 0.45 }, { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0.65 }] }, { id: \"airborne-normal\", each: \"player\", when: { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 0 } }, actions: [{ type: \"material\", target: \"self\", friction: 0.9, bounce: 0 }, { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0 }] }] } satisfies RuleModule;",
+        "sourceHash": "08fce3336ce354ba1aa9ca1798541d55dd71da9a1b32fc05378129835b3ae641",
+        "programHash": "19ec9ae1a7b0702de2d2407bcdedef3af155df101fddeb9f160a2ce852be52ab",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 1440,
+            "impulsesApplied": 0,
+            "surfacesCreated": 0
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    },
+    {
+      "id": "timed-proximity-lift",
+      "heldOut": false,
+      "proposal": "When the courier is within 100 units of the stationary prop and its timer is zero, give the courier a small upward impulse and set the prop timer to 90 ticks; mark the prop coral.",
+      "inputOrigin": "synthetic-practice-evaluation",
+      "showId": "6be73c97-8615-41fe-afc6-e14f4e903a6d",
+      "jobId": "11c35c9c-570d-444b-b0a8-10982ec4048a",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/1.0.0",
+      "threadId": "01a191b3-f5f3-7c23-92a5-0d2525d32486",
+      "sandboxName": "coral-upset-trout-B1dL8n",
+      "createdAt": "2026-10-31T11:23:59.525Z",
+      "completedAt": "2026-10-31T11:24:35.497Z",
+      "elapsedMs": 35972,
+      "usage": {
+        "input_tokens": 9353,
+        "output_tokens": 323,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 9353,
+            "output_tokens": 323,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 91,
+            "cache_write_input_tokens": 9350
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a191b3-f5f3-7c23-92a5-0d2525d32486",
+          "sourceHash": "fac8e19064f7f99cf36e2dd3598b860347af90278f577df8a363593ccd0ee11d",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Checkpoint round trip and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 2,
+              "impulsesApplied": 2,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+            "engineVersion": "last-light/1.0.0",
+            "ticksSimulated": 3490
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default { version: 1, name: \"Courier Lift\", description: \"A stationary prop lifts the courier slightly when within 100 units and its cooldown is zero, then starts a 90-tick cooldown and glows coral.\", rules: [{ id: \"prop-lift\", each: \"prop\", when: { all: [{ compare: { left: { field: \"distanceToPlayer\" }, op: \"lte\", right: 100 } }, { compare: { left: { field: \"stationaryTicks\" }, op: \"gte\", right: 1 } }, { compare: { left: { field: \"timer\" }, op: \"eq\", right: 0 } }] }, actions: [{ type: \"impulse\", target: \"player\", x: 0, y: -0.8 }, { type: \"timer\", value: 90 }, { type: \"cue\", target: \"self\", color: \"coral\", intensity: 1 }] }] } satisfies RuleModule;",
+        "sourceHash": "fac8e19064f7f99cf36e2dd3598b860347af90278f577df8a363593ccd0ee11d",
+        "programHash": "e3126d6c167247774dff907198d40e73bdf54baf07c53f1dfd1f9129e473f023",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 2,
+            "impulsesApplied": 2,
+            "surfacesCreated": 0
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    },
+    {
+      "id": "falling-stepping-stone",
+      "heldOut": true,
+      "proposal": "Only while the courier is falling faster than 1 unit per tick, create a one-tick solid stepping stone 70 units to their right and 15 units below their feet, and give the courier a mint glow. The stone should stop renewing when they rise or land.",
+      "inputOrigin": "synthetic-practice-evaluation",
+      "showId": "0b113a0f-658d-4c4e-81a1-2764a89a643d",
+      "jobId": "60572dc4-367c-47d8-a043-78d6fde55565",
+      "status": "ready",
+      "attempts": 1,
+      "model": "gpt-6.1-sol",
+      "sdkVersion": "0.166.0",
+      "engineVersion": "last-light/1.0.0",
+      "threadId": "01a191b4-8791-76f2-a80b-a5a6a5fa4e20",
+      "sandboxName": "peach-interim-whale-ZY3aeB",
+      "createdAt": "2026-10-31T11:24:37.889Z",
+      "completedAt": "2026-10-31T11:25:13.101Z",
+      "elapsedMs": 35212,
+      "usage": {
+        "input_tokens": 9368,
+        "output_tokens": 278,
+        "cached_input_tokens": 0
+      },
+      "attemptEvidence": [
+        {
+          "usage": {
+            "input_tokens": 9368,
+            "output_tokens": 278,
+            "cached_input_tokens": 0,
+            "reasoning_output_tokens": 56,
+            "cache_write_input_tokens": 9365
+          },
+          "status": "verified",
+          "attempt": 1,
+          "threadId": "01a191b4-8791-76f2-a80b-a5a6a5fa4e20",
+          "sourceHash": "893e498b5f16219d94f7d59822336f6087cb6604c62b5b79d1e89c622ef9b730",
+          "verification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Checkpoint round trip and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 386,
+              "impulsesApplied": 0,
+              "surfacesCreated": 386
+            },
+            "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+            "engineVersion": "last-light/1.0.0",
+            "ticksSimulated": 3490
+          }
+        }
+      ],
+      "message": "Independent checks passed. Preview this candidate before approval.",
+      "candidate": {
+        "source": "export default { version: 1, name: \"Falling Courier Stepping Stone\", description: \"While the courier is airborne and falling faster than 1 unit per tick, renew a one-tick solid stone 70 units right and 15 units below their feet and apply a mint glow. Renewal stops when they rise or land.\", rules: [{ id: \"falling-step\", each: \"player\", when: { all: [{ compare: { left: { field: \"vy\" }, op: \"gt\", right: 1 } }, { compare: { left: { field: \"grounded\" }, op: \"eq\", right: 0 } }] }, actions: [{ type: \"createSurface\", offsetX: 70, offsetY: 15, width: 48, lifetime: 1, solid: true }, { type: \"cue\", target: \"self\", color: \"mint\", intensity: 1 }] }] } satisfies RuleModule;",
+        "sourceHash": "893e498b5f16219d94f7d59822336f6087cb6604c62b5b79d1e89c622ef9b730",
+        "programHash": "f54e879b8069705f5fac012013408a2ee2542ebfd83ea12d3cb32aea8afbc958",
+        "verification": {
+          "checks": [
+            {
+              "name": "Bounded capability schema",
+              "detail": "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+              "passed": true
+            },
+            {
+              "name": "Actual effects and protected invariants",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Observable behavior in trusted scenarios",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Deterministic input replay",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Activation rollback preserves exact world",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            },
+            {
+              "name": "Checkpoint round trip and temporary cleanup",
+              "detail": "Trusted engine assertions passed.",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "effects": {
+            "cuesApplied": 386,
+            "impulsesApplied": 0,
+            "surfacesCreated": 386
+          },
+          "summary": "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven.",
+          "engineVersion": "last-light/1.0.0",
+          "ticksSimulated": 3490
+        }
+      }
+    }
+  ]
+}

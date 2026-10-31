@@ -1,0 +1,48 @@
+{
+  "name": "liveforge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An audience-authored adventure. Your community invents the next law.",
+  "scripts": {
+    "dev": "next dev --port 3100",
+    "build": "next build",
+    "start": "next start --port 3100",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write src tests scripts docs *.json *.ts *.md",
+    "format:check": "prettier --check src tests scripts docs *.json *.ts *.md",
+    "setup": "node scripts/setup-local.mjs"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "@neondatabase/serverless": "1.2.0",
+    "@openai/codex-sdk": "0.166.0",
+    "@vercel/sandbox": "3.9.1",
+    "lucide-react": "1.66.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  },
+  "overrides": {
+    "@vercel/cli-config": {
+      "zod": "4.6.7"
+    }
+  },
+  "type": "module"
+}
