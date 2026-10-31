@@ -201,7 +201,7 @@ export async function deliverRecentChatReplies(showId: string) {
       try {
         const show = (await getStore().get<ShowRecord>(showKey(showId)))!;
         if (
-          !show.settings.chatRepliesEnabled ||
+          !show.settings?.chatRepliesEnabled ||
           effectiveTwitchConnection(show).status !== "connected"
         ) {
           await finish(showId, key, "disabled");
@@ -215,7 +215,7 @@ export async function deliverRecentChatReplies(showId: string) {
         // Recheck consent immediately before the side effect, after asynchronous authorization/rate work.
         const current = (await getStore().get<ShowRecord>(showKey(showId)))!;
         if (
-          !current.settings.chatRepliesEnabled ||
+          !current.settings?.chatRepliesEnabled ||
           current.credentialId !== show.credentialId
         ) {
           await finish(showId, key, "disabled");

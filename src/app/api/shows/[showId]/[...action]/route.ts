@@ -458,7 +458,7 @@ export async function POST(request: Request, context: Context) {
     }
     const show = await ownedShow(showId, host.hostId);
     if (
-      show.settings.chatRepliesEnabled &&
+      show.settings?.chatRepliesEnabled &&
       ![
         "checkpoint",
         "lease",
