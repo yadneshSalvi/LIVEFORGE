@@ -12,7 +12,7 @@ import {
 import { AppHeader } from "./AppHeader";
 import { EvidencePanel, downloadEvidence } from "./EvidencePanel";
 import { api, ApiError, errorMessage, shortHash } from "@/lib/api";
-import { ruleDescription } from "@/lib/rule-copy";
+import { ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import type {
   Candidate,
   HostShowResponse,
@@ -122,7 +122,7 @@ export function Archive() {
                         <span className="author-avatar">
                           {(proposal?.author || "H")[0]}
                         </span>
-                        {proposal?.author || "Host"} ·{" "}
+                        {ruleCredit(proposal)} ·{" "}
                         {reused
                           ? "reused generation"
                           : proposal?.origin === "twitch"

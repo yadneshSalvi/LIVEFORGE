@@ -1,21 +1,32 @@
 import { randomUUID } from "node:crypto";
-import { type GameCheckpoint } from "@/game/contracts";
+import { ENGINE_VERSION, type GameCheckpoint } from "@/game/contracts";
 import { GameEngine } from "@/game/core";
+import {
+  activeIds,
+  assertCurrentEngine,
+  checkedComposition,
+  expectedRuntime,
+  prepareCandidateComposition,
+  showEngine,
+} from "./composition";
 import { sanitizeGenerationFailure } from "./generation-failure";
 import { parseCheckpoint } from "./checkpoint";
 import { REUSED_RULE_ARTIFACT, REUSED_STEP_ARTIFACT } from "./reused-artifact";
 import { compileRuleSource, verifyRuleProgram } from "@/game/rules";
 import type {
+  ActivationMode,
+  ProposalAncestry,
   Candidate,
   GenerationJob,
   Proposal,
   PublicShowState,
+  PublicProposal,
   ShowMode,
   ShowState,
 } from "./contracts";
 import type { DocumentStore } from "./store";
 import { getStore } from "./store";
-import { assert } from "./errors";
+import { assert, HttpError } from "./errors";
 import { digest, hashData, privateActor } from "./security";
 
 export interface ShowRecord extends ShowState {
@@ -25,7 +36,30 @@ export interface ShowRecord extends ShowState {
   rates: Record<string, number[]>;
   idempotency: Record<string, { at: number; result: unknown }>;
   credentialId?: string;
-  oauth?: { stateHash: string; expiresAt: number };
+  oauth?: { stateHash: string; expiresAt: number; writeChat?: boolean };
+  replyDeliveries?: Record<
+    string,
+    {
+      at: number;
+      status:
+        | "reserved"
+        | "sent"
+        | "dropped"
+        | "rate-limited"
+        | "unknown"
+        | "disabled";
+      code?: string;
+    }
+  >;
+  engineArchives?: Array<{
+    engineVersion: string;
+    archivedAt: string;
+    revision: number;
+    checkpoint: unknown;
+    previousCheckpoint: unknown;
+    activeCandidateIds: string[];
+    previousCandidateIds: string[];
+  }>;
 }
 const now = () => new Date().toISOString();
 export const AUTHORITY_LEASE_MS = 90_000;
@@ -48,8 +82,13 @@ export async function createShow(
   const createdAt = now();
   const show: ShowRecord = {
     id: randomUUID(),
+    engineVersion: ENGINE_VERSION,
+    activeCandidateIds: [],
+    previousCandidateIds: [],
+    activeArtifactHash: null,
     ownerId,
     mode,
+    settings: { blockedTerms: [], chatRepliesEnabled: false },
     createdAt,
     updatedAt: createdAt,
     revision: 0,
@@ -208,6 +247,8 @@ export function hostView(show: ShowRecord): ShowState {
     idempotency: _i,
     credentialId: _c,
     oauth: _o,
+    engineArchives: _a,
+    replyDeliveries: _d,
     ...state
   } = show;
   void _;
@@ -217,8 +258,19 @@ export function hostView(show: ShowRecord): ShowState {
   void _i;
   void _c;
   void _o;
+  void _a;
+  void _d;
   return {
     ...state,
+    settings: show.settings || { blockedTerms: [], chatRepliesEnabled: false },
+    engineVersion: showEngine(show),
+    engineUpgradeRequired: showEngine(show) !== ENGINE_VERSION,
+    activeCandidateIds: activeIds(show),
+    previousCandidateIds:
+      show.previousCandidateIds ??
+      (show.previousCandidateId ? [show.previousCandidateId] : []),
+    activeArtifactHash:
+      show.activeArtifactHash ?? show.checkpoint?.artifactHash ?? null,
     twitch: effectiveTwitchConnection(show),
     jobs: state.jobs.map(({ requestHash: _, ...job }) => job),
     proposals: state.proposals.map(({ messageId: _, ...proposal }) => proposal),
@@ -244,9 +296,28 @@ export function publicGenerationMessage(
   };
   return messages[status];
 }
+function publicProposal(proposal: Proposal): PublicProposal {
+  const {
+    messageId: _,
+    ancestry,
+    moderationReason: _reason,
+    ...rest
+  } = proposal;
+  return {
+    ...rest,
+    ...(ancestry
+      ? {
+          ancestry: {
+            kind: ancestry.kind,
+            originalAuthor: ancestry.originalAuthor,
+          },
+        }
+      : {}),
+  };
+}
 export function publicView(show: ShowRecord): PublicShowState {
   const candidate = show.candidates.find(
-    (item) => item.id === show.activeCandidateId,
+    (item) => item.id === show.activeCandidateId && Boolean(item.approvedAt),
   );
   const proposal = show.proposals.find(
     (item) => item.id === candidate?.proposalId,
@@ -254,6 +325,31 @@ export function publicView(show: ShowRecord): PublicShowState {
   const job = show.jobs.at(-1);
   return {
     id: show.id,
+    createdAt: show.createdAt,
+    updatedAt: show.updatedAt,
+    engineVersion: showEngine(show),
+    activeLaws: activeIds(show)
+      .map((id) => show.candidates.find((c) => c.id === id && c.approvedAt))
+      .filter((c): c is Candidate => Boolean(c))
+      .map((c) => {
+        const p = show.proposals.find((p) => p.id === c.proposalId);
+        return {
+          name: c.program.name,
+          description: c.program.description,
+          author: p?.author || "Community",
+          origin: p?.origin || "practice",
+          sourceHash: c.sourceHash,
+          programHash: c.programHash,
+          ...(p?.ancestry
+            ? {
+                ancestry: {
+                  kind: p.ancestry.kind,
+                  originalAuthor: p.ancestry.originalAuthor,
+                },
+              }
+            : {}),
+        };
+      }),
     mode: show.mode,
     votingOpen: show.votingOpen,
     phase: show.phase,
@@ -261,7 +357,7 @@ export function publicView(show: ShowRecord): PublicShowState {
     revision: show.revision,
     proposals: show.proposals
       .filter((p) => p.status !== "hidden")
-      .map(({ messageId: _, ...p }) => p),
+      .map(publicProposal),
     active: candidate
       ? {
           name: candidate.program.name,
@@ -274,6 +370,27 @@ export function publicView(show: ShowRecord): PublicShowState {
     generation: job
       ? {
           status: job.status,
+          createdAt: job.createdAt,
+          updatedAt: job.updatedAt,
+          reused: job.reused,
+          phases: job.phases
+            ?.filter(
+              (p) =>
+                ["thread-started", "turn-started", "source-returned"].includes(
+                  p.phase,
+                ) &&
+                Number.isInteger(p.attempt) &&
+                p.attempt >= 1 &&
+                p.attempt <= 3 &&
+                Number.isFinite(Date.parse(p.at)),
+            )
+            .slice(0, 9),
+          proposal: (() => {
+            const p = show.proposals.find((p) => p.id === job.proposalId);
+            return p && p.status !== "hidden" && p.status !== "rejected"
+              ? { id: p.id, text: p.text, author: p.author, origin: p.origin }
+              : undefined;
+          })(),
           message: job.reused
             ? "A previously generated law was loaded; no AI call was made in this show."
             : publicGenerationMessage(job.status),
@@ -383,11 +500,24 @@ export function addProposal(
   text: unknown,
   author: string,
   actorId: string,
-  origin: "practice" | "twitch" | "sample",
+  origin: "practice" | "twitch" | "sample" | "library",
   messageId?: string,
+  ancestry?: ProposalAncestry,
 ): Proposal {
   assert(show.votingOpen, 409, "round_closed", "This round is closed.");
   const normalized = normalizeProposal(text);
+  assert(
+    !blockedProposal(show, normalized),
+    400,
+    "proposal_blocked",
+    "This proposal cannot join the board. Try a different game mechanic.",
+  );
+  assert(
+    show.proposals.length < 300,
+    429,
+    "proposal_history_full",
+    "This show's proposal history is full. Preserve it and start another show.",
+  );
   assert(
     show.proposals.filter((p) => p.status !== "hidden").length < 60,
     429,
@@ -399,10 +529,11 @@ export function addProposal(
   const duplicate = show.proposals.find(
     (p) =>
       p.status !== "hidden" &&
+      p.status !== "rejected" &&
       p.origin === origin &&
       p.text.toLocaleLowerCase() === normalized.toLocaleLowerCase(),
   );
-  if (duplicate) return duplicate;
+  if (duplicate && !ancestry) return duplicate;
   const proposal: Proposal = {
     id: "P" + (show.proposals.length + 1),
     text: normalized,
@@ -413,6 +544,7 @@ export function addProposal(
     votes: 0,
     status: "open",
     ...(messageId ? { messageId } : {}),
+    ...(ancestry ? { ancestry } : {}),
   };
   show.proposals.push(proposal);
   event(
@@ -427,6 +559,102 @@ export function addProposal(
   );
   return proposal;
 }
+export function blockedProposal(show: ShowRecord, text: string) {
+  const normalized = text.normalize("NFKC").toLocaleLowerCase();
+  return (show.settings?.blockedTerms || []).some((term) =>
+    normalized.includes(term),
+  );
+}
+export function updateShowSettings(
+  show: ShowRecord,
+  input: Record<string, unknown>,
+) {
+  const settings = show.settings || {
+    blockedTerms: [],
+    chatRepliesEnabled: false,
+  };
+  if (input.blockedTerms !== undefined) {
+    assert(
+      Array.isArray(input.blockedTerms) && input.blockedTerms.length <= 40,
+      400,
+      "blocked_terms",
+      "Use at most forty blocked terms.",
+    );
+    const terms = input.blockedTerms.map((term) => {
+      assert(
+        typeof term === "string",
+        400,
+        "blocked_terms",
+        "Each blocked term must be text.",
+      );
+      const value = term
+        .normalize("NFKC")
+        .replace(/[\u0000-\u001f\u007f-\u009f]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLocaleLowerCase();
+      assert(
+        value.length >= 2 && value.length <= 60,
+        400,
+        "blocked_terms",
+        "Blocked terms must be 2–60 characters.",
+      );
+      return value;
+    });
+    settings.blockedTerms = [...new Set(terms)];
+  }
+  if (input.chatRepliesEnabled !== undefined) {
+    assert(
+      typeof input.chatRepliesEnabled === "boolean",
+      400,
+      "chat_replies",
+      "Specify chat replies as on or off.",
+    );
+    if (input.chatRepliesEnabled && !settings.chatRepliesEnabled)
+      settings.chatRepliesEnabledAt = now();
+    if (!input.chatRepliesEnabled) delete settings.chatRepliesEnabledAt;
+    settings.chatRepliesEnabled = input.chatRepliesEnabled;
+  }
+  show.settings = settings;
+  event(
+    show,
+    "private.settings.changed",
+    "The host updated moderation and chat reply settings.",
+  );
+  return settings;
+}
+export function moderateProposal(
+  show: ShowRecord,
+  id: string,
+  status: unknown,
+  reason?: unknown,
+) {
+  assert(
+    status === "hidden" || status === "rejected" || status === "open",
+    400,
+    "moderation_status",
+    "Choose hidden, rejected, or open.",
+  );
+  const proposal = show.proposals.find((p) => p.id === id);
+  assert(proposal, 404, "proposal_not_found", "Proposal not found.");
+  proposal.status = status;
+  proposal.moderationReason =
+    typeof reason === "string"
+      ? sanitizeGenerationFailure(reason) || undefined
+      : undefined;
+  if (status !== "open") {
+    proposal.votes = 0;
+    for (const actor of Object.keys(show.voters))
+      if (show.voters[actor] === id) delete show.voters[actor];
+  }
+  event(
+    show,
+    "private.proposal.moderated",
+    "An authorized moderator updated a proposal.",
+    { proposalId: id },
+  );
+  return proposal;
+}
 export function vote(show: ShowRecord, proposalId: string, actorId: string) {
   assert(
     show.votingOpen,
@@ -435,7 +663,8 @@ export function vote(show: ShowRecord, proposalId: string, actorId: string) {
     "Voting is closed for this round.",
   );
   const proposal = show.proposals.find(
-    (p) => p.id === proposalId && p.status !== "hidden",
+    (p) =>
+      p.id === proposalId && p.status !== "hidden" && p.status !== "rejected",
   );
   assert(proposal, 404, "proposal_not_found", "Proposal not found.");
   rate(show, "vote:" + actorId, 15, 60_000);
@@ -517,11 +746,7 @@ export function validateCheckpoint(
   value: unknown,
   show: ShowRecord,
 ): GameCheckpoint {
-  const active = show.candidates.find((c) => c.id === show.activeCandidateId);
-  return parseCheckpoint(value, {
-    program: active?.program ?? null,
-    sourceHash: active?.sourceHash ?? null,
-  });
+  return parseCheckpoint(value, expectedRuntime(show));
 }
 export function createGeneration(
   show: ShowRecord,
@@ -534,7 +759,22 @@ export function createGeneration(
     quotaDay?: string;
     quotaExempt?: boolean;
   },
+  mode: ActivationMode = "replace",
 ): GenerationJob {
+  assertCurrentEngine(show);
+  assert(
+    mode === "append" || mode === "replace",
+    400,
+    "activation_mode",
+    "Choose append or replace.",
+  );
+  if (mode === "append")
+    assert(
+      activeIds(show).length < 3,
+      409,
+      "law_stack_full",
+      "Three laws are already retained. Replace the stack or retire one first.",
+    );
   if (request) {
     const existing = show.jobs.find((job) => job.id === request.jobId);
     if (existing) {
@@ -548,7 +788,8 @@ export function createGeneration(
     }
   }
   const proposal = show.proposals.find(
-    (p) => p.id === proposalId && p.status !== "hidden",
+    (p) =>
+      p.id === proposalId && p.status !== "hidden" && p.status !== "rejected",
   );
   assert(
     proposal,
@@ -592,6 +833,9 @@ export function createGeneration(
       : {}),
     id: request?.jobId ?? randomUUID(),
     proposalId,
+    engineVersion: ENGINE_VERSION,
+    activationMode: mode,
+    baseCandidateIds: activeIds(show),
     status: "queued",
     createdAt: now(),
     updatedAt: now(),
@@ -637,51 +881,65 @@ export function approveCandidate(
   sourceHash: unknown,
   programHash: unknown,
   previewCheckpoint: unknown,
+  identity?: {
+    compositionHash?: unknown;
+    contextHash?: unknown;
+    artifactHash?: unknown;
+  },
 ) {
   const candidate = show.candidates.find((c) => c.id === id);
   assert(candidate, 404, "candidate_not_found", "Candidate not found.");
   assert(
-    candidate.sourceHash === sourceHash &&
-      candidate.programHash === programHash &&
-      digest(candidate.source) === sourceHash &&
-      hashData(candidate.program) === programHash &&
-      hashData(compileRuleSource(candidate.source)) === programHash,
+    show.proposals.find((p) => p.id === candidate.proposalId)?.status !==
+      "rejected",
     409,
-    "artifact_changed",
-    "This candidate changed. Review the verified artifact again.",
+    "proposal_rejected",
+    "This proposal was rejected. Reopen it explicitly or select another idea before approving or applying its law.",
   );
   assert(
     !candidate.rejectedAt,
     409,
     "candidate_rejected",
-    "This candidate was rejected. Generate a revision to continue.",
+    "This candidate was rejected. Import or generate a revision.",
   );
   assert(
-    candidate.baseRevision === show.revision,
+    candidate.sourceHash === sourceHash &&
+      candidate.programHash === programHash,
     409,
-    "candidate_stale",
-    "This candidate targets an earlier game revision. Generate again against the current world.",
+    "artifact_changed",
+    "This candidate changed. Review the verified source again.",
+  );
+  const composition = checkedComposition(show, candidate, true);
+  assert(
+    identity?.compositionHash === composition.compositionHash &&
+      identity.contextHash === composition.contextHash &&
+      identity.artifactHash === composition.artifactHash,
+    409,
+    "composition_approval_required",
+    "Approval must identify the exact independently verified combination and world context.",
   );
   assert(
-    candidate.verification.passed &&
-      verifyRuleProgram(candidate.program).passed,
+    candidate.verification.passed,
     409,
     "verification_failed",
-    "Only independently verified candidates can be approved.",
+    "Only independently verified combinations can be approved.",
   );
   const preview = parseCheckpoint(previewCheckpoint, {
-    program: candidate.program,
-    sourceHash: candidate.sourceHash,
+    program: composition.program,
+    sourceHash: composition.artifactHash,
   });
   candidate.approvedPreviewHash = hashData(preview);
   candidate.approvedSourceHash = candidate.sourceHash;
   candidate.approvedProgramHash = candidate.programHash;
+  candidate.approvedCompositionHash = composition.compositionHash;
+  candidate.approvedContextHash = composition.contextHash;
+  candidate.approvedArtifactHash = composition.artifactHash;
   candidate.approvedAt = now();
   candidate.approvedBy = show.ownerId;
   event(
     show,
     "candidate.approved",
-    "The host approved this exact verified source.",
+    "The host approved the exact source, retained combination, and preview.",
     {
       candidateId: id,
       sourceHash: candidate.sourceHash,
@@ -695,14 +953,22 @@ export function activateCandidate(
   show: ShowRecord,
   input: Record<string, unknown>,
 ) {
+  assertCurrentEngine(show);
   requireLease(show, input.clientId, input.epoch);
   const candidate = show.candidates.find((c) => c.id === input.candidateId);
   assert(candidate, 404, "candidate_not_found", "Candidate not found.");
   assert(
+    show.proposals.find((p) => p.id === candidate.proposalId)?.status !==
+      "rejected",
+    409,
+    "proposal_rejected",
+    "This proposal was rejected. Reopen it explicitly or select another idea before approving or applying its law.",
+  );
+  assert(
     !candidate.rejectedAt,
     409,
     "candidate_rejected",
-    "This candidate was rejected. Generate a revision to continue.",
+    "This candidate was rejected. Import or generate a revision.",
   );
   assert(
     candidate.approvedAt &&
@@ -710,33 +976,34 @@ export function activateCandidate(
       candidate.approvedPreviewHash,
     409,
     "approval_required",
-    "Preview and approve this candidate first.",
+    "Preview and approve this exact combination first.",
   );
+  const composition = checkedComposition(show, candidate, true);
   assert(
-    candidate.baseRevision === show.revision,
-    409,
-    "candidate_stale",
-    "The world changed since this candidate was generated.",
-  );
-  assert(
-    candidate.sourceHash === input.sourceHash &&
-      candidate.programHash === input.programHash &&
-      candidate.approvedSourceHash === input.sourceHash &&
-      candidate.approvedProgramHash === input.programHash &&
-      hashData(candidate.program) === candidate.programHash &&
-      digest(candidate.source) === candidate.sourceHash &&
-      hashData(compileRuleSource(candidate.source)) === candidate.programHash,
+    input.sourceHash === candidate.sourceHash &&
+      input.programHash === candidate.programHash &&
+      candidate.approvedSourceHash === candidate.sourceHash &&
+      candidate.approvedProgramHash === candidate.programHash &&
+      input.compositionHash === composition.compositionHash &&
+      input.contextHash === composition.contextHash &&
+      input.artifactHash === composition.artifactHash &&
+      candidate.approvedCompositionHash === composition.compositionHash &&
+      candidate.approvedContextHash === composition.contextHash &&
+      candidate.approvedArtifactHash === composition.artifactHash,
     409,
     "artifact_changed",
-    "Activation must match the exact approved artifact.",
+    "Activation must match the exact approved source, combination and context.",
   );
   const checkpoint = validateCheckpoint(input.checkpoint, show);
-  show.previousCheckpoint = checkpoint;
-  show.previousCandidateId = show.activeCandidateId;
-  show.activeCandidateId = candidate.id;
   const engine = new GameEngine();
   engine.restore(checkpoint);
-  engine.activate(candidate.program, candidate.sourceHash);
+  engine.activate(composition.program, composition.artifactHash);
+  show.previousCheckpoint = checkpoint;
+  show.previousCandidateIds = activeIds(show);
+  show.previousCandidateId = show.activeCandidateId;
+  show.activeCandidateIds = composition.members.map((m) => m.candidateId);
+  show.activeCandidateId = candidate.id;
+  show.activeArtifactHash = composition.artifactHash;
   show.checkpoint = engine.checkpoint();
   show.revision++;
   show.phase = "live";
@@ -745,7 +1012,7 @@ export function activateCandidate(
   event(
     show,
     "candidate.activated",
-    `${candidate.program.name} entered the game at a saved checkpoint.`,
+    `${candidate.program.name} entered the approved law stack at a saved checkpoint.`,
     {
       candidateId: candidate.id,
       sourceHash: candidate.sourceHash,
@@ -761,6 +1028,7 @@ export function openNextRound(show: ShowRecord) {
   for (const proposal of show.proposals) proposal.votes = 0;
 }
 export function rollback(show: ShowRecord, input: Record<string, unknown>) {
+  assertCurrentEngine(show);
   requireLease(show, input.clientId, input.epoch);
   if (input.expectedRevision !== undefined)
     assert(
@@ -771,17 +1039,20 @@ export function rollback(show: ShowRecord, input: Record<string, unknown>) {
       "The world changed before this rollback. Refresh the active law before trying again.",
     );
   const runtimeFault =
+    input.faultedArtifactHash !== undefined ||
     input.faultedSourceHash !== undefined ||
     input.runtimeFaultReason !== undefined;
   if (runtimeFault) {
+    const faultHash = input.faultedArtifactHash ?? input.faultedSourceHash;
+    const currentRuntime = expectedRuntime(show);
     const active = show.candidates.find(
       (candidate) => candidate.id === show.activeCandidateId,
     );
     assert(
       input.expectedRevision !== undefined &&
-        typeof input.faultedSourceHash === "string" &&
-        /^[a-f0-9]{64}$/.test(input.faultedSourceHash) &&
-        input.faultedSourceHash === active?.sourceHash &&
+        typeof faultHash === "string" &&
+        /^[a-f0-9]{64}$/.test(faultHash) &&
+        faultHash === currentRuntime.sourceHash &&
         typeof input.runtimeFaultReason === "string" &&
         input.runtimeFaultReason.trim().length > 0 &&
         input.runtimeFaultReason.length <= 1000,
@@ -794,7 +1065,7 @@ export function rollback(show: ShowRecord, input: Record<string, unknown>) {
       "private.runtime.fault",
       sanitizeGenerationFailure(input.runtimeFaultReason) ||
         "The active law reported a runtime fault.",
-      { sourceHash: active.sourceHash },
+      { sourceHash: active?.sourceHash },
     );
   }
   assert(
@@ -804,7 +1075,12 @@ export function rollback(show: ShowRecord, input: Record<string, unknown>) {
     "There is no previous activation checkpoint to restore.",
   );
   show.checkpoint = show.previousCheckpoint;
-  show.activeCandidateId = show.previousCandidateId;
+  show.activeCandidateIds =
+    show.previousCandidateIds ??
+    (show.previousCandidateId ? [show.previousCandidateId] : []);
+  show.activeCandidateId = show.activeCandidateIds.at(-1) ?? null;
+  show.activeArtifactHash = show.checkpoint?.artifactHash ?? null;
+  show.previousCandidateIds = [];
   show.previousCheckpoint = null;
   show.previousCandidateId = null;
   show.revision++;
@@ -833,6 +1109,7 @@ export function ingestTwitch(show: ShowRecord, input: unknown) {
         chatter_user_name?: string;
         message_id?: string;
         message?: { text?: string };
+        badges?: Array<{ set_id?: unknown; id?: unknown; info?: unknown }>;
       };
     };
   };
@@ -896,17 +1173,57 @@ export function ingestTwitch(show: ShowRecord, input: unknown) {
   if (!show.votingOpen && /^!(forge|back)\b/i.test(text))
     return { ignored: true, reason: "round_closed" };
   const actor = privateActor(e.chatter_user_id);
-  if (/^!forge\s+/i.test(text))
-    return {
-      proposal: addProposal(
-        show,
-        text.replace(/^!forge\s+/i, ""),
-        e.chatter_user_name || "Twitch viewer",
-        actor,
-        "twitch",
-        e.message_id,
-      ),
-    };
+  const moderation = /^!(hide|reject)\s+(P\d{1,3})\s*$/i.exec(text);
+  if (moderation) {
+    const badges = e.badges;
+    const moderator =
+      Array.isArray(badges) &&
+      badges.length <= 20 &&
+      badges.some(
+        (b) =>
+          b &&
+          (b.set_id === "moderator" || b.set_id === "broadcaster") &&
+          typeof b.id === "string" &&
+          b.id.length <= 40 &&
+          typeof b.info === "string" &&
+          b.info.length <= 100,
+      );
+    if (!moderator) return { ignored: true, reason: "moderator_required" };
+    const proposal = moderateProposal(
+      show,
+      moderation[2].toUpperCase(),
+      moderation[1].toLowerCase() === "hide" ? "hidden" : "rejected",
+      "Moderated by an authorized Twitch moderator.",
+    );
+    return { moderated: true, proposalId: proposal.id };
+  }
+  if (/^!forge\s+/i.test(text)) {
+    try {
+      return {
+        proposal: addProposal(
+          show,
+          text.replace(/^!forge\s+/i, ""),
+          e.chatter_user_name || "Twitch viewer",
+          actor,
+          "twitch",
+          e.message_id,
+        ),
+      };
+    } catch (error) {
+      if (
+        error instanceof HttpError &&
+        [400, 409, 429].includes(error.status)
+      ) {
+        event(
+          show,
+          "private.proposal.refused",
+          "An audience idea could not join the board.",
+        );
+        return { refused: true };
+      }
+      throw error;
+    }
+  }
   const back = /^!back\s+(P\d{1,3})\s*$/i.exec(text);
   if (back) {
     vote(show, back[1].toUpperCase(), actor);
@@ -915,10 +1232,26 @@ export function ingestTwitch(show: ShowRecord, input: unknown) {
   return { ignored: true };
 }
 
-export function importPracticeSample(
+export interface ExactSourceArtifact {
+  source: string;
+  sourceHash: string;
+  programHash: string;
+  model: string;
+  threadId?: string;
+  generatedAt: string;
+  proposal: string;
+}
+export function importExactSource(
   show: ShowRecord,
-  sample: "shadow" | "step" = "shadow",
+  artifact: ExactSourceArtifact,
+  options: {
+    mode?: ActivationMode;
+    origin: "sample" | "library";
+    author: string;
+    ancestry?: ProposalAncestry;
+  },
 ) {
+  assertCurrentEngine(show);
   assert(
     !show.jobs.some((j) =>
       ["queued", "starting", "generating", "verifying"].includes(j.status),
@@ -931,54 +1264,45 @@ export function importPracticeSample(
     show.candidates.length < 30,
     429,
     "candidate_limit",
-    "This show has reached its candidate limit. Start a fresh studio.",
+    "This show has reached its candidate limit. Start a fresh studio and import the saved source there.",
   );
-  rate(show, "sample", 6, 60_000);
-  const artifact =
-    sample === "step" ? REUSED_STEP_ARTIFACT : REUSED_RULE_ARTIFACT;
+  rate(show, "source-import", 6, 60_000);
   const program = compileRuleSource(artifact.source);
   assert(
     digest(artifact.source) === artifact.sourceHash &&
       hashData(program) === artifact.programHash,
-    503,
-    "sample_integrity",
-    "The saved sample failed its integrity check.",
+    409,
+    "source_integrity",
+    "The saved source failed its immutable identity check.",
   );
   const verification = verifyRuleProgram(program);
   assert(
     verification.passed,
-    503,
-    "sample_verification",
-    "The previously generated sample no longer passes this engine version.",
+    422,
+    "source_verification",
+    "This saved source does not pass the current engine. Its original artifact was preserved.",
   );
-  show.votingOpen = true;
-  const proposal = addProposal(
-    show,
-    artifact.proposal,
-    "Previously generated sample",
-    "sample-" + show.candidates.length,
-    "sample",
-  );
-  proposal.status = "selected";
-  show.votingOpen = false;
   const job: GenerationJob = {
     id: randomUUID(),
-    proposalId: proposal.id,
+    proposalId: "pending",
     status: "ready",
     createdAt: now(),
     updatedAt: now(),
-    attempt: 1,
+    attempt: 0,
     model: artifact.model,
     threadId: artifact.threadId,
     message:
-      "Previously generated Codex sample imported and independently reverified. No model call was made in this run.",
+      "Previously generated source imported and independently reverified. No model call was made in this run.",
     baseRevision: show.revision,
     reused: true,
+    engineVersion: ENGINE_VERSION,
+    activationMode: options.mode || "replace",
+    baseCandidateIds: activeIds(show),
   };
   const candidate: Candidate = {
     id: randomUUID(),
     jobId: job.id,
-    proposalId: proposal.id,
+    proposalId: "pending",
     source: artifact.source,
     sourceHash: artifact.sourceHash,
     program,
@@ -986,13 +1310,30 @@ export function importPracticeSample(
     verification,
     createdAt: now(),
     baseRevision: show.revision,
+    ancestry: options.ancestry,
     provenance: {
-      kind: "reused-generation",
+      kind:
+        options.origin === "library" ? "library-import" : "reused-generation",
       threadId: artifact.threadId,
       model: artifact.model,
       generatedAt: artifact.generatedAt,
     },
   };
+  prepareCandidateComposition(show, candidate, options.mode || "replace");
+  show.votingOpen = true;
+  const proposal = addProposal(
+    show,
+    artifact.proposal,
+    options.author,
+    "source-import:" + candidate.id,
+    options.origin,
+    undefined,
+    options.ancestry,
+  );
+  proposal.status = "selected";
+  job.proposalId = proposal.id;
+  candidate.proposalId = proposal.id;
+  show.votingOpen = false;
   job.candidateId = candidate.id;
   show.jobs.push(job);
   show.candidates.push(candidate);
@@ -1000,7 +1341,7 @@ export function importPracticeSample(
   event(
     show,
     "candidate.reused",
-    "A real previously generated Codex sample was imported. This run did not generate new source.",
+    "An exact previously generated source was imported and its current combination reverified. This run made no model call.",
     {
       proposalId: proposal.id,
       candidateId: candidate.id,
@@ -1010,12 +1351,25 @@ export function importPracticeSample(
   );
   return candidate;
 }
+export function importPracticeSample(
+  show: ShowRecord,
+  sample: "shadow" | "step" = "shadow",
+  mode: ActivationMode = "replace",
+) {
+  const artifact =
+    sample === "step" ? REUSED_STEP_ARTIFACT : REUSED_RULE_ARTIFACT;
+  return importExactSource(show, artifact, {
+    mode,
+    origin: "sample",
+    author: "Previously generated sample",
+  });
+}
 
 export function rejectCandidate(show: ShowRecord, id: string, reason?: string) {
   const candidate = show.candidates.find((c) => c.id === id);
   assert(candidate, 404, "candidate_not_found", "Candidate not found.");
   assert(
-    candidate.id !== show.activeCandidateId,
+    !activeIds(show).includes(candidate.id),
     409,
     "candidate_active",
     "Restore the previous checkpoint to retire an active rule.",
@@ -1072,4 +1426,127 @@ export async function listHostShows(
         show.candidates.find((c) => c.id === show.activeCandidateId)?.program
           .name || null,
     }));
+}
+
+export function upgradeShowEngine(
+  show: ShowRecord,
+  input: Record<string, unknown>,
+) {
+  requireLease(show, input.clientId, input.epoch);
+  assert(
+    input.expectedRevision === show.revision &&
+      input.targetEngineVersion === ENGINE_VERSION,
+    409,
+    "engine_upgrade_stale",
+    "Confirm the current show revision and target engine before upgrading.",
+  );
+  const oldVersion = showEngine(show);
+  assert(
+    oldVersion !== ENGINE_VERSION,
+    409,
+    "engine_current",
+    "This show already uses the current engine.",
+  );
+  assert(
+    (show.engineArchives?.length || 0) < 3,
+    409,
+    "engine_archive_full",
+    "This show's engine archive is full. Keep it for evidence and start a new show.",
+  );
+  const archivedAt = now();
+  show.engineArchives ??= [];
+  show.engineArchives.push({
+    engineVersion: oldVersion,
+    archivedAt,
+    revision: show.revision,
+    checkpoint: structuredClone(show.checkpoint),
+    previousCheckpoint: structuredClone(show.previousCheckpoint),
+    activeCandidateIds: activeIds(show),
+    previousCandidateIds:
+      show.previousCandidateIds ??
+      (show.previousCandidateId ? [show.previousCandidateId] : []),
+  });
+  show.engineHistory ??= [];
+  show.engineHistory.push({
+    engineVersion: oldVersion,
+    archivedAt,
+    revision: show.revision,
+  });
+  for (const job of show.jobs)
+    if (
+      ["queued", "starting", "generating", "verifying"].includes(job.status)
+    ) {
+      job.status = "stale";
+      job.updatedAt = now();
+      job.message =
+        "The host explicitly upgraded the engine. This old-engine job cannot publish a candidate.";
+    }
+  show.engineVersion = ENGINE_VERSION;
+  show.activeCandidateIds = [];
+  show.previousCandidateIds = [];
+  show.activeCandidateId = null;
+  show.previousCandidateId = null;
+  show.activeArtifactHash = null;
+  show.previousCheckpoint = null;
+  show.checkpoint = new GameEngine().checkpoint();
+  show.revision++;
+  show.phase = "collecting";
+  openNextRound(show);
+  event(
+    show,
+    "engine.upgraded",
+    "The host explicitly upgraded the engine. The old checkpoint and law history were archived; the new opening world is ready.",
+  );
+}
+export function acceptAdaptation(show: ShowRecord, jobId: string) {
+  assertCurrentEngine(show);
+  const job = show.jobs.find((j) => j.id === jobId);
+  assert(
+    job && job.status === "failed" && job.adaptedProposal,
+    409,
+    "adaptation_unavailable",
+    "This generation has no supported adaptation to review.",
+  );
+  if (job.adaptationProposalId) {
+    const existing = show.proposals.find(
+      (p) => p.id === job.adaptationProposalId,
+    );
+    assert(
+      existing,
+      409,
+      "adaptation_missing",
+      "The accepted adaptation is missing.",
+    );
+    return existing;
+  }
+  const original = show.proposals.find((p) => p.id === job.proposalId);
+  assert(
+    original,
+    404,
+    "proposal_not_found",
+    "The original proposal is missing.",
+  );
+  const adapted = addProposal(
+    show,
+    job.adaptedProposal,
+    original.author,
+    "adaptation:" + job.id,
+    original.origin,
+    undefined,
+    {
+      kind: "adaptation",
+      originalAuthor: original.ancestry?.originalAuthor || original.author,
+      originalText: original.ancestry?.originalText || original.text,
+      originalProposalId: original.id,
+      sourceJobId: job.id,
+    },
+  );
+  job.adaptationProposalId = adapted.id;
+  event(
+    show,
+    "proposal.adapted",
+    "The host explicitly accepted an adaptation of the original contributor's idea.",
+    { proposalId: adapted.id },
+  );
+  return adapted;
 }

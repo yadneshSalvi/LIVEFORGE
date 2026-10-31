@@ -92,6 +92,7 @@ export function generationRequest(
     proposalId: unknown;
     revision?: unknown;
     priorCandidateId?: unknown;
+    mode?: unknown;
   },
 ): GenerationRequest {
   assert(

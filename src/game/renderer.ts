@@ -140,9 +140,33 @@ export class WorldRenderer {
     }
     for (const s of world.surfaces.filter((s) => s.generated))
       this.generatedSurface(c, s, world.tick);
-    this.lamp(c, world.entities[2], world.lanternOn, time);
-    this.prop(c, prop);
-    this.courier(c, world.entities[0], world.tick, time, reducedMotion);
+    for (const e of world.entities) {
+      if (e.kind === "lantern") this.lamp(c, e, world.lanternOn, time);
+      if (e.kind === "prop") this.prop(c, e);
+    }
+    this.courier(
+      c,
+      world.entities[0],
+      world.tick,
+      time,
+      reducedMotion,
+      world.emberCarried,
+    );
+    if (!world.emberCarried) {
+      const e = world.entities.find((x) => x.kind === "ember")!;
+      glow(c, e.x + 6, e.y + 6, 55, "#ffac6a3d");
+      polygon(
+        c,
+        [
+          [e.x + 6, e.y],
+          [e.x + 12, e.y + 7],
+          [e.x + 6, e.y + 12],
+          [e.x, e.y + 7],
+        ],
+        "#ffc99a",
+        "#fff1c6",
+      );
+    }
     this.hearth(c, 2380, 448, world.completed, time);
     // Sparse wind-borne ash, no flashing or high-frequency bursts.
     if (!reducedMotion)
@@ -863,6 +887,7 @@ export class WorldRenderer {
     tick: number,
     time: number,
     reduce: boolean,
+    carried = true,
   ) {
     const x = e.x,
       y = e.y,
@@ -872,11 +897,11 @@ export class WorldRenderer {
     const direction = e.vx < -0.1 ? -1 : 1;
     c.save();
     c.translate(x + e.w / 2, y);
-    c.scale(direction, 1);
+    c.scale((direction * e.w) / e.baseW, e.h / e.baseH);
     if (e.grounded) {
       c.fillStyle = "#0a17265c";
       c.beginPath();
-      c.ellipse(0, e.h + 2, 20, 4, 0, 0, Math.PI * 2);
+      c.ellipse(0, 50, 20, 4, 0, 0, Math.PI * 2);
       c.fill();
     }
     polygon(
@@ -947,28 +972,30 @@ export class WorldRenderer {
       "#e99474",
     );
     line(c, 7, 25, 15, 30, "#e5d7b1", 3);
-    glow(c, 18, 25, 48, "#ff9c622a");
-    glow(c, 18, 25, 19, "#ff9c6250");
-    polygon(
-      c,
-      [
-        [18, 17],
-        [23, 25],
-        [18, 30],
-        [14, 25],
-      ],
-      "#ffb28a",
-    );
-    polygon(
-      c,
-      [
-        [18, 20],
-        [20, 25],
-        [18, 27],
-        [16, 25],
-      ],
-      "#fff0c1",
-    );
+    if (carried) {
+      glow(c, 18, 25, 48, "#ff9c622a");
+      glow(c, 18, 25, 19, "#ff9c6250");
+      polygon(
+        c,
+        [
+          [18, 17],
+          [23, 25],
+          [18, 30],
+          [14, 25],
+        ],
+        "#ffb28a",
+      );
+      polygon(
+        c,
+        [
+          [18, 20],
+          [20, 25],
+          [18, 27],
+          [16, 25],
+        ],
+        "#fff0c1",
+      );
+    }
     c.restore();
   }
   private hearth(
@@ -1081,7 +1108,11 @@ export class WorldRenderer {
     }
     c.font = "10px Arial, sans-serif";
     c.fillStyle = "#c7c6ac";
-    c.fillText("EMBER IN HAND", view - 132, 51);
+    c.fillText(
+      w.emberCarried ? "EMBER IN HAND" : "EMBER RELEASED · Q",
+      view - 132,
+      51,
+    );
     c.font = "12px Arial, sans-serif";
     c.fillStyle = "#d8ddcb";
     const text =
@@ -1092,7 +1123,7 @@ export class WorldRenderer {
     c.font = "10px Arial, sans-serif";
     c.fillStyle = "#91a99e";
     c.fillText(
-      "A D / ← →  move       SPACE  jump       E  interact       R  recover",
+      "A D / ← →  move       SPACE  jump       E  interact       Q  ember       R  recover",
       28,
       630,
     );

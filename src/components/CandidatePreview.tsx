@@ -19,7 +19,7 @@ import type {
   VerificationReport,
 } from "@/game/contracts";
 import { errorMessage, shortHash } from "@/lib/api";
-import { ruleDescription } from "@/lib/rule-copy";
+import { ruleCredit, ruleDescription } from "@/lib/rule-copy";
 
 export function CandidatePreview({
   open,
@@ -31,6 +31,7 @@ export function CandidatePreview({
   onReject,
   onRevise,
   busy = false,
+  existingCandidates = [],
 }: {
   open: boolean;
   onClose: () => void;
@@ -41,6 +42,7 @@ export function CandidatePreview({
   onReject: () => Promise<void>;
   onRevise: (revision: string) => Promise<void>;
   busy?: boolean;
+  existingCandidates?: Candidate[];
 }) {
   if (!candidate) return null;
   return (
@@ -52,7 +54,7 @@ export function CandidatePreview({
       wide
     >
       <PreviewContent
-        key={candidate.sourceHash}
+        key={candidate.composition?.compositionHash || candidate.sourceHash}
         candidate={candidate}
         proposal={proposal}
         baseline={baseline}
@@ -61,6 +63,7 @@ export function CandidatePreview({
         onRevise={onRevise}
         onClose={onClose}
         busy={busy}
+        existingCandidates={existingCandidates}
       />
     </Modal>
   );
@@ -74,6 +77,7 @@ function PreviewContent({
   onReject,
   onRevise,
   busy,
+  existingCandidates,
 }: {
   candidate: Candidate;
   proposal?: Proposal;
@@ -83,6 +87,7 @@ function PreviewContent({
   onRevise: (revision: string) => Promise<void>;
   onClose: () => void;
   busy: boolean;
+  existingCandidates: Candidate[];
 }) {
   const game = useRef<GameViewportHandle>(null);
   const [comparison, setComparison] = useState<"candidate" | "baseline">(
@@ -92,9 +97,13 @@ function PreviewContent({
   const [error, setError] = useState<string | null>(null);
   const [revising, setRevising] = useState(false);
   const [revision, setRevision] = useState("");
+  const runtimeProgram = candidate.composition?.program || candidate.program;
+  const runtimeHash =
+    candidate.composition?.artifactHash || candidate.sourceHash;
+  const report = candidate.composition?.verification || candidate.verification;
   const initialize = () => {
     if (baseline) game.current?.restore(baseline);
-    game.current?.activate(candidate.program, candidate.sourceHash);
+    game.current?.activate(runtimeProgram, runtimeHash);
   };
   const compare = (mode: "candidate" | "baseline") => {
     setComparison(mode);
@@ -102,13 +111,13 @@ function PreviewContent({
     if (baseline) game.current?.restore(baseline);
     else game.current?.reset();
     if (mode === "candidate")
-      game.current?.activate(candidate.program, candidate.sourceHash);
+      game.current?.activate(runtimeProgram, runtimeHash);
   };
   const approve = async () => {
     try {
       if (!game.current) return;
       const checkpoint = await game.current.checkpoint();
-      if (checkpoint.artifactHash !== candidate.sourceHash)
+      if (checkpoint.artifactHash !== runtimeHash)
         throw new Error(
           "Return to the candidate view before approving this version.",
         );
@@ -146,13 +155,14 @@ function PreviewContent({
             preview
             onReady={initialize}
             onSnapshot={(snapshot) => {
-              if (snapshot.activeHash === candidate.sourceHash) setReady(true);
+              if (snapshot.activeHash === runtimeHash) setReady(true);
             }}
             onFault={setError}
           />
           <p className="preview-hint">
             Click the world to play. A / D to move · Space to jump · E to
-            interact. Your live world is paused while you test.
+            interact · Q to drop or pick up the ember. Your live world is paused
+            while you test.
           </p>
         </div>
         <div className="preview-details">
@@ -169,17 +179,56 @@ function PreviewContent({
               <span className="author-avatar">
                 {(proposal?.author || "H")[0].toUpperCase()}
               </span>
-              Invented by {proposal?.author || "the host"}
+              {ruleCredit(proposal)}
             </span>
           </div>
-          <VerificationChecks report={candidate.verification} compact />
+          {candidate.composition && (
+            <div className="preview-combination">
+              <p className="field-label">
+                {candidate.composition.mode === "append"
+                  ? "This law joins the current world"
+                  : "This law replaces the current laws"}
+              </p>
+              <ol>
+                {candidate.composition.members.map((member) => {
+                  const item =
+                    member.candidateId === candidate.id
+                      ? candidate
+                      : existingCandidates.find(
+                          (entry) => entry.id === member.candidateId,
+                        );
+                  return (
+                    <li key={member.candidateId}>
+                      <span>
+                        {item?.program.name || "Previously approved law"}
+                      </span>
+                      <code>{shortHash(member.sourceHash)}</code>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p>
+                The complete ordered combination was tested. Later laws take
+                precedence where modifiers overlap.
+              </p>
+            </div>
+          )}
+          {proposal?.ancestry?.kind === "adaptation" && (
+            <div className="preview-combination">
+              <p className="field-label">
+                Explicit adaptation of {proposal.ancestry.originalAuthor}’s idea
+              </p>
+              <p>{proposal.ancestry.originalText}</p>
+            </div>
+          )}
+          <VerificationChecks report={report} compact />
           <p className="preview-identity">
             VERSION {shortHash(candidate.sourceHash)}
             <br />
-            ENGINE {candidate.verification.engineVersion}
+            ENGINE {report.engineVersion}
             <br />
-            {candidate.verification.ticksSimulated.toLocaleString()} independent
-            simulation ticks
+            {report.ticksSimulated.toLocaleString()} independent simulation
+            ticks
           </p>
         </div>
       </div>
@@ -225,8 +274,9 @@ function PreviewContent({
       )}
       <div className="preview-decision">
         <p>
-          Approval belongs to this exact source and preview. The law enters your
-          live world only when you activate it at a checkpoint.
+          Approval belongs to this exact source, ordered combination and
+          preview. Changing the active laws requires a new preview and approval.
+          Activation happens at a checkpoint.
         </p>
         <div className="button-group">
           <button

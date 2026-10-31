@@ -3,6 +3,33 @@ import type {
   RuleProgram,
   VerificationReport,
 } from "@/game/contracts";
+export type ActivationMode = "append" | "replace";
+export interface CompositionMember {
+  candidateId: string;
+  sourceHash: string;
+  programHash: string;
+}
+export interface CandidateComposition {
+  engineVersion: string;
+  mode: ActivationMode;
+  baseRevision: number;
+  baseMembers: CompositionMember[];
+  members: CompositionMember[];
+  contextHash: string;
+  compositionHash: string;
+  program: RuleProgram;
+  programHash: string;
+  artifactHash: string;
+  verification: VerificationReport;
+}
+export interface ProposalAncestry {
+  kind: "adaptation" | "library";
+  originalAuthor: string;
+  originalText: string;
+  originalProposalId?: string;
+  sourceJobId?: string;
+  libraryEntryId?: string;
+}
 export type ShowMode = "practice" | "twitch";
 export type JobStatus =
   | "queued"
@@ -18,11 +45,14 @@ export interface Proposal {
   id: string;
   text: string;
   author: string;
-  origin: "practice" | "twitch" | "sample";
+  origin: "practice" | "twitch" | "sample" | "library";
   createdAt: string;
   votes: number;
-  status: "open" | "selected" | "hidden";
+  status: "open" | "selected" | "hidden" | "rejected";
+  /** Host-only; omitted from every public projection. */
+  moderationReason?: string;
   messageId?: string;
+  ancestry?: ProposalAncestry;
 }
 export interface GenerationJob {
   id: string;
@@ -43,6 +73,25 @@ export interface GenerationJob {
   };
   baseRevision: number;
   reused?: boolean;
+  engineVersion?: string;
+  activationMode?: ActivationMode;
+  baseCandidateIds?: string[];
+  adaptedProposal?: string;
+  adaptationProposalId?: string;
+  sandboxTimings?: {
+    mode: "cold" | "snapshot";
+    cacheHit: boolean;
+    setupMs: number;
+    createMs: number;
+    installMs: number;
+    snapshotMs: number;
+    fallback: boolean;
+  };
+  phases?: Array<{
+    phase: "thread-started" | "turn-started" | "source-returned";
+    at: string;
+    attempt: number;
+  }>;
   revision?: string;
   priorCandidateId?: string;
   /** Internal request fingerprint; stripped from host/public projections. */
@@ -64,6 +113,12 @@ export interface GenerationJob {
   }>;
 }
 export interface Candidate {
+  engineVersion?: string;
+  composition?: CandidateComposition;
+  approvedCompositionHash?: string;
+  approvedContextHash?: string;
+  approvedArtifactHash?: string;
+  ancestry?: ProposalAncestry;
   id: string;
   jobId: string;
   proposalId: string;
@@ -83,8 +138,8 @@ export interface Candidate {
   rejectedAt?: string;
   rejectedReason?: string;
   provenance?: {
-    kind: "runtime-generation" | "reused-generation";
-    threadId: string;
+    kind: "runtime-generation" | "reused-generation" | "library-import";
+    threadId?: string;
     model: string;
     generatedAt: string;
   };
@@ -116,7 +171,23 @@ export interface TwitchConnection {
   lastHealthyAt?: string;
   message: string;
 }
+export interface ShowSettings {
+  blockedTerms: string[];
+  chatRepliesEnabled: boolean;
+  chatRepliesEnabledAt?: string;
+}
 export interface ShowState {
+  settings: ShowSettings;
+  engineVersion: string;
+  engineUpgradeRequired?: boolean;
+  activeCandidateIds: string[];
+  previousCandidateIds: string[];
+  activeArtifactHash: string | null;
+  engineHistory?: Array<{
+    engineVersion: string;
+    archivedAt: string;
+    revision: number;
+  }>;
   id: string;
   mode: ShowMode;
   createdAt: string;
@@ -139,14 +210,33 @@ export interface ShowState {
 export interface HostShowResponse {
   show: ShowState;
 }
+export type PublicProposal = Omit<
+  Proposal,
+  "ancestry" | "messageId" | "moderationReason"
+> & { ancestry?: Pick<ProposalAncestry, "kind" | "originalAuthor"> };
 export interface PublicShowState {
+  createdAt?: string;
+  updatedAt?: string;
+  engineVersion?: string;
+  activeLaws?: Array<{
+    name: string;
+    description: string;
+    author: string;
+    origin: Proposal["origin"];
+    sourceHash: string;
+    programHash: string;
+    ancestry?: {
+      kind: ProposalAncestry["kind"];
+      originalAuthor: string;
+    };
+  }>;
   votingOpen: boolean;
   id: string;
   mode: ShowMode;
   phase: ShowState["phase"];
   round: number;
   revision: number;
-  proposals: Proposal[];
+  proposals: PublicProposal[];
   active: {
     name: string;
     description: string;
@@ -154,7 +244,20 @@ export interface PublicShowState {
     sourceHash: string;
     programHash: string;
   } | null;
-  generation: { status: JobStatus; message: string } | null;
+  generation: {
+    status: JobStatus;
+    message: string;
+    createdAt?: string;
+    updatedAt?: string;
+    proposal?: {
+      id: string;
+      author: string;
+      origin: Proposal["origin"];
+      text: string;
+    };
+    reused?: boolean;
+    phases?: NonNullable<GenerationJob["phases"]>;
+  } | null;
   twitch: { status: TwitchConnection["status"]; channelLogin?: string };
   events: ShowEvent[];
 }
@@ -183,6 +286,7 @@ export interface TwitchNotificationRequest {
       chatter_user_name: string;
       message_id: string;
       message: { text: string };
+      badges?: Array<{ set_id: string; id: string; info: string }>;
     };
   };
 }

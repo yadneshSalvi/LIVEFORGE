@@ -43,7 +43,7 @@ describe("bounded generated-rule compiler", () => {
     const report = verifyRuleProgram(sample());
     expect(report.passed).toBe(true);
     expect(report.checks.every((c) => c.passed)).toBe(true);
-    expect(report.ticksSimulated).toBe(3490);
+    expect(report.ticksSimulated).toBe(4890);
     expect(report.effects.surfacesCreated).toBeGreaterThan(0);
   });
   it("rejects bounded syntax that still drives the courier outside protected bounds", () => {

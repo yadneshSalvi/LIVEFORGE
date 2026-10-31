@@ -18,6 +18,7 @@ import {
   Info,
   LoaderCircle,
   LockKeyhole,
+  BookOpen,
   Maximize2,
   MessageCircle,
   Pause,
@@ -38,15 +39,22 @@ import { CandidatePreview, SamplePreview } from "./CandidatePreview";
 import { EvidencePanel } from "./EvidencePanel";
 import { Modal } from "./Modal";
 import { ShowManager } from "./ShowManager";
+import { LawLibrary } from "./LawLibrary";
+import { ModerationPanel } from "./ModerationPanel";
 import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
-import { ruleDescription } from "@/lib/rule-copy";
+import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import { StudioViewFence } from "@/lib/view-fence";
 import {
   retireFaultedLaw,
   type RuntimeRecoveryTarget,
 } from "@/lib/runtime-recovery";
 import { TwitchConnector } from "@/lib/twitch-client";
-import { compileRuleSource, PRACTICE_RULE_SOURCE } from "@/game/rules";
+import {
+  compileRuleSource,
+  PRACTICE_RULE_SOURCE,
+  RULE_CAPABILITY_HINTS,
+} from "@/game/rules";
+import { ENGINE_VERSION } from "@/game/contracts";
 import type {
   GameCheckpoint,
   GameSnapshot,
@@ -54,6 +62,7 @@ import type {
 } from "@/game/contracts";
 import type {
   AuthorityLease,
+  ActivationMode,
   Candidate,
   GenerationJob,
   HostShowResponse,
@@ -79,7 +88,7 @@ interface ServiceStatus {
       exhausted: boolean;
     } | null;
   };
-  twitch: { configured: boolean };
+  twitch: { configured: boolean; chatRepliesAuthorized?: boolean };
   storage: string;
 }
 const CHAPTERS = [
@@ -123,6 +132,11 @@ export function Studio() {
   const [recoveryOpen, setRecoveryOpen] = useState(false);
   const [showManagerOpen, setShowManagerOpen] = useState(false);
   const [nextRound, setNextRound] = useState(false);
+  const [activationMode, setActivationMode] =
+    useState<ActivationMode>("append");
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [moderationOpen, setModerationOpen] = useState(false);
   const [chatState, setChatState] = useState<{
     status: string;
     message: string;
@@ -191,6 +205,8 @@ export function Studio() {
       currentLease = lease.current;
     if (
       !current ||
+      current.engineUpgradeRequired ||
+      current.engineVersion !== ENGINE_VERSION ||
       !currentLease ||
       currentLease.expiresAt <= Date.now() ||
       currentBusy.current ||
@@ -307,7 +323,11 @@ export function Studio() {
           setAuthority(result.show.lease);
           setAuthorityIssue(null);
           if (lostAuthority.current) {
-            if (result.show.checkpoint && !pendingFault.current)
+            if (
+              result.show.checkpoint &&
+              !result.show.engineUpgradeRequired &&
+              !pendingFault.current
+            )
               game.current?.restore(result.show.checkpoint);
             setShow(result.show);
             setError(null);
@@ -420,9 +440,9 @@ export function Studio() {
     const active = current?.candidates.find(
       (candidate) => candidate.id === current.activeCandidateId,
     );
-    const author = current?.proposals.find(
+    const proposal = current?.proposals.find(
       (proposal) => proposal.id === active?.proposalId,
-    )?.author;
+    );
     channel?.postMessage({
       type: "frame",
       snapshot: frame,
@@ -435,7 +455,9 @@ export function Studio() {
               active.program.description,
               active.sourceHash,
             ),
-            author,
+            author: proposal?.author,
+            origin: proposal?.origin,
+            ancestry: proposal?.ancestry,
           }
         : null,
     });
@@ -452,12 +474,23 @@ export function Studio() {
 
   const onGameReady = () => {
     const current = currentShow.current;
+    if (
+      current?.engineUpgradeRequired ||
+      current?.engineVersion !== ENGINE_VERSION
+    ) {
+      game.current?.pause(true);
+      return;
+    }
     if (current?.checkpoint) game.current?.restore(current.checkpoint);
     else {
       const active = current?.candidates.find(
         (candidate) => candidate.id === current.activeCandidateId,
       );
-      if (active) game.current?.activate(active.program, active.sourceHash);
+      if (active)
+        game.current?.activate(
+          active.composition?.program || active.program,
+          active.composition?.artifactHash || active.sourceHash,
+        );
     }
     game.current?.pause(paused || !lease.current);
   };
@@ -610,6 +643,7 @@ export function Studio() {
         setFaultIssue(null);
         pendingFault.current = null;
         setNextRound(false);
+        setActivationMode("append");
         setStatus(await api<ServiceStatus>("/api/status"));
         window.history.replaceState(null, "", "/studio");
         window.scrollTo({ top: 0, behavior: "instant" });
@@ -635,6 +669,7 @@ export function Studio() {
       pendingFault.current = null;
       setSelectedId(null);
       setNextRound(false);
+      setActivationMode("append");
       setPreview(null);
       setPaused(false);
       setError(null);
@@ -667,7 +702,7 @@ export function Studio() {
     void action("generate", async () => {
       const result = await api<HostShowResponse>(
         `/api/shows/${show.id}/generate`,
-        { proposalId: selectedId },
+        { proposalId: selectedId, mode: activationMode },
       );
       setShow(result.show);
       setNextRound(false);
@@ -699,6 +734,9 @@ export function Studio() {
         {
           sourceHash: preview.sourceHash,
           programHash: preview.programHash,
+          compositionHash: preview.composition?.compositionHash,
+          contextHash: preview.composition?.contextHash,
+          artifactHash: preview.composition?.artifactHash,
           previewCheckpoint: checkpoint,
         },
       );
@@ -733,6 +771,9 @@ export function Studio() {
             candidateId: candidate.id,
             sourceHash: candidate.sourceHash,
             programHash: candidate.programHash,
+            compositionHash: candidate.composition?.compositionHash,
+            contextHash: candidate.composition?.contextHash,
+            artifactHash: candidate.composition?.artifactHash,
             clientId: clientId.current,
             epoch: authority.epoch,
             checkpoint,
@@ -776,7 +817,8 @@ export function Studio() {
         `/api/shows/${show.id}/lease`,
         { clientId: clientId.current, takeover: true },
       );
-      if (result.show.checkpoint) game.current?.restore(result.show.checkpoint);
+      if (result.show.checkpoint && !result.show.engineUpgradeRequired)
+        game.current?.restore(result.show.checkpoint);
       setShow(result.show);
       lease.current = result.show.lease;
       setAuthority(result.show.lease);
@@ -795,12 +837,24 @@ export function Studio() {
       if (!show) return;
       const result = await api<HostShowResponse>(
         `/api/shows/${show.id}/practice/sample`,
-        {},
+        { mode: activationMode },
       );
       setShow(result.show);
       setNextRound(false);
       notify(
         "Previously generated artifact loaded. No AI call was made in this run.",
+      );
+    });
+  const saveLaw = (candidate: Candidate) =>
+    action("save-law", async () => {
+      if (!show) return;
+      const result = await api<HostShowResponse>(
+        `/api/shows/${show.id}/library/save`,
+        { candidateId: candidate.id },
+      );
+      setShow(result.show);
+      notify(
+        "Exact source saved to your law library with its original credit.",
       );
     });
 
@@ -820,6 +874,63 @@ export function Studio() {
       setBusy(null);
     }
   };
+  const upgradeWorld = () =>
+    action("upgrade", async () => {
+      if (!show || !authority)
+        throw new Error(
+          "Take control of this studio before upgrading its saved world.",
+        );
+      const result = await api<HostShowResponse>(
+        `/api/shows/${show.id}/upgrade`,
+        {
+          clientId: clientId.current,
+          epoch: authority.epoch,
+          expectedRevision: show.revision,
+          targetEngineVersion: ENGINE_VERSION,
+        },
+      );
+      currentShow.current = result.show;
+      setShow(result.show);
+      if (result.show.checkpoint) game.current?.restore(result.show.checkpoint);
+      setPaused(true);
+      setUpgradeOpen(false);
+      setNextRound(true);
+      setPreview(null);
+      setSelectedId(null);
+      setCheckpointIssue(null);
+      setError(null);
+      notify(
+        "Expanded world ready. Your earlier save and law history are preserved.",
+      );
+    });
+
+  const forgeAdaptation = () =>
+    action("generate", async () => {
+      if (!show || !latestJob?.adaptedProposal) return;
+      const adapted = await api<HostShowResponse>(
+        `/api/shows/${show.id}/generations/${latestJob.id}/adapt`,
+        {},
+      );
+      currentShow.current = adapted.show;
+      setShow(adapted.show);
+      const proposalId = adapted.show.jobs.find(
+        (job) => job.id === latestJob.id,
+      )?.adaptationProposalId;
+      if (!proposalId)
+        throw new Error(
+          "The adapted proposal could not be located. Your original idea is preserved.",
+        );
+      setSelectedId(proposalId);
+      const result = await api<HostShowResponse>(
+        `/api/shows/${show.id}/generate`,
+        { proposalId, mode: activationMode },
+      );
+      setShow(result.show);
+      setNextRound(false);
+      notify(
+        "A distinct adaptation is being forged with the original contributor’s credit.",
+      );
+    });
   const revise = async (revision: string) => {
     if (!show || !preview) return;
     setBusy("revise");
@@ -830,6 +941,7 @@ export function Studio() {
           proposalId: preview.proposalId,
           priorCandidateId: preview.id,
           revision,
+          mode: preview.composition?.mode || activationMode,
         },
       );
       setShow(result.show);
@@ -905,11 +1017,25 @@ export function Studio() {
     (item) => item.id === latestJob?.candidateId,
   );
   const selected = show?.proposals.find(
-    (proposal) => proposal.id === selectedId,
+    (proposal) =>
+      proposal.id === selectedId &&
+      !["hidden", "rejected"].includes(proposal.status),
   );
   const isWorking = Boolean(latestJob && WORKING.has(latestJob.status));
+  const needsUpgrade = Boolean(
+    show &&
+    (show.engineUpgradeRequired || show.engineVersion !== ENGINE_VERSION),
+  );
+  const activeCandidates = (show?.activeCandidateIds || [])
+    .map((id) => show?.candidates.find((entry) => entry.id === id))
+    .filter((entry): entry is Candidate => Boolean(entry));
+  const stackFull = activationMode === "append" && activeCandidates.length >= 3;
   const candidateReady =
-    candidate && !candidate.activatedAt && latestJob?.status === "ready";
+    !needsUpgrade &&
+    candidate &&
+    !candidate.activatedAt &&
+    latestJob?.status === "ready" &&
+    candidate.composition?.engineVersion === ENGINE_VERSION;
   const currentChapter = Math.min(2, snapshot?.checkpoint || 0);
   const publicOrigin =
     typeof window === "undefined" ? "" : window.location.origin;
@@ -1086,6 +1212,13 @@ export function Studio() {
           <div className="button-group">
             <button
               className="button button-quiet"
+              disabled={Boolean(busy) || recoveringFault}
+              onClick={() => setLibraryOpen(true)}
+            >
+              <BookOpen size={15} /> Law library
+            </button>
+            <button
+              className="button button-quiet"
               disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
               onClick={() => setShowManagerOpen(true)}
             >
@@ -1124,6 +1257,27 @@ export function Studio() {
               ) : undefined
             }
           />
+        )}
+        {needsUpgrade && (
+          <div className="notice recovery-notice" role="status">
+            <Sparkles size={22} />
+            <div>
+              <strong>Your saved world has more possibilities ahead.</strong>
+              <p>
+                This save uses the earlier engine. Start the expanded world from
+                its opening checkpoint, or create a new show. Your earlier save
+                and source history stay preserved; previous approvals do not
+                carry into changed physics.
+              </p>
+            </div>
+            <button
+              className="button button-outline button-small"
+              disabled={Boolean(busy) || !authority}
+              onClick={() => setUpgradeOpen(true)}
+            >
+              Review world upgrade
+            </button>
+          </div>
         )}
         {authorityIssue && (
           <div className="notice notice-error recovery-notice" role="alert">
@@ -1233,6 +1387,10 @@ export function Studio() {
                   Boolean(preview) ||
                   sampleOpen ||
                   showManagerOpen ||
+                  libraryOpen ||
+                  moderationOpen ||
+                  upgradeOpen ||
+                  needsUpgrade ||
                   !authority ||
                   Boolean(faultIssue)
                 }
@@ -1261,17 +1419,18 @@ export function Studio() {
                   </span>
                 </div>
               </div>
-              {activeCandidate && (
+              {activeCandidate && !needsUpgrade && (
                 <div className="stage-law">
                   <Sparkles size={18} />
                   <div>
                     <p className="law-label">A COMMUNITY LAW</p>
                     <p className="law-name">{activeCandidate.program.name}</p>
                     <p className="law-credit">
-                      Invented by{" "}
-                      {show.proposals.find(
-                        (p) => p.id === activeCandidate.proposalId,
-                      )?.author || "the host"}
+                      {ruleCredit(
+                        show.proposals.find(
+                          (p) => p.id === activeCandidate.proposalId,
+                        ),
+                      )}
                     </p>
                   </div>
                 </div>
@@ -1283,7 +1442,7 @@ export function Studio() {
                   <p>Your world is paused. The ember is safe.</p>
                   <button
                     className="button button-primary"
-                    disabled={!authority || Boolean(faultIssue)}
+                    disabled={!authority || Boolean(faultIssue) || needsUpgrade}
                     onClick={() => setPaused(false)}
                   >
                     <Play size={15} />
@@ -1304,6 +1463,9 @@ export function Studio() {
                 <span className="keyboard-control">
                   <kbd className="key">E</kbd>Interact
                 </span>
+                <span className="keyboard-control">
+                  <kbd className="key">Q</kbd>Ember
+                </span>
               </div>
               <div className="game-meta">
                 <button
@@ -1321,7 +1483,7 @@ export function Studio() {
                   className="icon-button"
                   title={paused ? "Resume world" : "Pause world"}
                   aria-label={paused ? "Resume world" : "Pause world"}
-                  disabled={!authority || Boolean(faultIssue)}
+                  disabled={!authority || Boolean(faultIssue) || needsUpgrade}
                   onClick={() => setPaused((value) => !value)}
                 >
                   {paused ? <Play size={15} /> : <Pause size={15} />}
@@ -1383,6 +1545,7 @@ export function Studio() {
                         : "Connecting world authority"}
               </p>
               <button
+                disabled={needsUpgrade || Boolean(faultIssue) || !authority}
                 onClick={() => {
                   game.current?.reset();
                   notify("Returned to the current encounter checkpoint.");
@@ -1392,6 +1555,30 @@ export function Studio() {
                 Return to checkpoint
               </button>
             </div>
+            {activeCandidates.length > 0 && !needsUpgrade && (
+              <div className="active-law-stack">
+                <p className="field-label">
+                  {activeCandidates.length} / 3 laws shaping this world
+                </p>
+                <ol>
+                  {activeCandidates.map((entry) => (
+                    <li key={entry.id}>
+                      <Sparkles size={14} />
+                      <span>{entry.program.name}</span>
+                      <code>{shortHash(entry.sourceHash)}</code>
+                      <button
+                        className="button button-outline button-small"
+                        disabled={Boolean(busy)}
+                        onClick={() => void saveLaw(entry)}
+                        aria-label={`Save ${entry.program.name} to your law library`}
+                      >
+                        Save
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
           </section>
           <aside className="forge-rail" id="forge" aria-label="Community forge">
             <div className="rail-header">
@@ -1403,19 +1590,28 @@ export function Studio() {
                 ROUND {String(show.round).padStart(2, "0")}
               </span>
             </div>
+            <button
+              className="moderation-open"
+              disabled={Boolean(busy) || recoveringFault}
+              onClick={() => setModerationOpen(true)}
+            >
+              <ShieldCheck size={15} /> Moderation & chat settings
+            </button>
             <div className="rail-phase" aria-live="polite">
               <span className={`status-dot ${isWorking ? "brass" : "mint"}`} />
-              {isWorking
-                ? "An idea is taking shape"
-                : candidateReady
-                  ? candidate?.approvedAt
-                    ? "Approved. Waiting for your moment."
-                    : "Your new law is ready"
-                  : activeCandidate && !nextRound
-                    ? "A new law is in the world"
-                    : show.votingOpen
-                      ? "Open for a little possibility"
-                      : "Shortlist closed"}
+              {needsUpgrade
+                ? "Saved world awaits its upgrade"
+                : isWorking
+                  ? "An idea is taking shape"
+                  : candidateReady
+                    ? candidate?.approvedAt
+                      ? "Approved. Waiting for your moment."
+                      : "Your new law is ready"
+                    : activeCandidate && !nextRound
+                      ? "A new law is in the world"
+                      : show.votingOpen
+                        ? "Open for a little possibility"
+                        : "Shortlist closed"}
               <span className="phase-note">
                 {isWorking
                   ? "FORGING"
@@ -1489,6 +1685,16 @@ export function Studio() {
                         : "GENERATED WITH CODEX"}
                     </span>
                   </div>
+                  {candidate.approvedAt && (
+                    <button
+                      className="button button-outline button-small"
+                      style={{ marginTop: 16 }}
+                      disabled={Boolean(busy)}
+                      onClick={() => void saveLaw(candidate)}
+                    >
+                      <BookOpen size={13} /> Save this exact version
+                    </button>
+                  )}
                 </div>
                 <div className="rail-action">
                   {candidate.approvedAt ? (
@@ -1535,7 +1741,7 @@ export function Studio() {
                   )}
                 </div>
               </>
-            ) : activeCandidate && !nextRound ? (
+            ) : activeCandidate && !nextRound && !needsUpgrade ? (
               <>
                 <div className="candidate-card active-card">
                   <div className="active-badge">
@@ -1558,10 +1764,11 @@ export function Studio() {
                           )?.author || "H")[0]
                         }
                       </span>
-                      Invented by{" "}
-                      {show.proposals.find(
-                        (p) => p.id === activeCandidate.proposalId,
-                      )?.author || "the host"}
+                      {ruleCredit(
+                        show.proposals.find(
+                          (p) => p.id === activeCandidate.proposalId,
+                        ),
+                      )}
                     </span>
                   </div>
                   <div className="candidate-info">
@@ -1608,8 +1815,9 @@ export function Studio() {
                     <span>THE SHORTLIST</span>
                     <span className="count">
                       {
-                        show.proposals.filter((p) => p.status !== "hidden")
-                          .length
+                        show.proposals.filter(
+                          (p) => !["hidden", "rejected"].includes(p.status),
+                        ).length
                       }{" "}
                       IDEAS{" "}
                       <button
@@ -1621,8 +1829,9 @@ export function Studio() {
                       </button>
                     </span>
                   </div>
-                  {show.proposals.filter((p) => p.status !== "hidden")
-                    .length === 0 ? (
+                  {show.proposals.filter(
+                    (p) => !["hidden", "rejected"].includes(p.status),
+                  ).length === 0 ? (
                     <div className="empty-forge">
                       <MessageCircle size={24} strokeWidth={1.3} />
                       <h3>The first spark is yours.</h3>
@@ -1635,7 +1844,9 @@ export function Studio() {
                   ) : (
                     <div className="proposal-list">
                       {show.proposals
-                        .filter((p) => p.status !== "hidden")
+                        .filter(
+                          (p) => !["hidden", "rejected"].includes(p.status),
+                        )
                         .slice()
                         .reverse()
                         .map((proposal) => (
@@ -1665,18 +1876,23 @@ export function Studio() {
                         ))}
                     </div>
                   )}
-                  {show.proposals.some((p) => p.status === "hidden") && (
+                  {show.proposals.some((p) =>
+                    ["hidden", "rejected"].includes(p.status),
+                  ) && (
                     <details className="hidden-ideas">
                       <summary>
-                        Hidden ideas (
+                        Moderated ideas (
                         {
-                          show.proposals.filter((p) => p.status === "hidden")
-                            .length
+                          show.proposals.filter((p) =>
+                            ["hidden", "rejected"].includes(p.status),
+                          ).length
                         }
                         )
                       </summary>
                       {show.proposals
-                        .filter((p) => p.status === "hidden")
+                        .filter((p) =>
+                          ["hidden", "rejected"].includes(p.status),
+                        )
                         .map((proposal) => (
                           <div key={proposal.id}>
                             <span>{proposal.text}</span>
@@ -1756,6 +1972,44 @@ export function Studio() {
                         <div>{latestJob.message}</div>
                       </div>
                     )}
+                  {latestJob?.adaptedProposal &&
+                    latestJob.status === "failed" && (
+                      <div className="adaptation-card">
+                        <p className="field-label">
+                          A possible adaptation — your choice
+                        </p>
+                        <p>{latestJob.adaptedProposal}</p>
+                        <small>
+                          Your original idea remains unchanged. This creates a
+                          distinct proposal with the original contributor’s
+                          credit and uses a fresh generation run.
+                        </small>
+                        <button
+                          className="button button-outline button-full"
+                          disabled={
+                            Boolean(busy) ||
+                            needsUpgrade ||
+                            stackFull ||
+                            !status?.generation.allowed ||
+                            !status.generation.configured
+                          }
+                          onClick={() => void forgeAdaptation()}
+                        >
+                          Forge this adaptation <ArrowRight size={14} />
+                        </button>
+                      </div>
+                    )}
+                  <details className="capability-guide">
+                    <summary>What can this world learn?</summary>
+                    <div>
+                      {RULE_CAPABILITY_HINTS.map((hint) => (
+                        <p key={hint.title}>
+                          <strong>{hint.title}</strong>
+                          <span>{hint.detail}</span>
+                        </p>
+                      ))}
+                    </div>
+                  </details>
                   <button
                     className="starter-button"
                     onClick={() => setSampleOpen(true)}
@@ -1770,7 +2024,12 @@ export function Studio() {
                     <>
                       <button
                         className="button button-primary button-full"
-                        disabled={!selected || Boolean(busy)}
+                        disabled={
+                          !selected ||
+                          Boolean(busy) ||
+                          needsUpgrade ||
+                          stackFull
+                        }
                         onClick={generate}
                       >
                         <WandSparkles size={15} />
@@ -1814,16 +2073,65 @@ export function Studio() {
                     <span>
                       Support helps you choose. It never activates a law.
                       <br />
-                      Bounded mechanics. Human approval. One active law.
+                      Bounded mechanics. Human approval. Up to three laws.
                     </span>
                   </div>
                 </div>
               </>
             )}
             <div className="rail-fallback">
+              <fieldset
+                className="law-mode"
+                disabled={
+                  Boolean(busy) ||
+                  isWorking ||
+                  Boolean(candidateReady) ||
+                  needsUpgrade
+                }
+              >
+                <legend>Plan the next law</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="law-mode"
+                    value="append"
+                    checked={activationMode === "append"}
+                    onChange={() => setActivationMode("append")}
+                  />
+                  <span>
+                    Add to this world{" "}
+                    <small>{activeCandidates.length} of 3 slots occupied</small>
+                  </span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="law-mode"
+                    value="replace"
+                    checked={activationMode === "replace"}
+                    onChange={() => setActivationMode("replace")}
+                  />
+                  <span>
+                    Replace the current laws{" "}
+                    <small>Preview a fresh combination of one</small>
+                  </span>
+                </label>
+              </fieldset>
+              {stackFull && (
+                <p className="rail-footnote">
+                  All three slots are in use. Choose replacement, or restore the
+                  previous combination before adding another law.
+                </p>
+              )}
               <button
                 className="button button-outline button-full"
-                disabled={Boolean(busy) || isWorking || Boolean(faultIssue)}
+                disabled={
+                  Boolean(busy) ||
+                  isWorking ||
+                  Boolean(faultIssue) ||
+                  needsUpgrade ||
+                  stackFull
+                }
                 onClick={() => void loadReused()}
               >
                 {busy === "sample" ? (
@@ -1861,6 +2169,7 @@ export function Studio() {
         open={Boolean(preview)}
         onClose={() => setPreview(null)}
         candidate={preview}
+        existingCandidates={show.candidates}
         proposal={show.proposals.find((p) => p.id === preview?.proposalId)}
         baseline={previewBaseline}
         onApprove={approve}
@@ -1878,6 +2187,52 @@ export function Studio() {
         onClose={() => setEvidenceOpen(false)}
         show={show}
       />
+      <LawLibrary
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        showId={show.id}
+        mode={activationMode}
+        disabled={
+          Boolean(busy) ||
+          isWorking ||
+          needsUpgrade ||
+          stackFull ||
+          Boolean(faultIssue)
+        }
+        onImported={(imported) => {
+          if (currentShow.current?.id !== imported.id) return;
+          setShow((current) =>
+            current && current.revision > imported.revision
+              ? current
+              : imported,
+          );
+          setNextRound(false);
+          notify(
+            "Saved source retested for this world. Preview the exact combination before approval.",
+          );
+        }}
+      />
+      <ModerationPanel
+        open={moderationOpen}
+        onClose={() => setModerationOpen(false)}
+        show={show}
+        repliesAuthorized={Boolean(status?.twitch.chatRepliesAuthorized)}
+        disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
+        onUpdated={(updated) => {
+          if (currentShow.current?.id !== updated.id) return;
+          setShow((current) =>
+            current && current.revision > updated.revision ? current : updated,
+          );
+          if (
+            updated.proposals.some(
+              (proposal) =>
+                proposal.id === selectedId &&
+                ["hidden", "rejected"].includes(proposal.status),
+            )
+          )
+            setSelectedId(null);
+        }}
+      />
       <ShowManager
         open={showManagerOpen}
         onClose={() => setShowManagerOpen(false)}
@@ -1889,11 +2244,76 @@ export function Studio() {
         }}
       />
       <Modal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        title="A new chapter for this world."
+        eyebrow="SAVED WORLD UPGRADE"
+      >
+        <p className="modal-copy">
+          The expanded engine adds event rules, physics, temporary objects and
+          combinations of up to three laws. This starts at the opening
+          checkpoint with no active laws. Your earlier checkpoint, exact sources
+          and contributor history remain saved separately. Old laws need fresh
+          testing and approval before they can enter this world.
+        </p>
+        <div className="modal-actions">
+          <button
+            className="button button-quiet"
+            onClick={() => setUpgradeOpen(false)}
+          >
+            Keep the earlier save
+          </button>
+          <button
+            className="button button-primary"
+            disabled={Boolean(busy) || !authority}
+            onClick={() => void upgradeWorld()}
+          >
+            Start the expanded world <ArrowRight size={15} />
+          </button>
+        </div>
+      </Modal>
+      <Modal
         open={shareOpen}
         onClose={() => setShareOpen(false)}
         title="Give your world a window."
         eyebrow="SHOW OUTPUTS"
       >
+        <div className="share-section">
+          <h3>Transparent community overlay</h3>
+          <p>
+            Add a Browser Source in OBS at 1920 × 1080 and paste this URL. It
+            shows public ideas, support, generation status and approved laws
+            over your game capture. No host login is needed in OBS.
+          </p>
+          <div className="share-row">
+            <input
+              className="dialog-field"
+              readOnly
+              value={`${publicOrigin}/overlay/${show.id}`}
+              aria-label="Transparent 1920 by 1080 OBS overlay URL"
+            />
+            <button
+              className="button button-primary button-small"
+              onClick={() =>
+                void copy(
+                  `${publicOrigin}/overlay/${show.id}`,
+                  "Transparent OBS overlay URL copied.",
+                )
+              }
+            >
+              <Copy size={13} /> Copy OBS URL
+            </button>
+          </div>
+          <a
+            className="button button-outline button-small"
+            style={{ marginTop: 12 }}
+            href={`/overlay/${show.id}?preview=1`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Preview overlay and background <ExternalLink size={13} />
+          </a>
+        </div>
         <div className="share-section">
           <h3>The broadcast projector</h3>
           <p>
@@ -1952,9 +2372,9 @@ export function Studio() {
         <div className="rail-info">
           <Info size={14} />
           <span>
-            The projector shares frames within this browser profile. A separate
-            OBS Browser Source cannot receive those frames. Window Capture is
-            the supported setup.
+            Use Window Capture for the game projector, and a separate Browser
+            Source for the transparent community overlay. Keep the studio open
+            as the game authority.
           </span>
         </div>
         <div className="modal-actions">
@@ -2049,7 +2469,9 @@ function ProposalCard({
         <span className="proposal-card-head">
           <span className="proposal-id">{proposal.id}</span>
           <span className="proposal-origin">
-            {proposal.origin === "practice" ? "PRACTICE IDEA" : "FROM TWITCH"}
+            {proposal.ancestry?.kind === "adaptation"
+              ? "APPROVED ADAPTATION"
+              : proposalOrigin(proposal.origin)}
           </span>
           <span className="proposal-selected-dot" />
         </span>

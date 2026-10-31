@@ -6,37 +6,58 @@ import {
   type VerificationReport,
 } from "./contracts";
 import { GameEngine, assertWorld } from "./core";
-import { validateRuleProgram } from "./rules";
-/** Trusted harness: candidate has no tests, callbacks, or access to this verifier. */
+import {
+  validateRuleProgram,
+  validateRuntimeRuleProgram,
+  composeRulePrograms,
+} from "./rules";
 export function verifyRuleProgram(input: RuleProgram): VerificationReport {
+  return verify(input, false);
+}
+export function verifyRuleComposition(
+  programs: RuleProgram[],
+): VerificationReport {
+  try {
+    return verify(composeRulePrograms(programs), true);
+  } catch (error) {
+    return failure(error);
+  }
+}
+function failure(error: unknown): VerificationReport {
+  return {
+    passed: false,
+    engineVersion: ENGINE_VERSION,
+    checks: [
+      {
+        name: "Bounded capability schema",
+        passed: false,
+        detail: error instanceof Error ? error.message : "Invalid program",
+      },
+    ],
+    ticksSimulated: 0,
+    summary: "Candidate rejected before simulation.",
+    effects: { surfacesCreated: 0, impulsesApplied: 0, cuesApplied: 0 },
+  };
+}
+/** Trusted suite runs the complete ordered program, including shared global resource budgets. */
+function verify(input: RuleProgram, composition: boolean): VerificationReport {
   const checks: VerificationCheck[] = [];
-  let ticksSimulated = 0;
-  let observable = false;
+  let ticksSimulated = 0,
+    observable = false;
   const effects = { surfacesCreated: 0, impulsesApplied: 0, cuesApplied: 0 };
   let program: RuleProgram;
   try {
-    program = validateRuleProgram(input);
+    program = composition
+      ? validateRuntimeRuleProgram(input)
+      : validateRuleProgram(input);
     checks.push({
       name: "Bounded capability schema",
       passed: true,
       detail:
-        "Strict schema, finite numbers, unique IDs, depth, size and resource caps checked.",
+        "Strict source members, derived composition, finite expressions and aggregate limits checked.",
     });
   } catch (error) {
-    return {
-      passed: false,
-      engineVersion: ENGINE_VERSION,
-      checks: [
-        {
-          name: "Bounded capability schema",
-          passed: false,
-          detail: error instanceof Error ? error.message : "Invalid program",
-        },
-      ],
-      ticksSimulated: 0,
-      summary: "Candidate rejected before simulation.",
-      effects,
-    };
+    return failure(error);
   }
   const run = (name: string, fn: () => void) => {
     try {
@@ -55,46 +76,58 @@ export function verifyRuleProgram(input: RuleProgram): VerificationReport {
     }
   };
   run("Actual effects and protected invariants", () => {
-    for (let scenario = 0; scenario < 4; scenario++) {
-      const engine = new GameEngine(),
+    for (let scenario = 0; scenario < 5; scenario++) {
+      const e = new GameEngine(),
         baseline = new GameEngine();
-      engine.world.entities[0].x = [170, 510, 1080, 1870][scenario];
-      baseline.world.entities[0].x = engine.world.entities[0].x;
-      engine.activate(program, "verification-only");
-      for (let t = 0; t < 360; t++) {
+      e.world.entities[0].x = [170, 510, 1080, 1870, 400][scenario];
+      baseline.world.entities[0].x = e.world.entities[0].x;
+      e.activate(program, "verification-only");
+      for (let t = 0; t < 420; t++) {
         const input = {
           ...EMPTY_INPUT,
           right: scenario > 0 && t % 180 < 125,
           left: scenario === 3 && t % 180 >= 125,
-          jump: scenario > 1 && t % 48 === 0,
+          jump: scenario > 1 && (t % 48 === 0 || t % 48 === 12),
           interact: scenario === 1 && t % 60 < 20,
+          drop: scenario === 4 && (t === 15 || t === 100),
         };
-        engine.step(input);
+        e.step(input);
         baseline.step(input);
         ticksSimulated += 2;
-        assertWorld(engine.world);
+        assertWorld(e.world);
         if (
-          engine.world.surfaces.some((s) => s.generated) ||
-          engine.world.entities.some((e, i) => {
-            const original = baseline.world.entities[i];
+          e.world.entities.length !== baseline.world.entities.length ||
+          e.world.surfaces.some((s) => s.generated) ||
+          e.world.entities.some((x, i) => {
+            const b = baseline.world.entities[i];
             return (
-              Boolean(e.cue && e.cue.intensity > 0) ||
-              ["x", "y", "vx", "vy", "friction", "bounce", "timer"].some(
-                (key) => e[key as "x"] !== original[key as "x"],
-              )
+              !b ||
+              Boolean(x.cue && x.cue.intensity > 0) ||
+              [
+                "x",
+                "y",
+                "vx",
+                "vy",
+                "w",
+                "h",
+                "friction",
+                "bounce",
+                "timer",
+              ].some((k) => x[k as "x"] !== b[k as "x"]) ||
+              JSON.stringify(x.physics) !== JSON.stringify(b.physics)
             );
           })
         )
           observable = true;
       }
       for (const k of Object.keys(effects) as (keyof typeof effects)[])
-        effects[k] += engine.effects[k];
+        effects[k] += e.effects[k];
     }
   });
   run("Observable behavior in trusted scenarios", () => {
     if (!observable)
       throw new Error(
-        "No observable effect occurred across the trusted idle, prop-interaction, traversal and late-level fixtures. Revise the conditions or supported mechanic.",
+        "No actual effect occurred across idle, traversal, touch, jump and dropped-ember scenarios.",
       );
   });
   run("Deterministic input replay", () => {
@@ -108,6 +141,7 @@ export function verifyRuleProgram(input: RuleProgram): VerificationReport {
         right: t % 120 < 80,
         jump: t % 45 === 0,
         interact: t % 65 === 0,
+        drop: t === 70 || t === 100,
       };
       a.step(input);
       b.step(input);
@@ -117,35 +151,42 @@ export function verifyRuleProgram(input: RuleProgram): VerificationReport {
       throw new Error("Replay diverged");
   });
   run("Activation rollback preserves exact world", () => {
-    const engine = new GameEngine();
-    for (let t = 0; t < 30; t++) engine.step({ ...EMPTY_INPUT, right: true });
-    const before = engine.checkpoint();
-    engine.activate(program, "rollback-version");
+    const e = new GameEngine();
+    for (let t = 0; t < 30; t++) e.step({ ...EMPTY_INPUT, right: true });
+    const before = e.checkpoint();
+    e.activate(program, "rollback-version");
     for (let t = 0; t < 90; t++) {
-      engine.step({ ...EMPTY_INPUT });
+      e.step();
       ticksSimulated++;
     }
-    engine.rollback();
-    if (JSON.stringify(engine.checkpoint()) !== JSON.stringify(before))
-      throw new Error(
-        "Rollback did not restore the exact protected checkpoint",
-      );
+    e.rollback();
+    if (JSON.stringify(e.checkpoint()) !== JSON.stringify(before))
+      throw new Error("Rollback changed protected state");
   });
-  run("Checkpoint round trip and temporary cleanup", () => {
-    const engine = new GameEngine();
-    engine.activate(program, "roundtrip-version");
+  run("JSON checkpoint continuation and temporary cleanup", () => {
+    const e = new GameEngine();
+    e.activate(program, "roundtrip-version");
     for (let t = 0; t < 40; t++) {
-      engine.step();
+      e.step();
       ticksSimulated++;
     }
-    const checkpoint = engine.checkpoint();
-    const restored = new GameEngine();
-    restored.restore(checkpoint);
-    if (JSON.stringify(restored.checkpoint()) !== JSON.stringify(checkpoint))
-      throw new Error("Checkpoint serialization mismatch");
-    restored.rollback();
-    if (restored.world.surfaces.some((s) => s.generated))
-      throw new Error("Retired rule left collision surfaces");
+    const cp = JSON.parse(JSON.stringify(e.checkpoint())),
+      other = new GameEngine();
+    other.restore(cp);
+    for (let t = 0; t < 40; t++) {
+      e.step({ ...EMPTY_INPUT, right: true });
+      other.step({ ...EMPTY_INPUT, right: true });
+      ticksSimulated += 2;
+    }
+    if (JSON.stringify(e.checkpoint()) !== JSON.stringify(other.checkpoint()))
+      throw new Error("Serialized continuation diverged");
+    other.rollback();
+    if (
+      other.world.surfaces.some((s) => s.generated) ||
+      other.world.entities.some((x) => x.spawnRule) ||
+      other.world.modifiers.length
+    )
+      throw new Error("Retired program left generated state");
   });
   const passed = checks.every((c) => c.passed);
   return {
@@ -154,8 +195,8 @@ export function verifyRuleProgram(input: RuleProgram): VerificationReport {
     checks,
     ticksSimulated,
     summary: passed
-      ? "Passed trusted schema, simulation, determinism and recovery checks. Global solvability is not proven."
-      : "Candidate failed trusted verification; activation is blocked.",
+      ? "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review."
+      : "Candidate or composition failed trusted verification; activation is blocked.",
     effects,
   };
 }

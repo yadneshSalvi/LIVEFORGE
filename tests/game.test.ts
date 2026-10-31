@@ -32,7 +32,9 @@ describe("authoritative fixed-step world", () => {
     step(e, 30);
     e.world.entities[1].vx = 2;
     step(e, 4);
-    expect(e.world.surfaces.some((s) => s.generated)).toBe(false);
+    expect(
+      e.world.surfaces.some((s) => s.generated && s.owner === "counterweight"),
+    ).toBe(false);
   });
   it("rollback restores the exact activation checkpoint including progress and ember", () => {
     const e = new GameEngine();

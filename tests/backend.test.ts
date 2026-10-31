@@ -8,13 +8,14 @@ import {
   PRACTICE_RULE_SOURCE,
   verifyRuleProgram,
 } from "@/game/rules";
+import { prepareCandidateComposition } from "@/server/composition";
 import { LocalFileStore } from "@/server/store";
 import { parseCheckpoint } from "@/server/checkpoint";
 import {
   acquireLease,
-  activateCandidate,
+  activateCandidate as activateVerifiedCandidate,
   addProposal,
-  approveCandidate,
+  approveCandidate as approveVerifiedCandidate,
   cancelGeneration,
   createGeneration,
   createShow,
@@ -47,6 +48,30 @@ import {
   GENERATION_NETWORK_ALLOWLIST,
 } from "@/server/generation";
 import type { Candidate } from "@/server/contracts";
+function approveCandidate(
+  ...args: Parameters<typeof approveVerifiedCandidate>
+) {
+  const c = args[0].candidates.find((c) => c.id === args[1]);
+  return approveVerifiedCandidate(
+    ...([
+      args[0],
+      args[1],
+      args[2],
+      args[3],
+      args[4],
+      args[5] ?? c?.composition,
+    ] as Parameters<typeof approveVerifiedCandidate>),
+  );
+}
+function activateCandidate(show: ShowRecord, input: Record<string, unknown>) {
+  const c = show.candidates.find((c) => c.id === input.candidateId);
+  return activateVerifiedCandidate(show, {
+    compositionHash: c?.composition?.compositionHash,
+    contextHash: c?.composition?.contextHash,
+    artifactHash: c?.composition?.artifactHash,
+    ...input,
+  });
+}
 let directory: string;
 let store: LocalFileStore;
 beforeEach(async () => {
@@ -86,13 +111,14 @@ function candidate(show: ShowRecord) {
     baseRevision: show.revision,
     createdAt: new Date().toISOString(),
   };
+  prepareCandidateComposition(show, result);
   show.candidates.push(result);
   job.status = "ready";
   return result;
 }
 function preview(c: Candidate) {
   const engine = new GameEngine();
-  engine.activate(c.program, c.sourceHash);
+  engine.activate(c.composition!.program, c.composition!.artifactHash);
   return engine.checkpoint();
 }
 describe("durable show authority", () => {
@@ -259,7 +285,7 @@ describe("exact artifact approval and checkpoint activation", () => {
         programHash: c.programHash,
         checkpoint: new GameEngine().checkpoint(),
       }),
-    ).toThrow(/exact approved/);
+    ).toThrow(/changed|approved|no longer matches/);
   });
   it("survives JSONB key reordering without changing program identity", async () => {
     const show = await fixture();
@@ -297,7 +323,7 @@ describe("exact artifact approval and checkpoint activation", () => {
         programHash: c.programHash,
         checkpoint: new GameEngine().checkpoint(),
       }),
-    ).toThrow(/exact approved/);
+    ).toThrow(/changed|approved|no longer matches/);
   });
   it("does not make candidates stale during lease or checkpoint renewals", async () => {
     const show = await fixture();
@@ -309,7 +335,7 @@ describe("exact artifact approval and checkpoint activation", () => {
     show.revision++;
     expect(() =>
       approveCandidate(show, c.id, c.sourceHash, c.programHash, preview(c)),
-    ).toThrow(/earlier game revision/);
+    ).toThrow(/world changed|earlier game revision/);
   });
   it("keeps rejected artifacts inspectable while blocking approval/activation", async () => {
     const show = await fixture();
@@ -427,10 +453,7 @@ describe("session, origin, and isolation boundaries", () => {
     expect(() => decryptToken(buffer.toString("base64url"))).toThrow();
   });
   it("guest has a narrowly scoped provider-only environment and no candidate evaluation", () => {
-    expect(GENERATION_NETWORK_ALLOWLIST).toEqual([
-      "registry.npmjs.org",
-      "api.openai.com",
-    ]);
+    expect(GENERATION_NETWORK_ALLOWLIST).toEqual(["api.openai.com"]);
     expect(CODEX_GUEST_RUNNER).toContain("shell_tool:false");
     expect(CODEX_GUEST_RUNNER).toContain("sandboxMode:'read-only'");
     expect(CODEX_GUEST_RUNNER).not.toMatch(

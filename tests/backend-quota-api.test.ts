@@ -8,6 +8,7 @@ import { LocalFileStore } from "@/server/store";
 import * as stores from "@/server/store";
 import { createShow, showKey, type ShowRecord } from "@/server/show";
 import { encryptToken, sessionCookie } from "@/server/security";
+import * as generation from "@/server/generation";
 import { POST as command } from "@/app/api/shows/[showId]/[...action]/route";
 import { GET as status } from "@/app/api/status/route";
 let directory: string;
@@ -149,6 +150,46 @@ describe("public-host generation API quota policy", () => {
     });
     expect(body.generation.quota).not.toHaveProperty("actorId");
     expect(JSON.stringify(body)).not.toContain("fixture-twitch-access");
+  });
+  it("does not let browser body fields choose Sandbox mode or snapshot identity", async () => {
+    const authenticated = await host();
+    const proposalId = await proposal(
+      authenticated.show.id,
+      authenticated.cookie,
+    );
+    const run = vi
+      .spyOn(generation, "runGeneration")
+      .mockResolvedValue(undefined);
+    const response = await post(
+      authenticated.show.id,
+      authenticated.cookie,
+      "generate",
+      {
+        proposalId,
+        sandboxMode: "cold",
+        snapshotId: "untrusted-snapshot",
+        credentials: { token: "untrusted-control-token" },
+      },
+    );
+    expect(response.status).toBe(202);
+    const job = (await response.json()).job;
+    const callback = vi.mocked(after).mock.calls.at(-1)![0];
+    expect(typeof callback).toBe("function");
+    await (callback as () => Promise<void>)();
+    expect(run).toHaveBeenCalledWith(
+      authenticated.show.id,
+      job.id,
+      expect.objectContaining({
+        teamId: "team_fixture",
+        projectId: "prj_fixture",
+      }),
+    );
+    expect(run.mock.calls[0]).toHaveLength(3);
+    expect(
+      JSON.stringify(
+        (await store.get<ShowRecord>(showKey(authenticated.show.id)))!.jobs,
+      ),
+    ).not.toContain("untrusted-snapshot");
   });
   it("cannot launch a model call without OAuth even in development", async () => {
     vi.stubEnv("NODE_ENV", "development");

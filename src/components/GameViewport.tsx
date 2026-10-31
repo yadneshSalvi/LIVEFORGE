@@ -205,6 +205,7 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
         Space: "jump",
         KeyE: "interact",
         KeyR: "reset",
+        KeyQ: "drop",
       };
       const key = (event: KeyboardEvent) => {
         const field = mapping[event.code];
@@ -245,7 +246,7 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
         ref={container}
         className={`game-viewport ${props.className || ""}`}
         tabIndex={0}
-        aria-label="The Last Light game. A and D or arrows move, Space jumps, E interacts, R returns to checkpoint."
+        aria-label="The Last Light game. A and D or arrows move, Space jumps, E interacts, R returns to checkpoint. Q drops or picks up the ember."
         onPointerDown={() => {
           if (!props.observer)
             container.current?.focus({ preventScroll: true });
@@ -346,6 +347,7 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
                 ["right", "→"],
                 ["jump", "Jump"],
                 ["interact", "E"],
+                ["drop", "Q"],
               ] as const
             ).map(([field, label]) => (
               <button

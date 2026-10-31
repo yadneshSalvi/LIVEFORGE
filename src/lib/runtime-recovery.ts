@@ -31,7 +31,7 @@ export async function retireFaultedLaw(
           clientId: target.clientId,
           epoch: target.epoch,
           expectedRevision: revision,
-          faultedSourceHash: target.artifactHash,
+          faultedArtifactHash: target.artifactHash,
           runtimeFaultReason: message.slice(0, 280),
         },
         undefined,
@@ -44,10 +44,14 @@ export async function retireFaultedLaw(
       const active = latest.show.candidates.find(
         (candidate) => candidate.id === latest.show.activeCandidateId,
       );
+      const runtimeHash =
+        latest.show.activeArtifactHash ??
+        latest.show.checkpoint?.artifactHash ??
+        active?.sourceHash;
       // A delayed report may restore current state, but can never retire a newer law.
       if (
-        active?.sourceHash !== target.artifactHash ||
-        active.id !== target.candidateId
+        runtimeHash !== target.artifactHash ||
+        active?.id !== target.candidateId
       )
         return latest;
       if (

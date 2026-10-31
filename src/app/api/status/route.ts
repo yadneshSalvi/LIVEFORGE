@@ -1,3 +1,4 @@
+import { chatRepliesAuthorized } from "@/server/twitch-replies";
 import { generationAccess } from "@/server/twitch";
 import { cookieValue, unsign, type HostSession } from "@/server/security";
 import { generationConfigured } from "@/server/generation";
@@ -25,6 +26,9 @@ export async function GET(request: Request) {
           process.env.TWITCH_CLIENT_ID && process.env.TWITCH_CLIENT_SECRET,
         ),
         transport: "host-browser-eventsub-websocket",
+        chatRepliesAuthorized: await chatRepliesAuthorized(
+          host && host.expiresAt > Date.now() ? host.hostId : undefined,
+        ),
       },
     },
     { headers: { "Cache-Control": "no-store" } },

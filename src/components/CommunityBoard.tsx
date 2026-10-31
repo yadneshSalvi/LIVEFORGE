@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Heart, MessageCircle, Radio, Sparkles } from "lucide-react";
 import { Brand } from "./Brand";
 import { api, errorMessage } from "@/lib/api";
-import { ruleDescription } from "@/lib/rule-copy";
+import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import type { PublicShowState } from "@/server/contracts";
 
 export function CommunityBoard({ showId }: { showId: string }) {
@@ -77,7 +77,7 @@ export function CommunityBoard({ showId }: { showId: string }) {
                   show.active.description,
                   show.active.sourceHash,
                 )}{" "}
-                · Invented by {show.active.author}
+                · {ruleCredit(show.activeLaws?.at(-1) || show.active)}
               </p>
             </div>
           </div>
@@ -95,9 +95,11 @@ export function CommunityBoard({ showId }: { showId: string }) {
                   <div className="proposal-card-head">
                     <span className="proposal-id">{proposal.id}</span>
                     <span className="proposal-origin">
-                      {proposal.origin === "practice"
-                        ? "HOST PRACTICE"
-                        : "TWITCH IDEA"}
+                      {proposal.status === "rejected"
+                        ? "NOT SELECTED THIS ROUND"
+                        : proposal.ancestry?.kind === "adaptation"
+                          ? "APPROVED ADAPTATION"
+                          : proposalOrigin(proposal.origin)}
                     </span>
                   </div>
                   <p>{proposal.text}</p>

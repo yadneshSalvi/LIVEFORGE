@@ -114,7 +114,7 @@ export async function jsonBody(
   request: Request,
 ): Promise<Record<string, unknown>> {
   assert(
-    Number(request.headers.get("content-length") || 0) <= 128_000,
+    Number(request.headers.get("content-length") || 0) <= 384_000,
     413,
     "body_too_large",
     "Request is too large.",
@@ -127,7 +127,7 @@ export async function jsonBody(
       const { done, value } = await reader.read();
       if (done) break;
       size += value.length;
-      if (size > 128_000) {
+      if (size > 384_000) {
         await reader.cancel();
         throw new HttpError(413, "body_too_large", "Request is too large.");
       }

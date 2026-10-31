@@ -57,4 +57,17 @@ describe("fixed-step input edge retention", () => {
       pressed: { jump: false, interact: false, reset: false },
     });
   });
+  it("retains an instantaneous Q tap and preserves the unique ember", () => {
+    const engine = new GameEngine(),
+      latch = new InputLatch();
+    latch.update({ ...EMPTY_INPUT, drop: true });
+    latch.update({ ...EMPTY_INPUT });
+    engine.step(latch.consume());
+    expect(engine.world.emberCarried).toBe(false);
+    engine.step(latch.consume());
+    expect(engine.world.emberCarried).toBe(false);
+    expect(
+      engine.world.entities.filter((e) => e.kind === "ember"),
+    ).toHaveLength(1);
+  });
 });

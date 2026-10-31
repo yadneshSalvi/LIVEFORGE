@@ -46,18 +46,25 @@ function activate(show: ShowRecord, sample: "shadow" | "step" = "shadow") {
   const engine = new GameEngine();
   if (show.checkpoint) engine.restore(show.checkpoint);
   const before = engine.checkpoint();
-  engine.activate(candidate.program, candidate.sourceHash);
+  engine.activate(
+    candidate.composition!.program,
+    candidate.composition!.artifactHash,
+  );
   approveCandidate(
     show,
     candidate.id,
     candidate.sourceHash,
     candidate.programHash,
     engine.checkpoint(),
+    candidate.composition,
   );
   activateCandidate(show, {
     clientId: show.lease!.clientId,
     epoch: show.lease!.epoch,
     candidateId: candidate.id,
+    compositionHash: candidate.composition!.compositionHash,
+    contextHash: candidate.composition!.contextHash,
+    artifactHash: candidate.composition!.artifactHash,
     sourceHash: candidate.sourceHash,
     programHash: candidate.programHash,
     checkpoint: before,
@@ -139,7 +146,7 @@ describe("P0 live state repair", () => {
       clientId: show.lease!.clientId,
       epoch: show.lease!.epoch,
       expectedRevision: show.revision,
-      faultedSourceHash: candidate.sourceHash,
+      faultedArtifactHash: candidate.composition!.artifactHash,
       runtimeFaultReason: "The worker rejected an invalid surface.",
     });
     expect(show.activeCandidateId).toBeNull();
@@ -165,7 +172,7 @@ describe("P0 live state repair", () => {
         clientId: show.lease!.clientId,
         epoch: show.lease!.epoch,
         expectedRevision: oldRevision,
-        faultedSourceHash: old.sourceHash,
+        faultedArtifactHash: old.composition!.artifactHash,
         runtimeFaultReason: "Delayed old worker fault",
       }),
     ).toThrow(/world changed/);
@@ -175,7 +182,7 @@ describe("P0 live state repair", () => {
         clientId: show.lease!.clientId,
         epoch: show.lease!.epoch,
         expectedRevision: show.revision,
-        faultedSourceHash: old.sourceHash,
+        faultedArtifactHash: old.composition!.artifactHash,
         runtimeFaultReason: "Wrong law",
       }),
     ).toThrow(/does not identify/);

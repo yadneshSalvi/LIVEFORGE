@@ -12,7 +12,14 @@ export async function GET(request: Request) {
       "show_not_found",
       "Open the Twitch studio you want to authorize.",
     );
-    return Response.redirect(await twitchLogin(showId, host.hostId), 302);
+    return Response.redirect(
+      await twitchLogin(
+        showId,
+        host.hostId,
+        new URL(request.url).searchParams.get("writeChat") === "1",
+      ),
+      302,
+    );
   } catch (error) {
     return jsonError(error);
   }

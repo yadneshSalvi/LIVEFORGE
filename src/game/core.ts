@@ -8,7 +8,13 @@ import {
   type RuleProgram,
   type Surface,
 } from "./contracts";
-import { applyRuleProgram, type EffectCounts } from "./runtime";
+import {
+  applyRuleProgram,
+  defaultPhysics,
+  makeEntity,
+  type EffectCounts,
+} from "./runtime";
+import { validateRuntimeRuleProgram } from "./rules";
 export const LEVEL_SURFACES: Surface[] = [
   {
     id: "arrival",
@@ -92,41 +98,29 @@ export const LEVEL_SURFACES: Surface[] = [
     solid: true,
   },
 ];
-const entity = (
-  id: string,
-  kind: Entity["kind"],
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-): Entity => ({
-  id,
-  kind,
-  x,
-  y,
-  w,
-  h,
-  vx: 0,
-  vy: 0,
-  grounded: true,
-  stationaryTicks: 0,
-  timer: 0,
-  friction: 0.82,
-  bounce: 0,
-});
+export const AUTHORED_ENTITIES = [
+  makeEntity("courier", "player", 170, 400, 25, 48),
+  makeEntity("counterweight", "prop", 510, 384, 40, 64),
+  makeEntity("lamp", "lantern", 320, 357, 25, 91),
+  makeEntity("hall-crate", "prop", 1130, 384, 40, 64),
+  makeEntity("guardian-crate", "prop", 1950, 384, 40, 64),
+  makeEntity("hall-lamp", "lantern", 1030, 357, 25, 91),
+  makeEntity("guardian-lamp", "lantern", 1840, 357, 25, 91),
+  makeEntity("ember", "ember", 201, 425, 12, 12),
+];
 export function createWorld(): GameSnapshot {
   return {
     version: ENGINE_VERSION,
     tick: 0,
-    entities: [
-      entity("courier", "player", 170, 400, 25, 48),
-      entity("counterweight", "prop", 510, 384, 40, 64),
-      entity("lamp", "lantern", 320, 357, 25, 91),
-    ],
+    entities: structuredClone(AUTHORED_ENTITIES),
     surfaces: structuredClone(LEVEL_SURFACES),
     checkpoint: 0,
     progress: 0,
     ember: true,
+    emberCarried: true,
+    input: { ...EMPTY_INPUT },
+    previousInput: { ...EMPTY_INPUT },
+    modifiers: [],
     completed: false,
     deaths: 0,
     activeHash: null,
@@ -147,7 +141,7 @@ export class GameEngine {
     impulsesApplied: 0,
     cuesApplied: 0,
   };
-  private previousInput = { ...EMPTY_INPUT };
+
   private rollbackPoint: GameCheckpoint | null = null;
   checkpoint(): GameCheckpoint {
     return structuredClone({
@@ -160,19 +154,20 @@ export class GameEngine {
     if (checkpoint.snapshot.version !== ENGINE_VERSION)
       throw new Error("Checkpoint engine version mismatch");
     assertWorld(checkpoint.snapshot);
+    if (checkpoint.program) validateRuntimeRuleProgram(checkpoint.program);
     this.world = structuredClone(checkpoint.snapshot);
     this.program = structuredClone(checkpoint.program);
     this.artifactHash = checkpoint.artifactHash;
-    this.previousInput = { ...EMPTY_INPUT };
+    this.rollbackPoint = null;
   }
   reset() {
     this.world = createWorld();
     this.program = null;
     this.artifactHash = null;
     this.rollbackPoint = null;
-    this.previousInput = { ...EMPTY_INPUT };
   }
   activate(program: RuleProgram, artifactHash: string) {
+    program = validateRuntimeRuleProgram(program);
     if (artifactHash === this.artifactHash) {
       if (JSON.stringify(program) !== JSON.stringify(this.program))
         throw new Error(
@@ -180,11 +175,15 @@ export class GameEngine {
         );
       return;
     }
+    if (!this.world.entities[0].grounded)
+      throw new Error("Activate only at a grounded checkpoint");
     if (!artifactHash || artifactHash.length > 128)
       throw new Error("An immutable artifact identity is required");
     const before = this.checkpoint();
     const clean = structuredClone(this.world);
     clean.surfaces = clean.surfaces.filter((s) => !s.generated);
+    clean.entities = clean.entities.filter((e) => !e.spawnRule);
+    clean.modifiers = [];
     const candidate = applyRuleProgram(clean, program).world;
     assertWorld(candidate);
     this.rollbackPoint = before;
@@ -205,14 +204,37 @@ export class GameEngine {
       this.world.activeHash = null;
       this.world.ruleName = null;
       this.world.surfaces = this.world.surfaces.filter((s) => !s.generated);
+      this.world.entities = this.world.entities.filter((e) => !e.spawnRule);
+      this.world.modifiers = [];
+      for (const e of this.world.entities) {
+        const foot = e.y + e.h;
+        e.physics = defaultPhysics();
+        e.w = e.baseW;
+        e.h = e.baseH;
+        e.y = foot - e.h;
+        e.friction = 0.82;
+        e.bounce = 0;
+        e.cue = undefined;
+      }
     }
   }
   step(input: TickInput = { ...EMPTY_INPUT }): GameSnapshot {
-    if (input.pressed?.reset || (input.reset && !this.previousInput.reset))
+    if (
+      input.pressed?.reset ||
+      (input.reset && !this.world.previousInput.reset)
+    )
       this.respawn();
     const w = this.world;
+    w.input = { ...input };
     w.tick++;
-    w.surfaces = w.surfaces.filter((s) => !s.generated || s.expires >= w.tick);
+    w.entities = w.entities.filter(
+      (e) => e.expires === undefined || e.expires >= w.tick,
+    );
+    w.surfaces = w.surfaces.filter(
+      (s) =>
+        !s.generated ||
+        (s.expires >= w.tick && w.entities.some((e) => e.id === s.owner)),
+    );
     if (this.program) {
       const result = applyRuleProgram(w, this.program);
       this.world = result.world;
@@ -221,8 +243,54 @@ export class GameEngine {
     }
     const world = this.world,
       p = world.entities[0],
-      prop = world.entities[1],
-      lamp = world.entities[2];
+      prop = world.entities
+        .filter((e) => e.kind === "prop")
+        .sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0],
+      lamp = world.entities
+        .filter((e) => e.kind === "lantern")
+        .sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
+    for (const e of world.entities) {
+      const foot = e.y + e.h,
+        cx = e.x + e.w / 2,
+        scale = e.kind === "player" ? e.physics.playerScale : 1,
+        nw = e.baseW * scale,
+        nh = e.baseH * scale;
+      const nx = cx - nw / 2,
+        ny = foot - nh;
+      const blocked =
+        nh > e.h &&
+        world.surfaces.some(
+          (s) =>
+            s.solid &&
+            s.y > ny + 2 &&
+            s.y < foot - 2 &&
+            nx + nw > s.x &&
+            nx < s.x + s.w,
+        );
+      if (!blocked) {
+        e.x = nx;
+        e.y = ny;
+        e.w = nw;
+        e.h = nh;
+      }
+    }
+    const ember = world.entities.find((e) => e.kind === "ember")!;
+    if (input.pressed?.drop || (input.drop && !world.previousInput.drop)) {
+      if (world.emberCarried) {
+        world.emberCarried = false;
+        ember.x = p.x + p.w + 5;
+        ember.y = p.y + 12;
+        ember.vx = p.vx + 1.5;
+        ember.vy = -2;
+        ember.grounded = false;
+        world.interaction = "Ember released · press Q nearby to pick it up";
+      } else if (Math.hypot(ember.x - p.x, ember.y - p.y) < 95) {
+        world.emberCarried = true;
+        ember.vx = 0;
+        ember.vy = 0;
+        world.interaction = "The last ember is safe in your hands";
+      }
+    }
     if (!world.completed) {
       const direction = Number(input.right) - Number(input.left);
       p.vx = direction
@@ -230,10 +298,12 @@ export class GameEngine {
         : p.vx * p.friction;
       if (Math.abs(p.vx) < 0.05) p.vx = 0;
       if (
-        (input.pressed?.jump || (input.jump && !this.previousInput.jump)) &&
-        p.grounded
+        (input.pressed?.jump ||
+          (input.jump && !this.world.previousInput.jump)) &&
+        (p.grounded || p.airJumpsUsed < p.physics.airJumps)
       ) {
-        p.vy = -11.4;
+        if (!p.grounded) p.airJumpsUsed++;
+        p.vy = -11.4 * p.physics.jumpStrength;
         p.grounded = false;
       }
       if (
@@ -259,7 +329,8 @@ export class GameEngine {
         input.interact &&
         p.grounded &&
         Math.abs(p.x - 2070) < 105 &&
-        !world.encounters.guardian
+        !world.encounters.guardian &&
+        world.emberCarried
       ) {
         world.encounters.guardian = true;
         world.interaction =
@@ -276,7 +347,7 @@ export class GameEngine {
         world.interaction = "The counterweight is moving. Its shadow follows.";
       } else if (
         (input.pressed?.interact ||
-          (input.interact && !this.previousInput.interact)) &&
+          (input.interact && !this.world.previousInput.interact)) &&
         Math.abs(p.x - lamp.x) < 85
       ) {
         world.lanternOn = !world.lanternOn;
@@ -286,12 +357,18 @@ export class GameEngine {
       }
     }
     for (const e of world.entities) {
-      if (e.kind === "lantern") continue;
+      if (e.kind === "lantern" || (e.kind === "ember" && world.emberCarried))
+        continue;
+      e.wasGrounded = e.grounded;
+      e.previousX = e.x;
+      e.previousY = e.y;
       const oldY = e.y,
         oldX = e.x;
-      e.vy = clamp(e.vy + 0.48, -12, 12);
-      e.x = clamp(e.x + e.vx, 20, 2470 - e.w);
-      e.y += e.vy;
+      const dt = e.physics.timeScale;
+      e.vx = clamp(e.vx + e.physics.windX * dt, -20, 20);
+      e.vy = clamp(e.vy + 0.48 * e.physics.gravityScale * dt, -20, 20);
+      e.x = clamp(e.x + e.vx * dt, 20, 2470 - e.w);
+      e.y += e.vy * dt;
       e.grounded = false;
       for (const s of world.surfaces) {
         if (!s.solid) continue;
@@ -306,16 +383,26 @@ export class GameEngine {
           e.y = s.y - e.h;
           e.vy = e.bounce ? -e.vy * e.bounce : 0;
           e.grounded = true;
+          e.airJumpsUsed = 0;
         }
       }
       if (e.kind === "prop") {
-        e.vx *= 0.75;
+        e.vx *= Math.pow(
+          e.friction === 0.82 ? 0.75 : e.friction,
+          e.physics.timeScale,
+        );
         if (Math.abs(e.vx) < 0.04) e.vx = 0;
         if (e.y > 650) {
-          e.x = 510;
-          e.y = 384;
+          const home =
+            AUTHORED_ENTITIES.find((x) => x.id === e.id) ??
+            AUTHORED_ENTITIES[1];
+          e.x = home.x;
+          e.y = home.y;
           e.vx = 0;
           e.vy = 0;
+          world.surfaces = world.surfaces.filter(
+            (s) => !s.generated || s.owner !== e.id,
+          );
         }
       }
       e.stationaryTicks =
@@ -336,13 +423,25 @@ export class GameEngine {
       world.interaction =
         "THE WARDEN · Press E to offer the last ember and awaken the guardian";
     }
+    if (ember.y > 660) {
+      world.emberCarried = true;
+      ember.vx = 0;
+      ember.vy = 0;
+    }
+    if (world.emberCarried) {
+      ember.x = p.x + p.w + 5;
+      ember.y = p.y + 18;
+      ember.vx = 0;
+      ember.vy = 0;
+      ember.grounded = false;
+    }
     if (p.y > 660) this.respawn();
     const oldCheckpoint = world.checkpoint;
     if (p.x > 1040 && p.grounded)
       world.checkpoint = Math.max(world.checkpoint, 1);
     if (p.x > 1850 && p.grounded) world.checkpoint = 2;
     world.progress = Math.max(world.progress, clamp((p.x - 170) / 2170, 0, 1));
-    if (p.x > 2330 && p.grounded) {
+    if (p.x > 2330 && p.grounded && world.emberCarried) {
       world.completed = true;
       world.progress = 1;
       world.interaction =
@@ -359,7 +458,14 @@ export class GameEngine {
       world.interaction = "Press E to offer your ember to the sleeping Warden";
     else if (Math.abs(p.x - prop.x) < 100)
       world.interaction = "Hold E + ← / → to move the counterweight";
-    this.previousInput = { ...input };
+    world.previousInput = {
+      left: input.left,
+      right: input.right,
+      jump: input.jump,
+      interact: input.interact,
+      reset: input.reset,
+      drop: Boolean(input.drop),
+    };
     assertWorld(world);
     return world;
   }
@@ -371,6 +477,8 @@ export class GameEngine {
     p.vx = 0;
     p.vy = 0;
     p.grounded = false;
+    w.emberCarried = true;
+    w.surfaces = w.surfaces.filter((s) => !s.generated || s.owner !== p.id);
     w.deaths++;
     w.interaction = "Ember recovered · returned to your last checkpoint";
   }
@@ -378,10 +486,8 @@ export class GameEngine {
 export function assertWorld(w: GameSnapshot) {
   if (
     w.version !== ENGINE_VERSION ||
-    w.entities.length !== 3 ||
-    w.entities[0].kind !== "player" ||
-    w.entities[1].kind !== "prop" ||
-    w.entities[2].kind !== "lantern" ||
+    w.entities.length < 8 ||
+    w.entities.length > 20 ||
     !w.ember ||
     !Number.isFinite(w.progress) ||
     w.progress < 0 ||
@@ -391,15 +497,97 @@ export function assertWorld(w: GameSnapshot) {
     w.checkpoint > 2
   )
     throw new Error("Protected world invariant failed");
-  for (const e of w.entities)
+  if (new Set(w.entities.map((e) => e.id)).size !== w.entities.length)
+    throw new Error("Duplicate entity identity");
+  for (let i = 0; i < AUTHORED_ENTITIES.length; i++) {
+    const a = AUTHORED_ENTITIES[i],
+      e = w.entities[i];
     if (
-      ![e.x, e.y, e.vx, e.vy].every(Number.isFinite) ||
+      !e ||
+      e.id !== a.id ||
+      e.kind !== a.kind ||
+      e.baseW !== a.baseW ||
+      e.baseH !== a.baseH ||
+      e.spawnRule ||
+      (a.kind === "lantern" && (e.x !== a.x || e.y !== a.y)) ||
+      e.expires !== undefined
+    )
+      throw new Error("Protected authored entity identity changed");
+  }
+  if (w.entities.filter((e) => e.kind === "ember").length !== 1)
+    throw new Error("Exactly one protected ember is required");
+  const hall = w.surfaces.find((s) => s.id === "hall-causeway");
+  if (
+    Boolean(hall) !== w.encounters.counterweight ||
+    (hall &&
+      (hall.x !== 1465 ||
+        hall.y !== 448 ||
+        hall.w !== 330 ||
+        hall.h !== 18 ||
+        !hall.solid ||
+        hall.generated ||
+        hall.expires !== Number.MAX_SAFE_INTEGER))
+  )
+    throw new Error("Authored encounter geometry changed");
+  for (const original of LEVEL_SURFACES) {
+    const surface = w.surfaces.find((s) => s.id === original.id);
+    if (
+      !surface ||
+      ["x", "y", "w", "h", "expires", "solid"].some(
+        (k) => surface[k as "x"] !== original[k as "x"],
+      ) ||
+      surface.generated
+    )
+      throw new Error("Authored route geometry changed");
+  }
+  for (const e of w.entities) {
+    for (const [key, limits] of Object.entries({
+      gravityScale: [0.3, 2],
+      jumpStrength: [0.5, 1.6],
+      airJumps: [0, 2],
+      playerScale: [0.6, 1.6],
+      timeScale: [0.5, 1.5],
+      windX: [-0.18, 0.18],
+    })) {
+      const value = e.physics?.[key as keyof typeof e.physics];
+      if (!Number.isFinite(value) || value < limits[0] || value > limits[1])
+        throw new Error("Invalid physics state");
+    }
+    if (
+      ![e.x, e.y, e.vx, e.vy, e.w, e.h, e.previousX, e.previousY].every(
+        Number.isFinite,
+      ) ||
       Math.abs(e.x) > 4000 ||
       Math.abs(e.y) > 2000 ||
-      Math.abs(e.vx) > 12.01 ||
-      Math.abs(e.vy) > 12.01
+      Math.abs(e.vx) > 20.01 ||
+      Math.abs(e.vy) > 20.01 ||
+      e.w <= 0 ||
+      e.h <= 0 ||
+      e.w > 100 ||
+      e.h > 150
     )
       throw new Error("Entity escaped the protected simulation bounds");
+    if (
+      e.spawnRule &&
+      (!e.id.startsWith("spawn:") ||
+        e.baseW !== 28 ||
+        e.baseH !== 40 ||
+        e.w !== 28 ||
+        e.h !== 40 ||
+        e.kind !== "prop" ||
+        !Number.isSafeInteger(e.expires) ||
+        e.expires! < w.tick ||
+        e.expires! > w.tick + 600)
+    )
+      throw new Error("Invalid bounded spawned entity");
+  }
+  for (const s of w.surfaces)
+    if (
+      !s.generated &&
+      !LEVEL_SURFACES.some((base) => base.id === s.id) &&
+      s.id !== "hall-causeway"
+    )
+      throw new Error("Unknown authored route surface");
   for (const s of w.surfaces)
     if (
       ![s.x, s.y, s.w, s.h, s.expires].every(Number.isFinite) ||
@@ -410,9 +598,18 @@ export function assertWorld(w: GameSnapshot) {
       s.x < -500 ||
       s.x + s.w > 3100 ||
       s.y < -100 ||
-      s.y > 900
+      s.y > 900 ||
+      (s.generated && (s.expires < w.tick || s.expires > w.tick + 600))
     )
       throw new Error("Invalid checkpoint geometry");
-  if (w.surfaces.length > LEVEL_SURFACES.length + 49)
-    throw new Error("World surface budget exceeded");
+  if (w.surfaces.length > 58 || w.modifiers.length > 48)
+    throw new Error("World resource budget exceeded");
+  for (const m of w.modifiers)
+    if (
+      !w.entities.some((e) => e.id === m.entityId) ||
+      !Number.isSafeInteger(m.expires) ||
+      m.expires < w.tick ||
+      m.expires > w.tick + 600
+    )
+      throw new Error("Invalid timed modifier");
 }

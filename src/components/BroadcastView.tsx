@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ArrowUpRight, Maximize2, Radio } from "lucide-react";
 import { Brand } from "./Brand";
 import { GameViewport } from "./GameViewport";
-import type { GameSnapshot } from "@/game/contracts";
+import { ENGINE_VERSION, type GameSnapshot } from "@/game/contracts";
+import { ruleCredit } from "@/lib/rule-copy";
 
 interface BroadcastFrame {
   type: "frame";
@@ -12,7 +13,13 @@ interface BroadcastFrame {
   mode: "practice" | "twitch";
   phase: string;
   paused?: boolean;
-  active: { name: string; description: string; author: string } | null;
+  active: {
+    name: string;
+    description: string;
+    author: string;
+    origin?: string;
+    ancestry?: { kind: string; originalAuthor: string };
+  } | null;
 }
 const CHAPTERS = [
   "The Broken Crossing",
@@ -30,7 +37,7 @@ export function BroadcastView({ showId }: { showId: string }) {
     channel.onmessage = (event) => {
       if (
         event.data?.type === "frame" &&
-        event.data.snapshot?.version === "last-light/1.0.0"
+        event.data.snapshot?.version === ENGINE_VERSION
       ) {
         lastFrame.current = Date.now();
         setFrame(event.data as BroadcastFrame);
@@ -84,7 +91,7 @@ export function BroadcastView({ showId }: { showId: string }) {
             <div className="broadcast-law">
               <p className="eyebrow">YOUR COMMUNITY CHANGED THE RULES</p>
               <h2>{frame.active.name}</h2>
-              <p>Invented by {frame.active.author}</p>
+              <p>{ruleCredit(frame.active)}</p>
             </div>
           )}
         </div>

@@ -40,7 +40,7 @@ describe("durable client runtime-fault recovery", () => {
     expect(first.headers).toEqual(second.headers);
     expect(JSON.parse(second.body as string)).toMatchObject({
       expectedRevision: 4,
-      faultedSourceHash: target.artifactHash,
+      faultedArtifactHash: target.artifactHash,
       clientId: "tab-a",
       epoch: 2,
     });
@@ -91,7 +91,7 @@ describe("durable client runtime-fault recovery", () => {
     expect(fetch).toHaveBeenCalledTimes(3);
     expect(JSON.parse(fetch.mock.calls[2][1].body)).toMatchObject({
       expectedRevision: 5,
-      faultedSourceHash: target.artifactHash,
+      faultedArtifactHash: target.artifactHash,
       epoch: target.epoch,
     });
   });
@@ -143,6 +143,35 @@ describe("durable client runtime-fault recovery", () => {
     await expect(
       retireFaultedLaw(target, fault, "Old authority"),
     ).rejects.toThrow("Authority changed");
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("preserves a new combination even when its newest source/candidate is unchanged", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({ message: "Combination changed" }, { status: 409 }),
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          show: {
+            id: target.showId,
+            revision: 5,
+            activeCandidateId: target.candidateId,
+            activeArtifactHash: "c".repeat(64),
+            candidates: [
+              { id: target.candidateId, sourceHash: target.artifactHash },
+            ],
+          },
+        }),
+      );
+    vi.stubGlobal("fetch", fetch);
+    const result = await retireFaultedLaw(
+      target,
+      fault,
+      "Old combination fault",
+    );
+    expect(result.show.activeArtifactHash).toBe("c".repeat(64));
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 });

@@ -24,7 +24,11 @@ describe("exact independently generated stationary-shadow artifact", () => {
     const engine = create();
     step(engine, 30);
     expect(engine.world.entities[1].stationaryTicks).toBe(30);
-    expect(engine.world.surfaces.some((s) => s.generated)).toBe(false);
+    expect(
+      engine.world.surfaces.some(
+        (s) => s.generated && s.owner === "counterweight",
+      ),
+    ).toBe(false);
     engine.step();
     expect(engine.world.surfaces.some((s) => s.generated && s.solid)).toBe(
       true,
@@ -35,7 +39,11 @@ describe("exact independently generated stationary-shadow artifact", () => {
     step(engine, 32);
     engine.world.entities[1].vx = 2;
     step(engine, 2);
-    expect(engine.world.surfaces.some((s) => s.generated)).toBe(false);
+    expect(
+      engine.world.surfaces.some(
+        (s) => s.generated && s.owner === "counterweight",
+      ),
+    ).toBe(false);
     const dark = create();
     step(dark, 32);
     dark.world.lanternOn = false;

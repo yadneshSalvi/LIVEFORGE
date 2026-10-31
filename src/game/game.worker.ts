@@ -2,7 +2,7 @@
 import { type WorkerCommand, type WorkerEvent } from "./contracts";
 import { GameEngine } from "./core";
 import { InputLatch } from "./input";
-import { validateRuleProgram } from "./rules";
+import { validateRuntimeRuleProgram } from "./rules";
 const scope = self as unknown as DedicatedWorkerGlobalScope;
 const engine = new GameEngine();
 const input = new InputLatch();
@@ -39,7 +39,7 @@ scope.onmessage = (event: MessageEvent<WorkerCommand>) => {
         break;
       case "restore":
         if (command.checkpoint.program)
-          validateRuleProgram(command.checkpoint.program);
+          validateRuntimeRuleProgram(command.checkpoint.program);
         engine.restore(command.checkpoint);
         input.clear();
         break;
@@ -52,7 +52,7 @@ scope.onmessage = (event: MessageEvent<WorkerCommand>) => {
         break;
       case "activate":
         engine.activate(
-          validateRuleProgram(command.program),
+          validateRuntimeRuleProgram(command.program),
           command.artifactHash,
         );
         emit({ type: "checkpoint", checkpoint: engine.checkpoint() });

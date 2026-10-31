@@ -7,6 +7,7 @@ import { LocalFileStore } from "@/server/store";
 import * as stores from "@/server/store";
 import {
   addProposal,
+  acceptAdaptation,
   cancelGeneration,
   createGeneration,
   createShow,
@@ -84,13 +85,45 @@ function delayedSandbox() {
     stop,
     update: vi.fn().mockResolvedValue(undefined),
     writeFiles: vi.fn().mockResolvedValue(undefined),
-    runCommand: vi.fn().mockImplementation(async ({ cmd }: { cmd: string }) => {
-      if (cmd === "node") {
-        signalStarted();
-        await turn;
-      }
-      return { exitCode: 0 };
-    }),
+    runCommand: vi
+      .fn()
+      .mockImplementation(
+        async ({
+          cmd,
+          args,
+          detached,
+        }: {
+          cmd: string;
+          args?: string[];
+          detached?: boolean;
+        }) => {
+          if (cmd === "node" && detached) {
+            signalStarted();
+            return {
+              logs: () =>
+                Object.assign(
+                  (async function* () {
+                    yield {
+                      stream: "stdout",
+                      data:
+                        "LIVEFORGE_PHASE " +
+                        JSON.stringify({
+                          phase: "thread-started",
+                        }) +
+                        "\n",
+                    };
+                  })(),
+                  { close: async () => {} },
+                ),
+              wait: async () => {
+                await turn;
+                return { exitCode: 0 };
+              },
+            };
+          }
+          return { exitCode: 0 };
+        },
+      ),
     readFileToBuffer: vi
       .fn()
       .mockImplementation(async ({ path }: { path: string }) =>
@@ -161,7 +194,9 @@ describe("production Sandbox runtime OIDC", () => {
     expect(await generationConfigured()).toBe(false);
     const { show, job } = await fixture();
     const fake = delayedSandbox();
-    const running = runGeneration(show.id, job.id, credentials);
+    const running = runGeneration(show.id, job.id, credentials, {
+      sandboxMode: "cold",
+    });
     await fake.started;
     fake.finish();
     await running;
@@ -170,6 +205,9 @@ describe("production Sandbox runtime OIDC", () => {
     );
     const result = (await store.get<ShowRecord>(showKey(show.id)))!;
     expect(result.jobs[0].status).toBe("ready");
+    expect(result.jobs[0].phases).toEqual([
+      expect.objectContaining({ phase: "thread-started", attempt: 1 }),
+    ]);
     expect(JSON.stringify(result)).not.toContain(token);
     expect(JSON.stringify(fake.sandbox.writeFiles.mock.calls)).not.toContain(
       token,
@@ -192,6 +230,61 @@ describe("production Sandbox runtime OIDC", () => {
   });
 });
 describe("durable generation races against late provider output", () => {
+  it("keeps a supported adaptation host-only until explicit acceptance without substituting or launching another job", async () => {
+    const { show, job } = await fixture();
+    const fake = delayedSandbox();
+    const adaptation =
+      "Each time the courier jumps, make the courier glow mint for a moment.";
+    fake.sandbox.readFileToBuffer.mockImplementation(
+      async ({ path }: { path: string }) =>
+        Buffer.from(
+          path.endsWith("rule.ts")
+            ? ""
+            : JSON.stringify(
+                path.endsWith("thread.json")
+                  ? { threadId: "unsupported-fixture-thread" }
+                  : {
+                      threadId: "unsupported-fixture-thread",
+                      unsupportedReason:
+                        "The original request needs an unsupported external world.",
+                      adaptedProposal: adaptation,
+                      usage: {
+                        input_tokens: 100,
+                        cached_input_tokens: 0,
+                        output_tokens: 30,
+                      },
+                    },
+              ),
+        ),
+    );
+    const running = runGeneration(show.id, job.id, undefined, {
+      sandboxMode: "cold",
+    });
+    await fake.started;
+    fake.finish();
+    await running;
+    const result = (await store.get<ShowRecord>(showKey(show.id)))!;
+    expect(result.jobs[0]).toMatchObject({
+      status: "failed",
+      adaptedProposal: adaptation,
+    });
+    expect(result.candidates).toEqual([]);
+    expect(result.proposals).toHaveLength(1);
+    expect(JSON.stringify(publicView(result))).not.toContain(adaptation);
+    const adapted = acceptAdaptation(result, job.id);
+    expect(adapted.author).toBe(result.proposals[0].author);
+    expect(adapted.ancestry).toMatchObject({
+      kind: "adaptation",
+      originalText: result.proposals[0].text,
+      sourceJobId: job.id,
+    });
+    expect(acceptAdaptation(result, job.id).id).toBe(adapted.id);
+    expect(result.jobs).toHaveLength(1);
+    expect(result.jobs[0].status).toBe("failed");
+    expect(Sandbox.create).toHaveBeenCalledOnce();
+    expect(JSON.stringify(publicView(result))).not.toContain("sourceJobId");
+  });
+
   it("denies network before reading any failed-run artifacts and keeps the redacted reason host-only", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();
@@ -204,11 +297,16 @@ describe("durable generation races against late provider output", () => {
       },
     );
     fake.sandbox.runCommand.mockImplementation(
-      async ({ cmd }: { cmd: string }) => {
-        if (cmd === "node") {
-          modelComplete = true;
-          return { exitCode: 1 };
-        }
+      async ({ detached }: { detached?: boolean }) => {
+        if (detached)
+          return {
+            logs: () =>
+              Object.assign((async function* () {})(), { close: () => {} }),
+            wait: async () => {
+              modelComplete = true;
+              return { exitCode: 1 };
+            },
+          };
         return { exitCode: 0 };
       },
     );
@@ -227,7 +325,7 @@ describe("durable generation races against late provider output", () => {
         );
       },
     );
-    await runGeneration(show.id, job.id);
+    await runGeneration(show.id, job.id, undefined, { sandboxMode: "cold" });
     const final = (await store.get<ShowRecord>(showKey(show.id)))!;
     expect(final.jobs[0].status).toBe("failed");
     expect(final.jobs[0].message).toContain("401 invalid");
@@ -243,7 +341,9 @@ describe("durable generation races against late provider output", () => {
   it("cancellation wins even when a completed provider response arrives later", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();
-    const running = runGeneration(show.id, job.id);
+    const running = runGeneration(show.id, job.id, undefined, {
+      sandboxMode: "cold",
+    });
     await fake.started;
     await store.update<ShowRecord, void>(showKey(show.id), (record) => {
       cancelGeneration(record, job.id);
@@ -259,7 +359,9 @@ describe("durable generation races against late provider output", () => {
   it("a newer game revision fences a completed generation from publishing a candidate", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();
-    const running = runGeneration(show.id, job.id);
+    const running = runGeneration(show.id, job.id, undefined, {
+      sandboxMode: "cold",
+    });
     await fake.started;
     await store.update<ShowRecord, void>(showKey(show.id), (record) => {
       record.revision++;
@@ -275,9 +377,11 @@ describe("durable generation races against late provider output", () => {
   it("duplicate coordinators claim a queued job only once", async () => {
     const { show, job } = await fixture();
     const fake = delayedSandbox();
-    const first = runGeneration(show.id, job.id);
+    const first = runGeneration(show.id, job.id, undefined, {
+      sandboxMode: "cold",
+    });
     await fake.started;
-    await runGeneration(show.id, job.id);
+    await runGeneration(show.id, job.id, undefined, { sandboxMode: "cold" });
     expect(Sandbox.create).toHaveBeenCalledOnce();
     fake.finish();
     await first;

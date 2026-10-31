@@ -29,7 +29,11 @@ export function twitchRedirectUri() {
   );
   return new URL("/api/auth/twitch/callback", base).toString();
 }
-export async function twitchLogin(showId: string, ownerId: string) {
+export async function twitchLogin(
+  showId: string,
+  ownerId: string,
+  writeChat = false,
+) {
   const state = randomBytes(32).toString("base64url");
   await getStore().update<ShowRecord, void>(showKey(showId), (show) => {
     assert(
@@ -41,6 +45,7 @@ export async function twitchLogin(showId: string, ownerId: string) {
     rate(show, "oauth", 6, 60_000);
     show.oauth = {
       stateHash: digest(state),
+      writeChat,
       expiresAt: Date.now() + 10 * 60_000,
     };
   });
@@ -49,7 +54,7 @@ export async function twitchLogin(showId: string, ownerId: string) {
     client_id: appId(),
     redirect_uri: twitchRedirectUri(),
     response_type: "code",
-    scope: "user:read:chat",
+    scope: writeChat ? "user:read:chat user:write:chat" : "user:read:chat",
     state,
     force_verify: "true",
   }).toString();
@@ -70,18 +75,23 @@ export async function twitchCallback(
     "oauth_callback",
     "Invalid Twitch authorization callback.",
   );
-  await getStore().update<ShowRecord, void>(showKey(showId), (show) => {
-    assert(
-      show.ownerId === ownerId &&
-        show.oauth &&
-        show.oauth.expiresAt > Date.now() &&
-        show.oauth.stateHash === digest(state),
-      403,
-      "oauth_state",
-      "Twitch authorization state expired or did not match this host session.",
-    );
-    delete show.oauth;
-  });
+  const writeChat = await getStore().update<ShowRecord, boolean>(
+    showKey(showId),
+    (show) => {
+      assert(
+        show.ownerId === ownerId &&
+          show.oauth &&
+          show.oauth.expiresAt > Date.now() &&
+          show.oauth.stateHash === digest(state),
+        403,
+        "oauth_state",
+        "Twitch authorization state expired or did not match this host session.",
+      );
+      const requestedWrite = show.oauth.writeChat === true;
+      delete show.oauth;
+      return requestedWrite;
+    },
+  );
   assert(
     process.env.TWITCH_CLIENT_SECRET,
     503,
@@ -117,6 +127,12 @@ export async function twitchCallback(
     "Twitch did not return an access grant.",
   );
   const info = await validateTwitchToken(result.access_token);
+  assert(
+    !writeChat || info.scopes.includes("user:write:chat"),
+    403,
+    "twitch_write_scope",
+    "Chat replies require separate Twitch permission to write chat. Reauthorize with chat replies selected.",
+  );
   const grant: TokenGrant = {
     clientId: appId(),
     accessToken: result.access_token,
@@ -148,6 +164,11 @@ export async function twitchCallback(
   await getStore().update<ShowRecord, void>(showKey(showId), (show) => {
     assert(show.ownerId === ownerId, 404, "show_not_found", "Show not found.");
     show.credentialId = credentialId;
+    show.settings = {
+      ...(show.settings || { blockedTerms: [] }),
+      chatRepliesEnabled: false,
+    };
+    delete show.settings.chatRepliesEnabledAt;
     show.twitch = {
       status: "disconnected",
       channelId: info.user_id,

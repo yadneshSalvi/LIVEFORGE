@@ -1,4 +1,15 @@
 import {
+  requireChatReplyGrant,
+  deliverRecentChatReplies,
+} from "@/server/twitch-replies";
+import { activationMode, assertCurrentEngine } from "@/server/composition";
+import {
+  readLibraryEntry,
+  saveLibraryCandidate,
+  libraryAncestry,
+  type LibraryEntry,
+} from "@/server/library";
+import {
   generationRequest,
   reserveGenerationQuota,
 } from "@/server/generation-quota";
@@ -11,10 +22,15 @@ import {
   cancelGeneration,
   createGeneration,
   event,
+  updateShowSettings,
+  moderateProposal,
   hostView,
   setTwitchHealth,
   ingestTwitch,
   importPracticeSample,
+  importExactSource,
+  upgradeShowEngine,
+  acceptAdaptation,
   mutate,
   ownedShow,
   rate,
@@ -64,7 +80,10 @@ export async function GET(request: Request, context: Context) {
     const job = show.jobs.find((j) => j.id === action[1]);
     assert(job, 404, "job_not_found", "Generation not found.");
     return Response.json(
-      { job, show: hostView(show) },
+      {
+        job: hostView(show).jobs.find((j) => j.id === job.id),
+        show: hostView(show),
+      },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -79,6 +98,14 @@ export async function POST(request: Request, context: Context) {
     const owned = await ownedShow(showId, host.hostId);
     const body = await jsonBody(request);
     const idempotency = request.headers.get("x-idempotency-key") || undefined;
+    assert(
+      idempotency &&
+        /^[\w-]{8,100}$/.test(idempotency) &&
+        !["__proto__", "constructor", "prototype"].includes(idempotency),
+      400,
+      "idempotency_required",
+      "Include a unique x-idempotency-key for this command.",
+    );
     const path = action.join("/");
     let sandboxAuthentication: SandboxCredentials | undefined;
     let generationMetadata:
@@ -89,10 +116,39 @@ export async function POST(request: Request, context: Context) {
           quotaExempt?: boolean;
         }
       | undefined;
+    let libraryEntry: LibraryEntry | undefined;
+    let savedLibraryEntry:
+      Awaited<ReturnType<typeof saveLibraryCandidate>> | undefined;
     let jobToRun: string | undefined;
     let stopName: string | undefined;
     if (path === "twitch/events") await maintainTwitchSession(owned);
+    if (path === "settings" && body.chatRepliesEnabled === true)
+      await requireChatReplyGrant(owned);
+    if (path === "library/import") {
+      assert(
+        typeof body.entryId === "string",
+        400,
+        "library_entry",
+        "Choose a saved law.",
+      );
+      libraryEntry = await readLibraryEntry(host.hostId, body.entryId);
+    }
+    if (path === "library/save") {
+      assert(
+        typeof body.candidateId === "string",
+        400,
+        "candidate_id",
+        "Choose an approved candidate to save.",
+      );
+      savedLibraryEntry = await saveLibraryCandidate(
+        host.hostId,
+        showId,
+        body.candidateId,
+      );
+    }
     if (path === "generate") {
+      assertCurrentEngine(owned);
+      const mode = activationMode(body.mode);
       const identity = await requireGenerationHost(host.hostId);
       assert(
         process.env.OPENAI_API_KEY,
@@ -109,6 +165,7 @@ export async function POST(request: Request, context: Context) {
           proposalId: body.proposalId,
           revision: body.revision,
           priorCandidateId: body.priorCandidateId,
+          mode,
         },
       );
       assert(
@@ -135,6 +192,7 @@ export async function POST(request: Request, context: Context) {
           ? body.priorCandidateId
           : undefined,
         requestDescriptor,
+        mode,
       );
       if (owned.jobs.some((job) => job.id === prospective.id))
         generationMetadata = {
@@ -176,6 +234,43 @@ export async function POST(request: Request, context: Context) {
     } else {
       const result = await mutate(showId, host.hostId, idempotency, (show) => {
         if (path === "resume") return { resumed: true };
+        if (path === "settings") {
+          updateShowSettings(show, body);
+          return { updated: true };
+        }
+        if (path === "upgrade") {
+          const stopName = show.jobs.find((j) =>
+            ["starting", "generating", "verifying"].includes(j.status),
+          )?.sandboxId;
+          upgradeShowEngine(show, body);
+          return { upgraded: true, stopName };
+        }
+        if (path === "library/save") {
+          event(
+            show,
+            "private.library.saved",
+            "The host saved an approved exact-source law to their private library.",
+          );
+          return { entryId: savedLibraryEntry!.id };
+        }
+        if (path === "library/import") {
+          const entry = libraryEntry!;
+          const candidate = importExactSource(show, entry, {
+            mode: activationMode(body.mode),
+            origin: "library",
+            author: entry.author,
+            ancestry: libraryAncestry(entry),
+          });
+          return { candidateId: candidate.id };
+        }
+        if (
+          action.length === 3 &&
+          action[0] === "generations" &&
+          action[2] === "adapt"
+        ) {
+          const proposal = acceptAdaptation(show, action[1]);
+          return { proposalId: proposal.id };
+        }
         if (path === "practice/sample") {
           assert(
             body.sample === undefined ||
@@ -188,6 +283,7 @@ export async function POST(request: Request, context: Context) {
           const candidate = importPracticeSample(
             show,
             body.sample === "step" ? "step" : "shadow",
+            activationMode(body.mode),
           );
           return { candidateId: candidate.id };
         }
@@ -238,6 +334,7 @@ export async function POST(request: Request, context: Context) {
               ? body.priorCandidateId
               : undefined,
             generationMetadata,
+            activationMode(body.mode),
           );
           return { jobId: job.id };
         }
@@ -296,21 +393,7 @@ export async function POST(request: Request, context: Context) {
           action[0] === "proposals" &&
           action[2] === "moderate"
         ) {
-          const proposal = show.proposals.find((p) => p.id === action[1]);
-          assert(proposal, 404, "proposal_not_found", "Proposal not found.");
-          assert(
-            body.status === "hidden" || body.status === "open",
-            400,
-            "moderation_status",
-            "Choose hidden or open.",
-          );
-          proposal.status = body.status;
-          event(
-            show,
-            "private.proposal.moderated",
-            "The host moderated a proposal.",
-            { proposalId: proposal.id },
-          );
+          moderateProposal(show, action[1], body.status, body.reason);
           return {};
         }
         if (
@@ -344,13 +427,18 @@ export async function POST(request: Request, context: Context) {
             body.sourceHash,
             body.programHash,
             body.previewCheckpoint,
+            {
+              compositionHash: body.compositionHash,
+              contextHash: body.contextHash,
+              artifactHash: body.artifactHash,
+            },
           );
           return { candidateId: candidate.id };
         }
         assert(false, 404, "route_not_found", "Endpoint not found.");
       });
       if (path === "generate") jobToRun = (result as { jobId: string }).jobId;
-      if (path.endsWith("/cancel"))
+      if (path.endsWith("/cancel") || path === "upgrade")
         stopName = (result as { stopName?: string }).stopName;
     }
     if (jobToRun) {
@@ -369,10 +457,25 @@ export async function POST(request: Request, context: Context) {
       after(() => stopGenerationSandbox(name, authentication));
     }
     const show = await ownedShow(showId, host.hostId);
+    if (
+      show.settings.chatRepliesEnabled &&
+      ![
+        "checkpoint",
+        "lease",
+        "lease/release",
+        "twitch/health",
+        "resume",
+        "settings",
+      ].includes(path)
+    )
+      after(() => deliverRecentChatReplies(showId));
     return Response.json(
       {
         show: hostView(show),
-        ...(jobToRun ? { job: show.jobs.find((j) => j.id === jobToRun) } : {}),
+        ...(savedLibraryEntry ? { entry: savedLibraryEntry } : {}),
+        ...(jobToRun
+          ? { job: hostView(show).jobs.find((j) => j.id === jobToRun) }
+          : {}),
       },
       {
         status: jobToRun ? 202 : 200,
