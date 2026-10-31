@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-31T19:52:07.889Z",
+  "releaseSource": "2a7e01ac223270620bb29caead990ec0b8b87847",
+  "showId": "fb95f1f3-29be-4100-940c-2ff5b0ec0d3f",
+  "mode": "practice",
+  "proposal": {
+    "id": "P1",
+    "text": "Make gravity follow the pitch of my microphone.",
+    "origin": "host practice"
+  },
+  "job": {
+    "id": "6b58b399-4b3c-ee2f-b4db-732ba7104a0a",
+    "status": "failed",
+    "createdAt": "2026-10-31T19:50:03.822Z",
+    "completedAt": null,
+    "message": "Microphone input and pitch detection are unavailable. Gravity can be modified, but no supported field exposes your microphone\u2019s pitch.",
+    "adaptedProposal": null,
+    "attempts": null,
+    "model": "gpt-6.1-sol",
+    "timings": null
+  },
+  "observation": "First real unsupported attempt; host reason visible, but model omitted adaptation and UI offered no adaptation action. Base game and reused-law fallback remained available. Retained before follow-up fix; not an original-intent success."
+}
