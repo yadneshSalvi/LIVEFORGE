@@ -1,0 +1,102 @@
+{
+  "observedAt": "2026-11-01T06:14:51.472Z",
+  "scope": "All relative README file/image links, requested anonymously at public GitHub raw URLs. Localhost setup links excluded.",
+  "checks": [
+    {
+      "path": "docs/evidence/README.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/review-progress.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/production-active.jpg",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/production-browser.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/production-overlay-generating.jpg",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/rule-runtime.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": ".env.example",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/backend.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/development-evidence.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/architecture.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/generation-performance.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/evaluation-protocol.json",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-summary.json",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/intent-summary.json",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-2026-11-01/evaluation-proposals.json",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/evidence/review-2026-11-01/latency-protocol.json",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "LICENSE",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/rights.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    },
+    {
+      "path": "docs/release-manifest.md",
+      "existsLocally": true,
+      "anonymousHttpStatus": 200
+    }
+  ],
+  "passed": true
+}

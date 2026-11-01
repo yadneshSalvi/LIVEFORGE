@@ -4,7 +4,7 @@
 
 **[Open the live app](https://liveforge-iota.vercel.app)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
 
-![A real viewer's light-gravity law active in the engine-2 adventure](docs/evidence/review-2026-11-01/second-account-active.jpg)
+![A real viewer's held-E gravity law active in the current adventure](docs/evidence/review-round2-2026-11-01/production-active.jpg)
 
 _Actual production session, 1 November 2026: one operator used two real Twitch accounts. A viewer's idea became a new Codex-generated law after host preview and approval._
 
@@ -26,7 +26,7 @@ Create a **New Twitch show**, **Connect Twitch**, then **Listen to chat**. A vie
 
 Fresh generation requires an independently authorized Twitch account and available daily quota. Defaults are **3 per account / 40 shared runs per UTC day**; explicitly exempt hosts are configurable. Anonymous visitors always retain the reused-artifact path. Optional server chat replies need separate write permission and an explicit switch; they start off, post as the host, and may appear in Shared Chat.
 
-[Round-2 production acceptance, 1 November](docs/evidence/review-round2-2026-11-01/production-browser.md): one operator used two real accounts to complete this path under the ordinary public quota, with one generation charged, replies OFF/ON verified, and a real moderator command removing a proposal from all public views. The temporary moderator role was removed afterward. The signed-out practice path also passed on this release.
+[Round-2 production acceptance, 1 November](docs/evidence/review-round2-2026-11-01/production-browser.md): one operator used two real accounts to complete this path under the ordinary public quota, with one generation charged, replies OFF/ON verified, and a real moderator command removing a proposal from all public views. The temporary moderator role was removed afterward. The signed-out practice path also passed on this release. A 15-minute unoperated background-tab run accepted all four sampled proposal/vote pairs; the browser reported visible, so true minimized-window behavior remains unverified.
 
 Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Create reviewed alternative** saves a separate, credited proposal; **Forge the selected idea** starts its fresh generation only when you choose. Model-suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
 
@@ -38,7 +38,7 @@ Save an approved law to the private **Law library** and import its exact source 
 
 **Show outputs** provides a transparent, independent **1920 × 1080 OBS Browser Source overlay** for proposals, genuine generation progress and approved laws. Capture the separate game projector with **OBS Window Capture** in the studio’s browser profile. The overlay does not contain or independently simulate the game; keep the studio open.
 
-![The independent public overlay credits the real viewer's active law](docs/evidence/review-2026-11-01/second-account-overlay.jpg)
+![The independent public overlay credits the viewer and shows real generation progress](docs/evidence/review-round2-2026-11-01/production-overlay-generating.jpg)
 
 _Actual browser output from the same session. This screenshot establishes the overlay rendering; an OBS capture has not yet been recorded._
 

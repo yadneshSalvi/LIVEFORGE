@@ -35,6 +35,12 @@ A separate Chrome profile showed the explicit “Connect a Twitch account to for
 
 Restore previous law → Restore checkpoint returned to collecting with no active law and a saved recovery checkpoint. Browser warning/error collection was empty. Intake was closed and the world paused at the end. This is a brief acceptance walkthrough, not a measured traversal or full level-completion claim.
 
+## Fifteen-minute unoperated background relay
+
+From 06:03:58.361 to 06:19:07.479 UTC, the studio was left unoperated while the second account sent a fresh `!forge` and `!back` at 0, 5, 10 and 15 minutes. All four proposals (P3–P6) arrived and each support command counted at its observation point. One current support choice per account means the earlier votes correctly moved to the newest proposal. Elapsed time was 909.118 seconds. Replies remained off and no new generation ran. [Timestamped message and public-state results](background-relay.json).
+
+At the end, the host still showed its saved recovery checkpoint and accepted Close intake and Pause world. Browser warning/error collection was empty. [Final paused studio](background-final-paused.jpg). This establishes an unoperated background-tab run with four sampled message pairs; the in-app document continued to report `visible`, so it does not establish OS minimization or OBS occlusion.
+
 ## Scope and remaining checks
 
-The repository is public; anonymous GitHub and raw-file requests for the license and new evaluation report returned 200. No source or credential access is required for the practice path. Actual OBS capture, a true OS-minimized/OBS-covered 15-minute studio run and optional production quota exhaustion remain separate from these observations. The in-app browser reported `document.visibilityState === "visible"` even when operated in the background; that condition is not mislabeled as a minimized-window test.
+The repository is public; anonymous requests for all 19 relative README file and image links returned 200. [Link checks](readme-links.json). No source or credential access is required for the practice path. Actual OBS capture, a true OS-minimized/OBS-covered 15-minute studio run and optional production quota exhaustion remain separate from these observations. The in-app browser reported `document.visibilityState === "visible"` even when operated in the background; that condition is not mislabeled as a minimized-window test.

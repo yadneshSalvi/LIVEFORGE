@@ -1,0 +1,139 @@
+{
+  "startedAt": "2026-11-01T06:03:58.361Z",
+  "durationTargetSeconds": 900,
+  "method": "Real authorized main-account messages in the second account channel while the in-app studio is left unoperated. The IAB document reported visible, so this is not evidence of OS minimization or OBS occlusion.",
+  "source": "e41209c27f3085b8d6d1c2b68705f26e5860d6da",
+  "rounds": [
+    {
+      "at": "2026-11-01T06:03:58.361Z",
+      "elapsedSeconds": 0,
+      "proposal": "Make the courier smaller while E is held, then restore normal size.",
+      "forge": {
+        "at": "2026-11-01T06:04:00.080Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!forge Make the courier smaller while E is held, then restore normal size.",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "45472049-1f35-4b3c-95ac-136233f88af0",
+        "dropCode": null
+      },
+      "proposalId": "P3",
+      "back": {
+        "at": "2026-11-01T06:04:04.566Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!back P3",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "2b06b0d3-34c3-4d6d-9734-007ff750d1e7",
+        "dropCode": null
+      },
+      "counted": true,
+      "publicUpdatedAt": "2026-11-01T06:04:05.242Z",
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      }
+    },
+    {
+      "at": "2026-11-01T06:08:58.363Z",
+      "elapsedSeconds": 300.002,
+      "proposal": "Give the courier one extra air jump before landing again.",
+      "forge": {
+        "at": "2026-11-01T06:09:00.286Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!forge Give the courier one extra air jump before landing again.",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "32e515b7-0d62-4f5a-a8ee-e6c7a68dcdc0",
+        "dropCode": null
+      },
+      "proposalId": "P4",
+      "back": {
+        "at": "2026-11-01T06:09:04.932Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!back P4",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "383fe9bc-c106-4254-a0ae-2957aba320be",
+        "dropCode": null
+      },
+      "counted": true,
+      "publicUpdatedAt": "2026-11-01T06:09:06.133Z",
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      }
+    },
+    {
+      "at": "2026-11-01T06:13:58.364Z",
+      "elapsedSeconds": 600.003,
+      "proposal": "Let nearby crates drift right in a small gust of wind.",
+      "forge": {
+        "at": "2026-11-01T06:13:59.733Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!forge Let nearby crates drift right in a small gust of wind.",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "1ee06475-adb3-4132-a025-7ae1dc8f43d3",
+        "dropCode": null
+      },
+      "proposalId": "P5",
+      "back": {
+        "at": "2026-11-01T06:14:04.726Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!back P5",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "e23948cb-36b1-4788-a794-6a27a6fb8937",
+        "dropCode": null
+      },
+      "counted": true,
+      "publicUpdatedAt": "2026-11-01T06:14:05.472Z",
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      }
+    },
+    {
+      "at": "2026-11-01T06:18:58.366Z",
+      "elapsedSeconds": 900.005,
+      "proposal": "Create a short-lived stepping platform whenever the courier lands.",
+      "forge": {
+        "at": "2026-11-01T06:19:00.188Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!forge Create a short-lived stepping platform whenever the courier lands.",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "1746b122-0cff-4582-9bb3-ef65b65184d8",
+        "dropCode": null
+      },
+      "proposalId": "P6",
+      "back": {
+        "at": "2026-11-01T06:19:04.179Z",
+        "channel": "yadneshsalvi96",
+        "sender": "yadneshujwal",
+        "command": "!back P6",
+        "status": "sent",
+        "httpStatus": 200,
+        "messageId": "bf280dd2-c3bf-4383-ac8b-1c250cb95472",
+        "dropCode": null
+      },
+      "counted": true,
+      "publicUpdatedAt": "2026-11-01T06:19:05.401Z",
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      }
+    }
+  ],
+  "completedAt": "2026-11-01T06:19:07.479Z",
+  "elapsedSeconds": 909.118,
+  "passed": true
+}
