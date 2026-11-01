@@ -4613,6 +4613,7 @@ body {
 .community-command {
   flex-wrap: wrap;
   gap: 16px;
+  margin-inline: auto;
 }
 .community-notice {
   font-size: 14px;
@@ -4791,7 +4792,7 @@ body {
   font-size: 14px;
 }
 .community-grid .proposal-card p {
-  font-size: 24px;
+  font-size: 14px;
 }
 .community-grid .proposal-id,
 .community-grid .proposal-origin,
