@@ -1,0 +1,130 @@
+{
+  "sourceCommit": "3a74ae32747ec09ba54670cf44363fca32fbac57",
+  "engineVersion": "last-light/2.0.0",
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "caseCount": 10,
+  "ready": 10,
+  "firstAttempt": 10,
+  "distinctThreads": 10,
+  "intentPassed": 10,
+  "intentAssertionCount": 43,
+  "repairs": 0,
+  "freshArtifactsObservedInBrowser": 0,
+  "medianMs": 30450.5,
+  "minMs": 26620,
+  "maxMs": 37814,
+  "timingCaveat": "One observation per different synthetic proposal, all snapshot cache hits; not a repeated latency benchmark.",
+  "records": [
+    {
+      "id": "E01",
+      "category": "low gravity",
+      "attempts": 1,
+      "elapsedMs": 29737,
+      "sourceHash": "a830377a1d3a9966a36a907241a5cd500d47a2c667471b3a6778c05adf601c02",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 4
+    },
+    {
+      "id": "E02",
+      "category": "double jump",
+      "attempts": 1,
+      "elapsedMs": 29383,
+      "sourceHash": "c8d1479b95725dd79dd231aff76a02ffc61fc13d759cf063bd12df5e5369c3b1",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 5
+    },
+    {
+      "id": "E03",
+      "category": "giant mode",
+      "attempts": 1,
+      "elapsedMs": 29343,
+      "sourceHash": "4781ea963d1732ba1894f84eedba2c00e5c98206ac3893e03365ef9e54a2a95e",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 5
+    },
+    {
+      "id": "E04",
+      "category": "wind",
+      "attempts": 1,
+      "elapsedMs": 31240,
+      "sourceHash": "5c66d6129f9bf33d3bc657ac01540437c78db3f48109a4e275d3bfc314672136",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 4
+    },
+    {
+      "id": "E05",
+      "category": "slow motion",
+      "attempts": 1,
+      "elapsedMs": 26620,
+      "sourceHash": "613697e16ff6d5ba2c8cde401cd73fe674e0b70e7461a7ed2508f0310f58fe67",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 5
+    },
+    {
+      "id": "E06",
+      "category": "ember physics",
+      "attempts": 1,
+      "elapsedMs": 37814,
+      "sourceHash": "5b1cfe55ecb9edd09a6acbdc4ea390659c3bc5350e59bdb2a9cac5a7edcdcb11",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 4
+    },
+    {
+      "id": "E07",
+      "category": "temporary creation",
+      "attempts": 1,
+      "elapsedMs": 30472,
+      "sourceHash": "9aeaf026425de8f9a469ab6b90c48a031c5513e51afd7356b5cc041c6f588827",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 5
+    },
+    {
+      "id": "E08",
+      "category": "arithmetic",
+      "attempts": 1,
+      "elapsedMs": 34224,
+      "sourceHash": "59d4453029f88d7c531c82d913a40ff5b5c6f3848e63a589a4ee43efaa75cb72",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 3
+    },
+    {
+      "id": "E09",
+      "category": "touch response",
+      "attempts": 1,
+      "elapsedMs": 35696,
+      "sourceHash": "249e132e64deac5cd2bc730bc2b079760a891a87aa006b103b57f7f597a76fc9",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 4
+    },
+    {
+      "id": "E10",
+      "category": "persistent signature",
+      "attempts": 1,
+      "elapsedMs": 30429,
+      "sourceHash": "f1c19727944083f2a190cfbe0898a5ad6d02b063b1356ec76df42cab132216c1",
+      "checksPassed": 8,
+      "totalChecks": 8,
+      "ticksSimulated": 16032,
+      "intentChecks": 4
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "id": "E02",
+  "proposal": "Let the courier jump a second time in midair before landing.",
+  "heldOut": false,
+  "category": "double jump",
+  "inputOrigin": "synthetic-practice-evaluation",
+  "originalSuccess": true,
+  "showId": "0dfb9218-3eee-47e3-88b1-3eaffea9d004",
+  "jobId": "31bee703-6a83-4248-a549-f9a87683bdcf",
+  "status": "ready",
+  "attempts": 1,
+  "model": "gpt-6.1-sol",
+  "sdkVersion": "0.166.0",
+  "engineVersion": "last-light/2.0.0",
+  "threadId": "01a195a9-68a3-7312-b854-42d9d9adb530",
+  "createdAt": "2026-11-01T05:50:58.911Z",
+  "completedAt": "2026-11-01T05:51:28.294Z",
+  "elapsedMs": 29383,
+  "sandboxMode": "snapshot",
+  "sandboxTimings": {
+    "mode": "snapshot",
+    "setupMs": 5438,
+    "cacheHit": true,
+    "createMs": 3138,
+    "fallback": false,
+    "installMs": 0,
+    "snapshotMs": 0
+  },
+  "phases": [
+    {
+      "at": "2026-11-01T05:51:07.159Z",
+      "phase": "snapshot-restored",
+      "attempt": 1
+    },
+    {
+      "at": "2026-11-01T05:51:17.451Z",
+      "phase": "thread-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-11-01T05:51:20.698Z",
+      "phase": "turn-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-11-01T05:51:26.508Z",
+      "phase": "source-returned",
+      "attempt": 1
+    },
+    {
+      "at": "2026-11-01T05:51:26.508Z",
+      "phase": "verifier-started",
+      "attempt": 1
+    },
+    {
+      "at": "2026-11-01T05:51:27.411Z",
+      "phase": "verification-complete",
+      "attempt": 1,
+      "totalChecks": 8,
+      "checksPassed": 8
+    }
+  ],
+  "usage": {
+    "input_tokens": 10382,
+    "output_tokens": 229,
+    "cached_input_tokens": 0
+  },
+  "attemptEvidence": [
+    {
+      "usage": {
+        "input_tokens": 10382,
+        "output_tokens": 229,
+        "cached_input_tokens": 0,
+        "reasoning_output_tokens": 59,
+        "cache_write_input_tokens": 10379
+      },
+      "status": "verified",
+      "attempt": 1,
+      "threadId": "01a195a9-68a3-7312-b854-42d9d9adb530",
+      "sourceHash": "c8d1479b95725dd79dd231aff76a02ffc61fc13d759cf063bd12df5e5369c3b1",
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "entitiesSpawned": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0,
+          "modifiersApplied": 9604
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 16032
+      }
+    }
+  ],
+  "message": "Independent checks passed. Preview this candidate before approval.",
+  "candidate": {
+    "source": "export default {\n  version: 1,\n  name: \"Second Jump\",\n  description: \"Press jump again while airborne to jump a second time. Landing restores your extra jump.\",\n  rules: [\n    {\n      id: \"extra-air-jump\",\n      each: \"player\",\n      on: \"tick\",\n      when: { compare: { left: 1, op: \"eq\", right: 1 } },\n      actions: [\n        { type: \"physics\", target: \"self\", airJumps: 1 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "c8d1479b95725dd79dd231aff76a02ffc61fc13d759cf063bd12df5e5369c3b1",
+    "programHash": "d351e54f92803086757c5462db8febf2edcda1216835eb1127be640369343ce5",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Controlled gameplay comparison including airborne jumps",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Held input stress and soft runtime budgets",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "entitiesSpawned": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0,
+        "modifiersApplied": 9604
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 16032
+    }
+  }
+}

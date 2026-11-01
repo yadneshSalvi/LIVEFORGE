@@ -1,0 +1,54 @@
+{
+  "declaredAt": "2026-11-01T05:50:20.378Z",
+  "sourceCommit": "3a74ae32747ec09ba54670cf44363fca32fbac57",
+  "engineVersion": "last-light/2.0.0",
+  "casesFile": "docs/evidence/review-2026-11-01/evaluation-proposals.json",
+  "caseCount": 10,
+  "caseOrder": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10"
+  ],
+  "inputOrigin": "original frozen synthetic practice proposals; no real viewers implied",
+  "sandboxMode": "snapshot",
+  "maximumAttemptsPerCase": 3,
+  "method": "Run scripts/generation-evaluate.ts once sequentially for all ten original cases. Each case starts a fresh real Codex job. Preserve all original results, repairs and failures. No adaptation or reused sample counts as original success.",
+  "verification": "Frozen stricter runtime/verifier: eight checks, controlled meaningful physics effects, explicit airborne second jump, 600-tick held-input stress and rejection on every runtime safety diagnostic.",
+  "successScope": "A ready original job establishes the frozen server checks, not full natural-language fidelity or browser acceptance. Run the unchanged independent intent probes on returned source separately. Do not reuse the historical browser observations as evidence for these fresh artifacts.",
+  "baselineGates": {
+    "tests": 359,
+    "testFiles": 34,
+    "typecheck": "passed",
+    "format": "passed",
+    "build": "passed"
+  },
+  "frozenGates": {
+    "tests": 405,
+    "testFiles": 36,
+    "testDurationSeconds": 27.04,
+    "typecheck": "passed",
+    "format": "passed",
+    "build": "passed",
+    "pages": 14,
+    "buildId": "r0KgJgn4YzUJ9Wn1o8oVs"
+  },
+  "hashes": {
+    "src/game/contracts.ts": "6d2a85fef092392a09b1c2260438001e6fababcee37aeba5e78b64eeab0d723c",
+    "src/game/core.ts": "776fc519ff69b2fe8d7107acbe9f97b30b43c59718b3a4ea57baa97262e46d74",
+    "src/game/rules.ts": "c468061d9b0c3dfd3964d623d527a54076bd42ed57959adeac1f2d0b2b7e9602",
+    "src/game/runtime.ts": "1da3fea5a5f085f9a8b1370b1d849c23fbe30c4a8e0105364ac0c3bfebd8ee4a",
+    "src/game/verifier.ts": "8c51c01d62987a4ff3ff97a62726fe092d4422226e1be241a4a9b9037f4470a4",
+    "src/server/generation.ts": "a4536ca16578fc97577bc3045e51a078881e2024a8265a1489679c295eda29b7",
+    "src/server/sandbox-runtime.ts": "c6c597c329e6e34d6a5d079b2347186bf59b7401e96398125d23c181b6107135",
+    "scripts/generation-evaluate.ts": "b5bb2e4a358dd718024b3996c9f9cfd84f34a95f06168e801867b63dcd1b44bf",
+    "docs/evidence/review-2026-11-01/evaluation-proposals.json": "e09145217677a4101594533dfd513d20cb15b4eb4203be8727ee166c534fe620",
+    "docs/evidence/review-2026-11-01/intent-probes.ts": "c3bb7dee8bbd740aa05df1bd75c9a3e93e6248195d3b5243b80360fddeeebc4f"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-11-01T05:58:02.824Z",
+  "sourceCommit": "3a74ae32747ec09ba54670cf44363fca32fbac57",
+  "frozenSources": [
+    {
+      "path": "src/game/contracts.ts",
+      "matched": true
+    },
+    {
+      "path": "src/game/core.ts",
+      "matched": true
+    },
+    {
+      "path": "src/game/rules.ts",
+      "matched": true
+    },
+    {
+      "path": "src/game/runtime.ts",
+      "matched": true
+    },
+    {
+      "path": "src/game/verifier.ts",
+      "matched": true
+    },
+    {
+      "path": "src/server/generation.ts",
+      "matched": true
+    },
+    {
+      "path": "src/server/sandbox-runtime.ts",
+      "matched": true
+    },
+    {
+      "path": "scripts/generation-evaluate.ts",
+      "matched": true
+    },
+    {
+      "path": "docs/evidence/review-2026-11-01/evaluation-proposals.json",
+      "matched": true
+    },
+    {
+      "path": "docs/evidence/review-2026-11-01/intent-probes.ts",
+      "matched": true
+    }
+  ],
+  "returnedSources": [
+    {
+      "caseId": "E01",
+      "matched": true
+    },
+    {
+      "caseId": "E02",
+      "matched": true
+    },
+    {
+      "caseId": "E03",
+      "matched": true
+    },
+    {
+      "caseId": "E04",
+      "matched": true
+    },
+    {
+      "caseId": "E05",
+      "matched": true
+    },
+    {
+      "caseId": "E06",
+      "matched": true
+    },
+    {
+      "caseId": "E07",
+      "matched": true
+    },
+    {
+      "caseId": "E08",
+      "matched": true
+    },
+    {
+      "caseId": "E09",
+      "matched": true
+    },
+    {
+      "caseId": "E10",
+      "matched": true
+    }
+  ],
+  "secretScan": {
+    "filesChecked": 16,
+    "valuesChecked": 11,
+    "matches": 0
+  }
+}
