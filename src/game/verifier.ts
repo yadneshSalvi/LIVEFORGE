@@ -162,7 +162,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     // Broad authored floors and a bounded run avoid route/death discontinuities
     // amplifying a negligible physics change into an apparent gameplay effect.
     for (const start of [170, 400, 510, 1080, 1870]) {
-      for (let scenario = 0; scenario < 9; scenario++) {
+      for (let scenario = 0; scenario < 10; scenario++) {
         const e = makeEngine(),
           baseline = makeEngine(false);
         e.world.entities[0].x = baseline.world.entities[0].x = start;
@@ -184,7 +184,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
               (t === (scenario === 4 ? 20 : scenario >= 7 ? 320 : 0) ||
                 ((scenario === 2 || scenario === 5) && t === 12) ||
                 (scenario === 8 && t === 332)),
-            drop: scenario === 6 && t === 20,
+            drop: (scenario === 6 && t === 20) || (scenario === 9 && t === 320),
             interact: scenario === 3 || scenario === 5,
             right: scenario === 4 && t < 30,
           };

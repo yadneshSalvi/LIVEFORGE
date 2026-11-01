@@ -1,9 +1,9 @@
 {
-  "createdAt": "2026-11-01T10:37:02.761Z",
+  "createdAt": "2026-11-01T10:44:58.548Z",
   "mode": "offline frozen-source replay; no provider calls",
   "runtimeSha256": {
     "src/game/runtime.ts": "814ba6944863649fbfb6a24e2de54968660a0a76c8d9575362175f752fecaa19",
-    "src/game/verifier.ts": "7ce5ca1d00d502d30633a237d7f59cd29e67ecd3749fa17c12a99527675131d7",
+    "src/game/verifier.ts": "67c77c9364a165811e175a95fd5618f52d2d35c754595e7dd62c914d2dbda578",
     "src/game/core.ts": "776fc519ff69b2fe8d7107acbe9f97b30b43c59718b3a4ea57baa97262e46d74",
     "src/game/contracts.ts": "6d2a85fef092392a09b1c2260438001e6fababcee37aeba5e78b64eeab0d723c"
   },
@@ -109,13 +109,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -214,13 +214,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -319,7 +319,7 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
@@ -424,13 +424,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29916,
+              "modifiersApplied": 33966,
               "entitiesSpawned": 0
             }
           }
@@ -529,13 +529,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 8876,
+              "modifiersApplied": 10560,
               "entitiesSpawned": 0
             }
           }
@@ -844,13 +844,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -1114,13 +1114,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }
@@ -1172,13 +1172,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 31386,
+              "modifiersApplied": 35596,
               "entitiesSpawned": 0
             }
           }
@@ -1230,13 +1230,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }
@@ -1288,13 +1288,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }
@@ -1414,13 +1414,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -1531,13 +1531,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -1648,7 +1648,7 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
@@ -1765,13 +1765,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 27648,
+              "modifiersApplied": 30998,
               "entitiesSpawned": 0
             }
           }
@@ -1882,13 +1882,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 8876,
+              "modifiersApplied": 10560,
               "entitiesSpawned": 0
             }
           }
@@ -2233,13 +2233,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 14569,
+              "modifiersApplied": 16674,
               "entitiesSpawned": 0
             }
           }
@@ -2527,13 +2527,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }
@@ -2585,13 +2585,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 31386,
+              "modifiersApplied": 35596,
               "entitiesSpawned": 0
             }
           }
@@ -2643,13 +2643,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }
@@ -2701,13 +2701,13 @@
                 "detail": "Trusted engine assertions passed."
               }
             ],
-            "ticksSimulated": 25932,
+            "ticksSimulated": 30132,
             "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
             "effects": {
               "surfacesCreated": 0,
               "impulsesApplied": 0,
               "cuesApplied": 0,
-              "modifiersApplied": 29138,
+              "modifiersApplied": 33348,
               "entitiesSpawned": 0
             }
           }

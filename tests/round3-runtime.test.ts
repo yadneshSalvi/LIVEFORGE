@@ -70,6 +70,16 @@ describe("round three trusted verifier", () => {
     };
     expect(verifyRuleProgram(program).passed).toBe(true);
   });
+  it("measures dropped ember gravity enabled after tick 300", () => {
+    const program = law(
+      [{ type: "physics", target: "self", gravityScale: 0.3 }],
+      "ember",
+    );
+    program.rules[0].when = {
+      compare: { left: { field: "tick" }, op: "gt", right: 300 },
+    };
+    expect(verifyRuleProgram(program).passed).toBe(true);
+  });
   it("still rejects negligible gravity", () =>
     expect(verifyRuleProgram(physics(0.999)).passed).toBe(false));
   it("accepts spawn skips at the law's own limit", () => {
