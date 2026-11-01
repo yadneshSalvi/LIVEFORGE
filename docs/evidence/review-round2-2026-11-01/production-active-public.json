@@ -1,0 +1,179 @@
+{
+  "observedAt": "2026-11-01T06:02:20.193Z",
+  "url": "https://liveforge-iota.vercel.app/api/shows/43eb69c6-e1fa-4398-810b-7c04b8a65133",
+  "status": 200,
+  "source": "e41209c27f3085b8d6d1c2b68705f26e5860d6da",
+  "body": {
+    "show": {
+      "id": "43eb69c6-e1fa-4398-810b-7c04b8a65133",
+      "createdAt": "2026-11-01T05:59:11.533Z",
+      "updatedAt": "2026-11-01T06:02:16.912Z",
+      "engineVersion": "last-light/2.0.0",
+      "activeLaws": [
+        {
+          "name": "Hold E for low gravity",
+          "description": "While you hold E, gravity is one-third of normal. Release E to restore normal gravity.",
+          "author": "yadneshujwal",
+          "origin": "twitch",
+          "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+          "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+        }
+      ],
+      "mode": "twitch",
+      "votingOpen": true,
+      "phase": "live",
+      "round": 2,
+      "revision": 1,
+      "proposals": [
+        {
+          "id": "P2",
+          "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+          "votes": 0,
+          "author": "yadneshujwal",
+          "origin": "twitch",
+          "status": "selected",
+          "createdAt": "2026-11-01T06:01:07.776Z"
+        }
+      ],
+      "active": {
+        "name": "Hold E for low gravity",
+        "description": "While you hold E, gravity is one-third of normal. Release E to restore normal gravity.",
+        "author": "yadneshujwal",
+        "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+        "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+      },
+      "generation": {
+        "status": "ready",
+        "createdAt": "2026-11-01T06:01:29.465Z",
+        "updatedAt": "2026-11-01T06:01:48.993Z",
+        "phases": [
+          {
+            "phase": "snapshot-restored",
+            "at": "2026-11-01T06:01:30.802Z",
+            "attempt": 1
+          },
+          {
+            "phase": "thread-started",
+            "at": "2026-11-01T06:01:36.958Z",
+            "attempt": 1
+          },
+          {
+            "phase": "turn-started",
+            "at": "2026-11-01T06:01:41.978Z",
+            "attempt": 1
+          },
+          {
+            "phase": "source-returned",
+            "at": "2026-11-01T06:01:46.538Z",
+            "attempt": 1
+          },
+          {
+            "phase": "verifier-started",
+            "at": "2026-11-01T06:01:47.086Z",
+            "attempt": 1
+          },
+          {
+            "phase": "verification-complete",
+            "at": "2026-11-01T06:01:48.046Z",
+            "attempt": 1,
+            "checksPassed": 8,
+            "totalChecks": 8
+          }
+        ],
+        "proposal": {
+          "id": "P2",
+          "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+          "author": "yadneshujwal",
+          "origin": "twitch"
+        },
+        "message": "Checks passed. The host is reviewing the next law."
+      },
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      },
+      "events": [
+        {
+          "at": "2026-11-01T05:59:11.533Z",
+          "id": "9f7673a1-16a2-415d-ae87-f7745e8da48c",
+          "type": "show.created",
+          "message": "Twitch studio created. Awaiting channel connection."
+        },
+        {
+          "at": "2026-11-01T05:59:33.711Z",
+          "id": "a8936a4b-10d9-4bec-95ff-b5f9788cf42f",
+          "type": "twitch.authorized",
+          "message": "The host authorized this Twitch channel."
+        },
+        {
+          "at": "2026-11-01T05:59:46.481Z",
+          "id": "eb7f71a5-fdeb-466c-b8d3-27adc9ee8d7e",
+          "type": "twitch.connected",
+          "message": "The genuine Twitch chat subscription is connected."
+        },
+        {
+          "at": "2026-11-01T05:59:53.044Z",
+          "id": "ec389337-9ee2-4230-847d-620f3a7e0de5",
+          "type": "proposal.received",
+          "message": "A Twitch viewer proposed a new mechanic.",
+          "proposalId": "P1"
+        },
+        {
+          "at": "2026-11-01T06:00:20.549Z",
+          "id": "6f1db48a-51e0-4fd7-91c0-377a63b52b1b",
+          "type": "twitch.authorized",
+          "message": "The host authorized this Twitch channel."
+        },
+        {
+          "at": "2026-11-01T06:00:38.143Z",
+          "id": "66a52e3e-a667-46d9-94d4-484df51db40c",
+          "type": "twitch.connected",
+          "message": "The genuine Twitch chat subscription is connected."
+        },
+        {
+          "at": "2026-11-01T06:01:07.776Z",
+          "id": "485dbbd4-cdd8-457e-b883-3ca7f7209f94",
+          "type": "proposal.received",
+          "message": "A Twitch viewer proposed a new mechanic.",
+          "proposalId": "P2"
+        },
+        {
+          "at": "2026-11-01T06:01:29.465Z",
+          "id": "da15e4d6-324f-4c34-9427-52bbed32b365",
+          "type": "generation.queued",
+          "message": "The selected proposal is queued for Codex.",
+          "proposalId": "P2"
+        },
+        {
+          "at": "2026-11-01T06:01:48.993Z",
+          "id": "8a69f650-4814-4478-8a03-7ad9d8a6ebd2",
+          "type": "candidate.verified",
+          "message": "Generated source passed the trusted game verifier.",
+          "proposalId": "P2",
+          "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+          "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+          "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+        },
+        {
+          "at": "2026-11-01T06:02:09.649Z",
+          "id": "b91740ab-110f-4920-b933-72acbf393a5c",
+          "type": "candidate.approved",
+          "message": "The host approved the exact source, retained combination, and preview.",
+          "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+          "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+          "previewHash": "a84cf13cd14c441d0a4a92f8441f1459b166171fb1036824b0bfefb8391be929",
+          "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+        },
+        {
+          "at": "2026-11-01T06:02:16.669Z",
+          "id": "e2f75a95-765d-45d9-a53d-a230150fb1f1",
+          "type": "candidate.activated",
+          "message": "Hold E for low gravity entered the approved law stack at a saved checkpoint.",
+          "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+          "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+          "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+        }
+      ]
+    }
+  }
+}

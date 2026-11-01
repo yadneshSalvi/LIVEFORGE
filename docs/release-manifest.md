@@ -1,12 +1,12 @@
 # Release verification
 
-## Round 2 release candidate — 1 November 2026
+## Current release: round 2 hardening — 1 November 2026
 
 Source `3a74ae32747ec09ba54670cf44363fca32fbac57` passed typecheck, **405 tests across 36 files**, full formatting and an optimized **14-page build**, build ID `r0KgJgn4YzUJ9Wn1o8oVs`. This candidate adds repeated-fault retirement, soft runtime limits with stricter gameplay verification, bounded reply receipts, checkpoint grants, generation refunds, moderator support, public attribution and recorded generation milestones. The hash serialization remains compatible with saved approvals.
 
-The baseline was independently gated before edits: 359 tests across 34 files, typecheck, formatting and a 14-page build. The stricter ten-case rerun followed the [frozen evaluation protocol](evidence/review-round2-2026-11-01/evaluation-protocol.json): all ten original proposals passed on their first real Codex attempt, with eight checks each; all unchanged independent intent probes passed. The [local browser rehearsal](evidence/review-round2-2026-11-01/local-browser.md) separately verified reused-law preview, approval, activation, rollback, public moderation and a 1920 × 1080 overlay. This section does not claim production deployment yet.
+The baseline was independently gated before edits: 359 tests across 34 files, typecheck, formatting and a 14-page build. The stricter ten-case rerun followed the [frozen evaluation protocol](evidence/review-round2-2026-11-01/evaluation-protocol.json): all ten original proposals passed on their first real Codex attempt, with eight checks each; all unchanged independent intent probes passed. The [local browser rehearsal](evidence/review-round2-2026-11-01/local-browser.md) separately verified reused-law preview, approval, activation, rollback, public moderation and a 1920 × 1080 overlay. Production deployment `dpl_HV7eBQe6qngfzCBUxtYK8MdWsqLC` is Ready at https://liveforge-iota.vercel.app, with Git source `e41209c27f3085b8d6d1c2b68705f26e5860d6da` (documentation-only descendants of the frozen runtime). [Production acceptance](evidence/review-round2-2026-11-01/production-browser.md) records the real moderator hide and role removal, replies OFF/ON, a fresh second-account proposal → preview → exact approval → activation, one quota debit, and independent held/released-gravity measurements. The repository is public. Actual OBS capture and a true OS-minimized/OBS-covered run remain unverified.
 
-## Current release: Twitch moderation relay — 1 November 2026
+## Earlier release: Twitch moderation relay — 1 November 2026
 
 Canonical app: https://liveforge-iota.vercel.app. Deployed/runtime source `bbf8ddc7c46784b3d67a671d2ba07efc8e12c793`, deployment `dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd`. Typecheck, **359 tests across 34 files**, changed-file formatting and diff checks passed. The release owner’s optimized build completed 14 pages (`dzegbGH3FPClVG8kNfmhv`). The browser now forwards bounded moderation commands with their original badges; the generation prompt and game/compiler are unchanged.
 

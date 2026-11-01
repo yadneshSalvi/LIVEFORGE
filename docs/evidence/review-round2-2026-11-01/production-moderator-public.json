@@ -1,0 +1,66 @@
+{
+  "observedAt": "2026-11-01T06:00:59.299Z",
+  "url": "https://liveforge-iota.vercel.app/api/shows/43eb69c6-e1fa-4398-810b-7c04b8a65133",
+  "status": 200,
+  "source": "e41209c27f3085b8d6d1c2b68705f26e5860d6da",
+  "body": {
+    "show": {
+      "id": "43eb69c6-e1fa-4398-810b-7c04b8a65133",
+      "createdAt": "2026-11-01T05:59:11.533Z",
+      "updatedAt": "2026-11-01T06:00:51.336Z",
+      "engineVersion": "last-light/2.0.0",
+      "activeLaws": [],
+      "mode": "twitch",
+      "votingOpen": true,
+      "phase": "collecting",
+      "round": 1,
+      "revision": 0,
+      "proposals": [],
+      "active": null,
+      "generation": null,
+      "twitch": {
+        "status": "connected",
+        "channelLogin": "yadneshsalvi96"
+      },
+      "events": [
+        {
+          "at": "2026-11-01T05:59:11.533Z",
+          "id": "9f7673a1-16a2-415d-ae87-f7745e8da48c",
+          "type": "show.created",
+          "message": "Twitch studio created. Awaiting channel connection."
+        },
+        {
+          "at": "2026-11-01T05:59:33.711Z",
+          "id": "a8936a4b-10d9-4bec-95ff-b5f9788cf42f",
+          "type": "twitch.authorized",
+          "message": "The host authorized this Twitch channel."
+        },
+        {
+          "at": "2026-11-01T05:59:46.481Z",
+          "id": "eb7f71a5-fdeb-466c-b8d3-27adc9ee8d7e",
+          "type": "twitch.connected",
+          "message": "The genuine Twitch chat subscription is connected."
+        },
+        {
+          "at": "2026-11-01T05:59:53.044Z",
+          "id": "ec389337-9ee2-4230-847d-620f3a7e0de5",
+          "type": "proposal.received",
+          "message": "A Twitch viewer proposed a new mechanic.",
+          "proposalId": "P1"
+        },
+        {
+          "at": "2026-11-01T06:00:20.549Z",
+          "id": "6f1db48a-51e0-4fd7-91c0-377a63b52b1b",
+          "type": "twitch.authorized",
+          "message": "The host authorized this Twitch channel."
+        },
+        {
+          "at": "2026-11-01T06:00:38.143Z",
+          "id": "66a52e3e-a667-46d9-94d4-484df51db40c",
+          "type": "twitch.connected",
+          "message": "The genuine Twitch chat subscription is connected."
+        }
+      ]
+    }
+  }
+}

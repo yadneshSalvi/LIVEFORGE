@@ -1,0 +1,320 @@
+{
+  "format": "liveforge.evidence/2",
+  "exportedAt": "2026-11-01T06:02:58.221Z",
+  "mode": "twitch",
+  "proposal": {
+    "id": "P2",
+    "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+    "author": "yadneshujwal",
+    "origin": "twitch",
+    "createdAt": "2026-11-01T06:01:07.776Z"
+  },
+  "generation": {
+    "id": "55010b61-6f69-5951-3c41-5510d46d255c",
+    "model": "gpt-6.1-sol",
+    "threadId": "01a195b2-e5c8-7d52-8589-cf1688b6f8b9",
+    "createdAt": "2026-11-01T06:01:29.465Z",
+    "updatedAt": "2026-11-01T06:01:48.993Z",
+    "attempt": 1,
+    "usage": {
+      "input_tokens": 10387,
+      "output_tokens": 317,
+      "cached_input_tokens": 0
+    },
+    "reused": false,
+    "phases": [
+      {
+        "at": "2026-11-01T06:01:30.802Z",
+        "phase": "snapshot-restored",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-01T06:01:36.958Z",
+        "phase": "thread-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-01T06:01:41.978Z",
+        "phase": "turn-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-01T06:01:46.538Z",
+        "phase": "source-returned",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-01T06:01:47.086Z",
+        "phase": "verifier-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-01T06:01:48.046Z",
+        "phase": "verification-complete",
+        "attempt": 1,
+        "totalChecks": 8,
+        "checksPassed": 8
+      }
+    ],
+    "sandboxTimings": {
+      "mode": "snapshot",
+      "setupMs": 1296,
+      "cacheHit": true,
+      "createMs": 931,
+      "fallback": false,
+      "installMs": 0,
+      "snapshotMs": 0
+    }
+  },
+  "candidate": {
+    "id": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+    "engineVersion": "last-light/2.0.0",
+    "source": "export default {\n  version: 1,\n  name: \"Hold E for low gravity\",\n  description: \"While you hold E, gravity is one-third of normal. Release E to restore normal gravity.\",\n  rules: [\n    {\n      id: \"held-low-gravity\",\n      each: \"player\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"inputInteract\" },\n          op: \"eq\",\n          right: 1\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          gravityScale: 0.3333333333333333,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+    "program": {
+      "name": "Hold E for low gravity",
+      "rules": [
+        {
+          "id": "held-low-gravity",
+          "on": "tick",
+          "each": "player",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": {
+                "field": "inputInteract"
+              },
+              "right": 1
+            }
+          },
+          "actions": [
+            {
+              "type": "physics",
+              "target": "self",
+              "lifetime": 1,
+              "gravityScale": 0.3333333333333333
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "description": "While you hold E, gravity is one-third of normal. Release E to restore normal gravity."
+    },
+    "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Controlled gameplay comparison including airborne jumps",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Held input stress and soft runtime budgets",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "entitiesSpawned": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 0,
+        "modifiersApplied": 2248
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 16032
+    },
+    "provenance": {
+      "kind": "runtime-generation",
+      "model": "gpt-6.1-sol",
+      "threadId": "01a195b2-e5c8-7d52-8589-cf1688b6f8b9",
+      "generatedAt": "2026-11-01T06:01:48.055Z"
+    },
+    "composition": {
+      "mode": "append",
+      "members": [
+        {
+          "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+          "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+          "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+        }
+      ],
+      "program": {
+        "name": "Hold E for low gravity",
+        "rules": [
+          {
+            "id": "held-low-gravity",
+            "on": "tick",
+            "each": "player",
+            "when": {
+              "compare": {
+                "op": "eq",
+                "left": {
+                  "field": "inputInteract"
+                },
+                "right": 1
+              }
+            },
+            "actions": [
+              {
+                "type": "physics",
+                "target": "self",
+                "lifetime": 1,
+                "gravityScale": 0.3333333333333333
+              }
+            ]
+          }
+        ],
+        "version": 1,
+        "description": "While you hold E, gravity is one-third of normal. Release E to restore normal gravity."
+      },
+      "baseMembers": [],
+      "contextHash": "c74411609d9fa43a25dbddd8546334e8cb56f11dd6a9404d6043474b8c8de0bf",
+      "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca",
+      "artifactHash": "b5b702d8356057e36e67e6bd4cb212c2a997feb83930e058b939a538004f48ff",
+      "baseRevision": 0,
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "entitiesSpawned": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 0,
+          "modifiersApplied": 2248
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 16032
+      },
+      "engineVersion": "last-light/2.0.0",
+      "compositionHash": "25240b4fec630c812ed1d7eb1cd7345ecb3dd44a6a94aa5b0a3a6956d2792821"
+    },
+    "approvedSourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+    "approvedProgramHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca",
+    "approvedPreviewHash": "a84cf13cd14c441d0a4a92f8441f1459b166171fb1036824b0bfefb8391be929",
+    "approvedCompositionHash": "25240b4fec630c812ed1d7eb1cd7345ecb3dd44a6a94aa5b0a3a6956d2792821",
+    "approvedContextHash": "c74411609d9fa43a25dbddd8546334e8cb56f11dd6a9404d6043474b8c8de0bf",
+    "approvedArtifactHash": "b5b702d8356057e36e67e6bd4cb212c2a997feb83930e058b939a538004f48ff",
+    "approvedAt": "2026-11-01T06:02:09.649Z",
+    "activatedAt": "2026-11-01T06:02:16.668Z"
+  },
+  "events": [
+    {
+      "at": "2026-11-01T06:01:07.776Z",
+      "id": "485dbbd4-cdd8-457e-b883-3ca7f7209f94",
+      "type": "proposal.received",
+      "message": "A Twitch viewer proposed a new mechanic.",
+      "proposalId": "P2"
+    },
+    {
+      "at": "2026-11-01T06:01:29.465Z",
+      "id": "da15e4d6-324f-4c34-9427-52bbed32b365",
+      "type": "generation.queued",
+      "message": "The selected proposal is queued for Codex.",
+      "proposalId": "P2"
+    },
+    {
+      "at": "2026-11-01T06:01:48.993Z",
+      "id": "8a69f650-4814-4478-8a03-7ad9d8a6ebd2",
+      "type": "candidate.verified",
+      "message": "Generated source passed the trusted game verifier.",
+      "proposalId": "P2",
+      "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+      "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+      "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+    },
+    {
+      "at": "2026-11-01T06:02:09.649Z",
+      "id": "b91740ab-110f-4920-b933-72acbf393a5c",
+      "type": "candidate.approved",
+      "message": "The host approved the exact source, retained combination, and preview.",
+      "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+      "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+      "previewHash": "a84cf13cd14c441d0a4a92f8441f1459b166171fb1036824b0bfefb8391be929",
+      "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+    },
+    {
+      "at": "2026-11-01T06:02:16.669Z",
+      "id": "e2f75a95-765d-45d9-a53d-a230150fb1f1",
+      "type": "candidate.activated",
+      "message": "Hold E for low gravity entered the approved law stack at a saved checkpoint.",
+      "sourceHash": "82e7a2b6345e9e511e6c90bd50fe9dfb1970db22a5f6db18059a8cb5ee9d4572",
+      "candidateId": "0668de04-f42a-46b5-85a2-ec968b7ad68c",
+      "programHash": "aa369cda2e57ff8eab62ace2c087a62d189d9ddd119c014e932b139b6ecc14ca"
+    }
+  ]
+}
