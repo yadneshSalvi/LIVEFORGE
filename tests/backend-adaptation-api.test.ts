@@ -597,7 +597,12 @@ describe("host-reviewed alternatives to failed generations", () => {
           item.candidateId === candidate.id,
       )!;
       const reply = buildChatReply(activeShow, activationEvent);
-      expect(reply).toContain(adaptationSource);
+      expect(reply).toContain(
+        adaptationSource === "model-suggested"
+          ? "suggested, host-reviewed"
+          : adaptationSource,
+      );
+      expect(reply).not.toContain("model-suggested");
       expect(reply).not.toContain("invented by");
       expect(reply).not.toContain(failure);
       expect(reply).not.toContain(text);

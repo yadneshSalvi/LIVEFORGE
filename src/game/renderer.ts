@@ -1101,20 +1101,16 @@ export class WorldRenderer {
     c.letterSpacing = "0px";
     c.font = "21px Georgia, serif";
     c.fillStyle = C.cream;
-    c.fillText(
-      w.completed ? "The light lives on." : "Carry the last light.",
-      28,
-      47,
-    );
-    c.font = "11px Arial, sans-serif";
-    c.fillStyle = "#bbcec1";
-    c.fillText(
-      w.completed
-        ? "The Astral Hearth is alight."
-        : "Reach the hearth beyond the foundry",
-      29,
-      76,
-    );
+    // One objective sentence; the opening prompt below repeats it, so skip it.
+    const objective = w.completed
+      ? "The light lives on."
+      : "Carry the ember to the Astral Hearth.";
+    c.fillText(objective, 28, 47);
+    if (w.completed) {
+      c.font = "11px Arial, sans-serif";
+      c.fillStyle = "#bbcec1";
+      c.fillText("The Astral Hearth is alight.", 29, 76);
+    }
     const px = view - 114;
     for (let i = 0; i < 3; i++) {
       circle(
@@ -1141,7 +1137,7 @@ export class WorldRenderer {
       w.interaction.length > 75
         ? w.interaction.slice(0, 72) + "…"
         : w.interaction;
-    c.fillText(text, 28, 610);
+    if (text !== objective) c.fillText(text, 28, 610);
     c.font = "10px Arial, sans-serif";
     c.fillStyle = "#91a99e";
     c.fillText(

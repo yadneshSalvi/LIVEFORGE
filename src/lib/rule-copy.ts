@@ -1,7 +1,7 @@
 import type { ProposalAncestry } from "@/server/contracts";
 
 export function adaptationLabel(source?: ProposalAncestry["adaptationSource"]) {
-  if (source === "model-suggested") return "Model-suggested";
+  if (source === "model-suggested") return "Suggested";
   if (source === "host-edited") return "Host-edited";
   if (source === "host-written") return "Host-written";
   return "Host-reviewed";

@@ -28,7 +28,7 @@ export function buildChatReply(
   };
   const alternativeCredit = (source: string | undefined) =>
     source === "model-suggested"
-      ? "model-suggested, host-reviewed"
+      ? "suggested, host-reviewed"
       : source === "host-written"
         ? "host-written"
         : source === "host-edited"

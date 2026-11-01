@@ -511,4 +511,31 @@ describe("optional restrained server replies", () => {
     expect(buildChatReply(show, item)).not.toContain("PRIVATE");
     expect(buildChatReply(show, item)).toBe("Forge failed — try another idea");
   });
+
+  it("credits a suggested alternative without model wording", async () => {
+    const show = await fixture();
+    const p = addProposal(
+      show,
+      "Wind gently pushes the courier.",
+      "RealViewer",
+      "viewer",
+      "twitch",
+    );
+    p.ancestry = {
+      kind: "adaptation",
+      adaptationSource: "model-suggested",
+      originalAuthor: "OriginalViewer",
+      originalText: "PRIVATE ORIGINAL",
+    };
+    const reply = buildChatReply(
+      show,
+      show.events.find(
+        (e) => e.type === "proposal.received" && e.proposalId === p.id,
+      )!,
+    );
+    expect(reply).toBe(
+      `${p.id} is a suggested, host-reviewed alternative to @OriginalViewer's idea — !back ${p.id} to support it.`,
+    );
+    expect(reply).not.toMatch(/model|PRIVATE/i);
+  });
 });

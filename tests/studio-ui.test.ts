@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { StudioTitle } from "../src/components/Studio";
+import { LawCardStatus, StudioTitle } from "../src/components/Studio";
 import {
   CandidatePreview,
   SamplePreview,
@@ -113,6 +113,30 @@ describe("Studio review presentation", () => {
     expect(html).toContain(program.name);
     expect(html).toContain("Original");
     expect(html).toContain("With law");
+  });
+  it("marks the Studio law card Sample for a reused artifact only", () => {
+    const card = (reused: boolean, idea: Proposal = proposal) =>
+      renderToStaticMarkup(
+        createElement(LawCardStatus, {
+          reused,
+          proposal: idea,
+          onVerified: () => {},
+        }),
+      );
+    expect(chipCount(card(true), "Sample")).toBe(1);
+    expect(
+      chipCount(
+        card(false, {
+          ...proposal,
+          origin: "sample",
+          author: "Previously generated sample",
+        }),
+        "Sample",
+      ),
+    ).toBe(1);
+    const fresh = card(false);
+    expect(chipCount(fresh, "Sample")).toBe(0);
+    expect(fresh).toContain("Verified");
   });
   it("keeps fresh contributor credit without a Sample chip", () => {
     const html = preview();

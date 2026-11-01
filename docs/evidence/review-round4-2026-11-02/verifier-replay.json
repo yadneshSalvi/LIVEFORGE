@@ -1,0 +1,2718 @@
+{
+  "createdAt": "2026-11-01T19:37:22.354Z",
+  "mode": "offline frozen-source replay; no provider calls",
+  "runtimeSha256": {
+    "src/game/runtime.ts": "814ba6944863649fbfb6a24e2de54968660a0a76c8d9575362175f752fecaa19",
+    "src/game/verifier.ts": "a7148ce7de047bbcd1956b2f66e4fc754c73960ecad32201fef4ae4addced162",
+    "src/game/core.ts": "462c2961eb1a70904a00ffed55a27217b4cdb7bc042f90a38c0e217f23fd1206",
+    "src/game/contracts.ts": "6d2a85fef092392a09b1c2260438001e6fababcee37aeba5e78b64eeab0d723c"
+  },
+  "records": [
+    {
+      "provider": "review-2026-11-01/provider-5ac7482-originals",
+      "singlesPassed": 10,
+      "singlesTotal": 10,
+      "stacksPassed": 4,
+      "stacksTotal": 4,
+      "singles": [
+        {
+          "id": "E01",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E01.json",
+          "sourceSha256": "5835ec1bda44a931f6ef0fe920fe82b83aff9e9a8a15a9eee7352a88da635b17",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E02",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E02.json",
+          "sourceSha256": "548234980c86866aead4d9a1fb67ea30c764884e6fa854107c777ebda8c81a8a",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E03",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E03.json",
+          "sourceSha256": "38937ab4e3a8aaab682511218e02a11f4bc843ff98c026d849de1a6cc77c3edb",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 2248,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E04",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E04.json",
+          "sourceSha256": "c3f4898f07279fa63941cdf4243f73392c115faf9055240d3c9e9460d750744b",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33966,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E05",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E05.json",
+          "sourceSha256": "55b19e92d780d5e91a21aabbbf92c04080526b52980fca70441d2857f8136467",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 10560,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E06",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E06.json",
+          "sourceSha256": "0c7fd8390e5f287650f9a2280f4427475b2bf16e00af40a8c91ede8a53579a19",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 516,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E07",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E07.json",
+          "sourceSha256": "ab3d67c58e372acd5d33ec884d58a4e4f20f21fc5c9037602470bfe8068e590b",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 29
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 45,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 0,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E08",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E08.json",
+          "sourceSha256": "54b325f9965c2dbf748284221eb271e8c35b5c615a4edf8452587787cf9ab710",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E09",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E09.json",
+          "sourceSha256": "1ac24b6352b81d1a50fd9a5fe43aa20fd77001f8ba836817d4c9877ccd5a7ae3",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 15,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E10",
+          "file": "docs/evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-E10.json",
+          "sourceSha256": "a26fb140ba2d9b9c9004da3adfa10bd2feb89fae072e5965891ba1822c6d99ab",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 5575
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 4890
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 14046,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 0,
+              "entitiesSpawned": 0
+            }
+          }
+        }
+      ],
+      "stacks": [
+        {
+          "name": "E01 + E02",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "E01 + E02 + E03",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 35596,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "synthetic gravity 0.5 + jump 1.4",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "synthetic gravity 0.4 + air jump 1",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "provider": "review-round2-2026-11-01/provider-3a74ae3",
+      "singlesPassed": 10,
+      "singlesTotal": 10,
+      "stacksPassed": 4,
+      "stacksTotal": 4,
+      "singles": [
+        {
+          "id": "E01",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E01.json",
+          "sourceSha256": "a830377a1d3a9966a36a907241a5cd500d47a2c667471b3a6778c05adf601c02",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 9604
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E02",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E02.json",
+          "sourceSha256": "c8d1479b95725dd79dd231aff76a02ffc61fc13d759cf063bd12df5e5369c3b1",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 9604
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E03",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E03.json",
+          "sourceSha256": "4781ea963d1732ba1894f84eedba2c00e5c98206ac3893e03365ef9e54a2a95e",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 2248
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 2248,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E04",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E04.json",
+          "sourceSha256": "5c66d6129f9bf33d3bc657ac01540437c78db3f48109a4e275d3bfc314672136",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 18913
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 30998,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E05",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E05.json",
+          "sourceSha256": "613697e16ff6d5ba2c8cde401cd73fe674e0b70e7461a7ed2508f0310f58fe67",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 4904
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 10560,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E06",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E06.json",
+          "sourceSha256": "5b1cfe55ecb9edd09a6acbdc4ea390659c3bc5350e59bdb2a9cac5a7edcdcb11",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 516
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 516,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E07",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E07.json",
+          "sourceSha256": "9aeaf026425de8f9a469ab6b90c48a031c5513e51afd7356b5cc041c6f588827",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 62,
+              "modifiersApplied": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 43,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 0,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E08",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E08.json",
+          "sourceSha256": "59d4453029f88d7c531c82d913a40ff5b5c6f3848e63a589a4ee43efaa75cb72",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 9604
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 16674,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E09",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E09.json",
+          "sourceSha256": "249e132e64deac5cd2bc730bc2b079760a891a87aa006b103b57f7f597a76fc9",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 0,
+              "modifiersApplied": 33
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 15,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "id": "E10",
+          "file": "docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-E10.json",
+          "sourceSha256": "f1c19727944083f2a190cfbe0898a5ad6d02b063b1356ec76df42cab132216c1",
+          "historicalOriginalSuccess": true,
+          "historicalStatus": "ready",
+          "historicalVerification": {
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+                "passed": true
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Deterministic input replay",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "detail": "Trusted engine assertions passed.",
+                "passed": true
+              }
+            ],
+            "passed": true,
+            "effects": {
+              "cuesApplied": 0,
+              "entitiesSpawned": 0,
+              "impulsesApplied": 0,
+              "surfacesCreated": 23540,
+              "modifiersApplied": 0
+            },
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "engineVersion": "last-light/2.0.0",
+            "ticksSimulated": 16032
+          },
+          "replayVerification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 7290,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 14046,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 0,
+              "entitiesSpawned": 0
+            }
+          }
+        }
+      ],
+      "stacks": [
+        {
+          "name": "E01 + E02",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "E01 + E02 + E03",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 35596,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "synthetic gravity 0.5 + jump 1.4",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        },
+        {
+          "name": "synthetic gravity 0.4 + air jump 1",
+          "verification": {
+            "passed": true,
+            "engineVersion": "last-light/2.0.0",
+            "checks": [
+              {
+                "name": "Bounded capability schema",
+                "passed": true,
+                "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+              },
+              {
+                "name": "Actual effects and protected invariants",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Controlled gameplay comparison including airborne jumps",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Held input stress and soft runtime budgets",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Observable behavior in trusted scenarios",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Deterministic input replay",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "Activation rollback preserves exact world",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              },
+              {
+                "name": "JSON checkpoint continuation and temporary cleanup",
+                "passed": true,
+                "detail": "Trusted engine assertions passed."
+              }
+            ],
+            "ticksSimulated": 30132,
+            "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+            "effects": {
+              "surfacesCreated": 0,
+              "impulsesApplied": 0,
+              "cuesApplied": 0,
+              "modifiersApplied": 33348,
+              "entitiesSpawned": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

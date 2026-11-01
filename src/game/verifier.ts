@@ -95,6 +95,20 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
         `Runtime safety limit reached: ${saturated.map(([key, count]) => `${key}=${count}`).join(", ")}.`,
       );
   };
+  // Brief ceiling contact is ordinary play; a law that keeps any entity pinned
+  // to the clamp is a runaway in every scenario, not only under held input.
+  const ceilingRuns = new WeakMap<GameEngine, number>();
+  const assertSafety = (engine: GameEngine) => {
+    assertDiagnostics(engine);
+    const ceilingTicks = engine.world.entities.some((entity) => entity.y <= -80)
+      ? (ceilingRuns.get(engine) ?? 0) + 1
+      : 0;
+    ceilingRuns.set(engine, ceilingTicks);
+    if (ceilingTicks > 30)
+      throw new Error(
+        "Runtime safety limit reached: worldBoundsRecoveries sustained ceiling contact for more than 30 ticks.",
+      );
+  };
   const hasPhysics = program.rules.some((r) =>
     r.actions.some((a) => a.type === "physics"),
   );
@@ -133,7 +147,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
         baseline.step(input);
         ticksSimulated += 2;
         assertWorld(e.world);
-        assertDiagnostics(e);
+        assertSafety(e);
         if (
           e.world.entities.length !== baseline.world.entities.length ||
           e.world.surfaces.some((surface) => surface.generated) ||
@@ -191,7 +205,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
           e.step(input);
           baseline.step(input);
           ticksSimulated += 2;
-          assertDiagnostics(e);
+          assertSafety(e);
           // Stop scoring as soon as either simulation recovers or leaves its
           // original authored floor; safety coverage continues in other runs.
           const onFloor = (engine: GameEngine) => {
@@ -233,19 +247,11 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     for (const held of ["jump", "interact", "left", "right"] as const) {
       const e = makeEngine();
       e.activate(program, "held-verification");
-      let ceilingTicks = 0;
       for (let t = 0; t < 600; t++) {
         e.step({ ...EMPTY_INPUT, [held]: true });
         ticksSimulated++;
         assertWorld(e.world);
-        assertDiagnostics(e);
-        ceilingTicks = e.world.entities.some((entity) => entity.y <= -80)
-          ? ceilingTicks + 1
-          : 0;
-        if (ceilingTicks > 30)
-          throw new Error(
-            "Runtime safety limit reached: worldBoundsRecoveries sustained ceiling contact for more than 30 ticks.",
-          );
+        assertSafety(e);
       }
     }
   });
@@ -271,8 +277,8 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
       };
       a.step(input);
       b.step(input);
-      assertDiagnostics(a);
-      assertDiagnostics(b);
+      assertSafety(a);
+      assertSafety(b);
       ticksSimulated += 2;
     }
     if (JSON.stringify(a.checkpoint()) !== JSON.stringify(b.checkpoint()))
@@ -285,7 +291,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     e.activate(program, "rollback-version");
     for (let t = 0; t < 90; t++) {
       e.step();
-      assertDiagnostics(e);
+      assertSafety(e);
       ticksSimulated++;
     }
     e.rollback();
@@ -297,7 +303,7 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     e.activate(program, "roundtrip-version");
     for (let t = 0; t < 40; t++) {
       e.step();
-      assertDiagnostics(e);
+      assertSafety(e);
       ticksSimulated++;
     }
     const cp = JSON.parse(JSON.stringify(e.checkpoint())),
@@ -306,8 +312,8 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     for (let t = 0; t < 40; t++) {
       e.step({ ...EMPTY_INPUT, right: true });
       other.step({ ...EMPTY_INPUT, right: true });
-      assertDiagnostics(e);
-      assertDiagnostics(other);
+      assertSafety(e);
+      assertSafety(other);
       ticksSimulated += 2;
     }
     if (JSON.stringify(e.checkpoint()) !== JSON.stringify(other.checkpoint()))

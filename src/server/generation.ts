@@ -242,7 +242,7 @@ export async function runGeneration(
       process.env.OPENAI_API_KEY,
       503,
       "generation_unconfigured",
-      "Codex generation needs an OpenAI key and Vercel Sandbox deployment identity.",
+      "Forge setup unavailable — load a sample law",
     );
     const credentials = authentication ?? (await captureSandboxCredentials());
     const show = await store.get<ShowRecord>(showKey(showId));
@@ -394,8 +394,8 @@ export async function runGeneration(
           503,
           "codex_failed",
           reason
-            ? `Codex generation failed: ${reason}. The active game is preserved; use a previously generated law while retrying.`
-            : "Codex did not return a completed source artifact. The active game is preserved; use a previously generated law while retrying.",
+            ? `This forge didn't finish — try again or load a sample law. Details: ${reason}`
+            : "This forge didn't finish — try again or load a sample law",
         );
       }
       const resultBuffer = await sandbox.readFileToBuffer(
@@ -410,7 +410,7 @@ export async function runGeneration(
         resultBuffer && sourceBuffer,
         503,
         "artifact_missing",
-        "Codex finished without a source artifact.",
+        "This forge didn't finish — try again or load a sample law",
       );
       const metadata = JSON.parse(resultBuffer.toString()) as {
         threadId: string;

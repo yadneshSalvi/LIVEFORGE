@@ -7,7 +7,8 @@ import {
   verifyRuleComposition,
 } from "../src/game/rules";
 import type { RuleProgram } from "../src/game/contracts";
-const output = "docs/evidence/review-round3-2026-11-01";
+// Optional first argument writes a new record without replacing round 3.
+const output = process.argv[2] ?? "docs/evidence/review-round3-2026-11-01";
 const providers = [
   "review-2026-11-01/provider-5ac7482-originals",
   "review-round2-2026-11-01/provider-3a74ae3",

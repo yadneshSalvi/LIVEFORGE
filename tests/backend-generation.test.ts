@@ -343,8 +343,11 @@ describe("durable generation races against late provider output", () => {
     const final = (await store.get<ShowRecord>(showKey(show.id)))!;
     expect(final.jobs[0].status).toBe("failed");
     expect(final.jobs[0].message).toContain("401 invalid");
+    expect(final.jobs[0].message).toContain(
+      "This forge didn't finish — try again or load a sample law",
+    );
     expect(final.jobs[0].message).not.toMatch(
-      /fixture-provider-key|private-credential/,
+      /fixture-provider-key|private-credential|previously generated|Codex/,
     );
     expect(JSON.stringify(publicView(final))).not.toContain("401 invalid");
     expect(final.candidates).toHaveLength(0);

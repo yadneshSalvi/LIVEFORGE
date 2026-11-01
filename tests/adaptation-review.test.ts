@@ -169,7 +169,8 @@ describe("alternative form semantics", () => {
   it("shows a genuine suggestion as editable model wording without starting a job", () => {
     const html = render({ job: { ...job, adaptedProposal: text } });
     expect(html).toContain("Review an alternative");
-    expect(html).toContain("Model-suggested wording");
+    expect(html).toContain("Suggested wording");
+    expect(html).not.toContain("Model-suggested");
     expect(html).toContain(text);
     expect(html).toContain("Publish alternative");
     expect(html).not.toContain("Forge this adaptation");

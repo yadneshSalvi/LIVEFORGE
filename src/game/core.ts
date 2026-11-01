@@ -127,7 +127,7 @@ export function createWorld(): GameSnapshot {
     deaths: 0,
     activeHash: null,
     ruleName: null,
-    interaction: "Carry the last ember to the Astral Hearth.",
+    interaction: "Carry the ember to the Astral Hearth.",
     lanternOn: true,
     encounters: { counterweight: false, guardian: false },
   };

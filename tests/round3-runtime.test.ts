@@ -193,3 +193,91 @@ describe("round three trusted verifier", () => {
     },
   );
 });
+const stored = (provider: string, id: string) =>
+  compileRuleSource(
+    JSON.parse(
+      readFileSync(`docs/evidence/${provider}/evaluation-${id}.json`, "utf8"),
+    ).candidate.source,
+  );
+const ceilingDetail = "sustained ceiling contact for more than 30 ticks";
+describe("sustained ceiling contact is rejected in every scenario", () => {
+  it.each(
+    providers.flatMap((provider) =>
+      [
+        ["E02", "E03"],
+        ["E01", "E03"],
+      ].map((ids) => [ids.join(" + "), provider, ids] as const),
+    ),
+  )("accepts original %s from %s", (_name, provider, ids) => {
+    const report = verifyRuleComposition(ids.map((id) => stored(provider, id)));
+    expect(report.checks.filter((check) => !check.passed)).toEqual([]);
+  });
+  it.each(
+    providers.flatMap((provider) =>
+      Array.from(
+        { length: 10 },
+        (_, i) => [`E${String(i + 1).padStart(2, "0")}`, provider] as const,
+      ),
+    ),
+  )("accepts stored single %s from %s", (id, provider) => {
+    const report = verifyRuleProgram(stored(provider, id));
+    expect(report.checks.filter((check) => !check.passed)).toEqual([]);
+  });
+  const up: RuleAction = { type: "impulse", target: "self", x: 0, y: -2 };
+  const pinning: [string, RuleProgram][] = [
+    [
+      "air-jump then float forever",
+      {
+        version: 1,
+        name: "Pinning fixture",
+        description: "Synthetic regression fixture.",
+        rules: [
+          {
+            id: "grant",
+            each: "player",
+            when: always,
+            actions: [{ type: "physics", target: "self", airJumps: 1 }],
+          },
+          {
+            id: "float",
+            each: "player",
+            when: {
+              compare: { left: { field: "airJumpsUsed" }, op: "gte", right: 1 },
+            },
+            actions: [up],
+          },
+        ],
+      },
+    ],
+    [
+      "float while the ember is dropped",
+      {
+        version: 1,
+        name: "Pinning fixture",
+        description: "Synthetic regression fixture.",
+        rules: [
+          {
+            id: "float",
+            each: "player",
+            when: {
+              compare: { left: { field: "emberCarried" }, op: "eq", right: 0 },
+            },
+            actions: [up],
+          },
+        ],
+      },
+    ],
+  ];
+  it.each(pinning)("rejects %s outside held-input stress", (_name, program) => {
+    const report = verifyRuleProgram(program);
+    expect(report.passed).toBe(false);
+    const pinned = report.checks.filter(
+      (check) => !check.passed && check.detail.includes(ceilingDetail),
+    );
+    expect(
+      pinned.some(
+        (check) => check.name !== "Held input stress and soft runtime budgets",
+      ),
+    ).toBe(true);
+  });
+});

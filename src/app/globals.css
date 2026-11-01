@@ -655,8 +655,9 @@ button {
     monospace;
   color: var(--faint);
 }
+/* Text glyph and SVG icons share one fixed block slot so step headings align. */
 .how-icon {
-  display: inline-flex;
+  display: flex;
   height: 41px;
   align-items: center;
   font:
@@ -665,8 +666,10 @@ button {
   color: var(--mint);
 }
 .how-symbol {
+  display: block;
+  height: 41px;
   color: var(--mint);
-  margin: 3px 0;
+  margin: 0;
 }
 .how-card h3 {
   font-size: 23px;
@@ -5414,21 +5417,26 @@ body {
   font-size: 14px;
   overflow-wrap: anywhere;
 }
+/* Outputs rows: 8px label → field, 24px between rows, 24px before actions. */
 .share-section {
-  padding: 24px 0;
+  padding: 0;
 }
-.share-section:first-of-type {
-  padding-top: 0;
+.share-section + .share-section {
+  margin-top: 24px;
+}
+.share-section:last-of-type {
+  padding-bottom: 24px;
 }
 .share-section h3 {
   font-size: 18px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 .share-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px 44px;
   gap: 8px;
   align-items: center;
+  margin-top: 0;
 }
 .share-row .dialog-field {
   min-width: 0;

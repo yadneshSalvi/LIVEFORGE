@@ -1129,6 +1129,24 @@ export function Studio() {
     !candidate.activatedAt &&
     latestJob?.status === "ready" &&
     candidate.composition?.engineVersion === ENGINE_VERSION;
+  // Mirrors the rail branches below for the visually hidden live region.
+  const railPhase =
+    isWorking && latestJob
+      ? `Forging ${latestJob.proposalId}`
+      : candidateReady && candidate
+        ? candidate.approvedAt
+          ? "Approved — ready to activate"
+          : "Ready for review"
+        : activeCandidate && !nextRound && !needsUpgrade
+          ? "Law active"
+          : show?.votingOpen
+            ? "Intake open"
+            : "Intake closed";
+  const forgeBlockedReason = stackFull
+    ? "Choose Replace to change a full stack"
+    : !status?.generation.allowed
+      ? "Connect Twitch or check your daily allowance"
+      : undefined;
   const currentChapter = Math.min(2, snapshot?.checkpoint || 0);
   const publicOrigin =
     typeof window === "undefined" ? "" : window.location.origin;
@@ -1448,7 +1466,7 @@ export function Studio() {
                     {snapshot?.completed
                       ? "The beacon lives. You brought the light."
                       : currentChapter === 0
-                        ? "Carry the ember across the broken sky."
+                        ? "Carry the ember to the Astral Hearth."
                         : currentChapter === 1
                           ? "Wake the machinery. Find your way through."
                           : "Bring the last light to the beacon."}
@@ -1588,6 +1606,9 @@ export function Studio() {
                 <ShieldCheck size={18} />
               </button>
             </div>
+            <div className="sr-only" aria-live="polite" aria-atomic="true">
+              {railPhase}
+            </div>
             <div className="rail-intake">
               <StatusChip variant={show.votingOpen ? "good" : "neutral"}>
                 {show.votingOpen ? "Intake open" : "Intake closed"}
@@ -1661,23 +1682,16 @@ export function Studio() {
                       candidate.sourceHash,
                     )}
                   </p>
-                  <div className="candidate-status">
-                    {(latestJob?.reused ||
-                      isSampleLaw(
-                        show.proposals.find(
-                          (p) => p.id === candidate.proposalId,
-                        ),
-                      )) && <StatusChip variant="warm">Sample</StatusChip>}
-                    <button
-                      className="chip status-chip status-chip--good verified-chip"
-                      onClick={() => {
-                        setEvidenceCandidate(candidate);
-                        setEvidenceOpen(true);
-                      }}
-                    >
-                      <Check size={14} /> Verified
-                    </button>
-                  </div>
+                  <LawCardStatus
+                    reused={latestJob?.reused}
+                    proposal={show.proposals.find(
+                      (p) => p.id === candidate.proposalId,
+                    )}
+                    onVerified={() => {
+                      setEvidenceCandidate(candidate);
+                      setEvidenceOpen(true);
+                    }}
+                  />
                   {candidate.approvedAt && (
                     <button
                       className="button button-outline button-small"
@@ -1750,22 +1764,15 @@ export function Studio() {
                       )}
                     </p>
                   )}
-                  <div className="candidate-status">
-                    {isSampleLaw(
-                      show.proposals.find(
-                        (p) => p.id === activeCandidate.proposalId,
-                      ),
-                    ) && <StatusChip variant="warm">Sample</StatusChip>}
-                    <button
-                      className="chip status-chip status-chip--good verified-chip"
-                      onClick={() => {
-                        setEvidenceCandidate(activeCandidate);
-                        setEvidenceOpen(true);
-                      }}
-                    >
-                      <Check size={14} /> Verified
-                    </button>
-                  </div>
+                  <LawCardStatus
+                    proposal={show.proposals.find(
+                      (p) => p.id === activeCandidate.proposalId,
+                    )}
+                    onVerified={() => {
+                      setEvidenceCandidate(activeCandidate);
+                      setEvidenceOpen(true);
+                    }}
+                  />
                 </div>
                 <div className="rail-action">
                   <button
@@ -1992,6 +1999,7 @@ export function Studio() {
                   className="rail-action"
                   ref={forgeAction}
                   tabIndex={-1}
+                  role="group"
                   aria-label="Forge the selected idea"
                 >
                   <button
@@ -2004,18 +2012,20 @@ export function Studio() {
                       !status?.generation.allowed ||
                       !status.generation.configured
                     }
-                    title={
-                      stackFull
-                        ? "Choose Replace to change a full stack"
-                        : !status?.generation.allowed
-                          ? "Connect Twitch or check your daily allowance"
-                          : undefined
+                    title={forgeBlockedReason}
+                    aria-describedby={
+                      forgeBlockedReason ? "forge-blocked-reason" : undefined
                     }
                     onClick={generate}
                   >
                     <WandSparkles size={15} /> Forge selected idea{" "}
                     <ArrowRight size={15} />
                   </button>
+                  {forgeBlockedReason && (
+                    <span id="forge-blocked-reason" className="sr-only">
+                      {forgeBlockedReason}
+                    </span>
+                  )}
                   <div className="forge-access">
                     {!status?.generation.allowed &&
                       !status?.generation.quota?.exhausted && (
@@ -2381,6 +2391,31 @@ function Pipeline({ onCancel, busy }: { onCancel: () => void; busy: boolean }) {
         disabled={busy}
       >
         Cancel
+      </button>
+    </div>
+  );
+}
+
+/** Rail law card chips: reused artifacts and sample-origin laws are marked Sample. */
+export function LawCardStatus({
+  reused,
+  proposal,
+  onVerified,
+}: {
+  reused?: boolean;
+  proposal?: Proposal;
+  onVerified: () => void;
+}) {
+  return (
+    <div className="candidate-status">
+      {(reused || isSampleLaw(proposal)) && (
+        <StatusChip variant="warm">Sample</StatusChip>
+      )}
+      <button
+        className="chip status-chip status-chip--good verified-chip"
+        onClick={onVerified}
+      >
+        <Check size={14} /> Verified
       </button>
     </div>
   );
