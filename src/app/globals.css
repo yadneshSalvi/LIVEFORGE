@@ -4421,3 +4421,1165 @@ body {
     gap: 12px;
   }
 }
+
+/* Round 3 public UI: shared chips, public pages and responsive navigation. */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 10px;
+  border: 1px solid #526269;
+  border-radius: 999px;
+  background: #1b282f;
+  color: var(--cream);
+  font:
+    500 14px/1.4 var(--font-body),
+    sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.status-chip--good {
+  color: var(--mint);
+  border-color: #547563;
+  background: #1b3027;
+}
+.status-chip--warm {
+  color: var(--brass);
+  border-color: #796540;
+  background: #30291d;
+}
+.app-header {
+  gap: 24px;
+}
+.main-nav {
+  gap: 24px;
+}
+.main-nav a {
+  font-size: 14px;
+}
+.hero-grid {
+  margin-top: 24px;
+  padding-bottom: 48px;
+}
+.hero-copy h1 {
+  font-size: clamp(48px, 5.2vw, 72px);
+  letter-spacing: -0.06em;
+}
+.hero-ctas {
+  margin-top: 48px;
+}
+.hero-practice {
+  font-size: 14px;
+}
+.hero-world {
+  transform: none;
+  border-radius: 16px;
+}
+.hero-world:before {
+  display: none;
+}
+.hero-world .game-viewport {
+  border-radius: 16px;
+}
+.world-note {
+  left: 8%;
+  right: 8%;
+  bottom: 12%;
+  padding: 20px 24px;
+  font-size: 14px;
+  transform: none;
+  border-radius: 8px;
+}
+.how-section {
+  padding-top: 48px;
+}
+.section-heading {
+  display: block;
+}
+.section-heading h2 {
+  font-size: 24px;
+}
+.how-card h3 {
+  font-size: 24px;
+}
+.how-card p {
+  min-height: 0;
+  font-size: 14px;
+}
+.how-card code {
+  font-size: 14px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.landing-invitation {
+  justify-content: center;
+  background: none;
+  border: 0;
+  padding: 24px;
+}
+.site-footer {
+  justify-content: space-between;
+  gap: 24px;
+}
+.site-footer > a:last-child {
+  font-size: 14px;
+}
+.archive-heading h1,
+.public-guide > h1,
+.community-heading h1 {
+  font-size: 48px;
+}
+.archive-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.archive-card p {
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.archive-card-footer {
+  margin-top: auto;
+  justify-content: flex-end;
+}
+.archive-card .author-chip {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.archive-card .author-avatar {
+  display: none;
+}
+.public-guide {
+  max-width: 960px;
+}
+.public-guide .guide-section {
+  margin-top: 48px;
+}
+.public-guide .guide-section h2,
+.contribution-list h2 {
+  font-size: 24px;
+}
+.public-guide .guide-steps h3 {
+  font-size: 24px;
+}
+.public-guide .guide-section p,
+.contribution-list p {
+  font-size: 14px;
+}
+.public-guide .guide-table {
+  table-layout: fixed;
+}
+.public-guide .guide-table td {
+  overflow-wrap: anywhere;
+}
+.public-guide .guide-table td:first-child {
+  width: 40%;
+}
+.architecture-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  padding: 24px 0;
+  border-block: 1px solid var(--border);
+}
+.architecture-strip span {
+  font-size: 14px;
+}
+.architecture-strip span[aria-hidden] {
+  color: var(--mint);
+}
+.contribution-list {
+  display: grid;
+  gap: 32px;
+  margin-top: 48px;
+}
+.contribution-list p {
+  margin-top: 12px;
+  color: var(--muted);
+}
+.contribution-list a:hover {
+  color: var(--mint);
+}
+.community-heading {
+  margin-bottom: 24px;
+}
+.community-command {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.community-notice {
+  font-size: 14px;
+}
+.community-phase {
+  padding: 24px 0;
+  margin: 24px 0;
+  border-block: 1px solid var(--border);
+}
+.community-phase h2 {
+  font-size: 24px;
+}
+.community-phase p {
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.community-phase .status-chip {
+  margin-top: 12px;
+}
+.community-main .notice strong {
+  font-size: 24px;
+}
+.community-main .notice .status-chip {
+  margin-left: 12px;
+}
+.community-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.community-grid .proposal-card p {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .app-header {
+    height: auto;
+    min-height: 80px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    gap: 16px;
+  }
+  .header-brand {
+    flex: 1;
+  }
+  .app-header .brand {
+    font-size: 24px;
+  }
+  .app-header .header-actions {
+    margin-left: 0;
+  }
+  .app-header .header-actions .button {
+    font-size: 14px;
+    padding: 10px 12px;
+    min-height: 40px;
+  }
+  .main-nav {
+    display: flex;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 32px;
+    margin: 0;
+  }
+  .main-nav a {
+    line-height: 36px;
+    font-size: 14px;
+  }
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 0;
+    gap: 32px;
+    padding-bottom: 32px;
+  }
+  .hero-copy {
+    padding-bottom: 0;
+  }
+  .hero-copy h1 {
+    font-size: clamp(42px, 11vw, 64px);
+  }
+  .hero-ctas {
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .hero-ctas .button-large {
+    font-size: 14px;
+    padding: 14px 18px;
+  }
+  .hero-world {
+    margin: 0;
+    aspect-ratio: 1.15;
+  }
+  .world-note {
+    font-size: 14px;
+    padding: 16px;
+  }
+  .how-section {
+    padding-top: 32px;
+  }
+  .section-heading h2 {
+    font-size: 24px;
+  }
+  .how-card h3 {
+    font-size: 24px;
+  }
+  .how-card p {
+    font-size: 14px;
+  }
+  .how-card code {
+    font-size: 14px;
+  }
+  .site-footer {
+    padding: 24px 20px;
+  }
+  .site-footer > a:last-child {
+    font-size: 14px;
+  }
+  .archive-heading {
+    gap: 24px;
+  }
+  .public-guide .guide-steps {
+    padding: 0;
+  }
+  .public-guide .guide-steps > li {
+    gap: 16px;
+  }
+  .public-guide .guide-section {
+    margin-top: 32px;
+  }
+  .public-guide .guide-table td {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+  .community-header {
+    padding: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .community-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .community-heading h1 {
+    font-size: 48px;
+  }
+  .community-command {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Public type scale: large title, 24px heading, 14px text. Studio scopes its own scale. */
+.app-header .brand,
+.site-footer .brand,
+.community-header .brand {
+  font-size: 24px;
+}
+.app-header .button,
+.site-page .button,
+.archive-main .button,
+.public-guide .button {
+  font-size: 14px;
+}
+.site-page .hero-practice,
+.site-page .how-icon {
+  font-size: 14px;
+}
+.archive-card h2,
+.archive-empty h2 {
+  font-size: 24px;
+}
+.archive-card .author-chip,
+.archive-empty p,
+.archive-main .studio-loading {
+  font-size: 14px;
+}
+.community-grid .proposal-card p {
+  font-size: 24px;
+}
+.community-grid .proposal-id,
+.community-grid .proposal-origin,
+.community-grid .author-chip,
+.community-grid .support-button {
+  font-size: 14px;
+}
+.community-main .notice strong {
+  font-size: 24px;
+}
+.community-command,
+.community-command span {
+  font-size: 14px;
+}
+.public-guide .guide-table code,
+.public-guide .capability-chips > span,
+.public-guide .guide-steps > li:before {
+  font-size: 14px;
+}
+.world-note {
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  .app-header .brand,
+  .site-footer .brand,
+  .community-header .brand {
+    font-size: 24px;
+  }
+  .world-note,
+  .community-command {
+    font-size: 14px;
+  }
+}
+
+/* Round 3 Studio: one calm workspace and details on demand. */
+.app-header .main-nav a,
+.app-header .header-actions {
+  display: flex;
+}
+.studio-main {
+  padding: 32px clamp(16px, 3vw, 56px);
+}
+.studio-page .brand {
+  font-size: 18px;
+}
+.studio-heading {
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.studio-heading > div:first-child {
+  min-width: 0;
+}
+.title-line {
+  margin: 0;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.title-line h1,
+.setup-heading h1 {
+  font-size: 28px;
+}
+.studio-heading > .button-group {
+  gap: 4px;
+}
+.studio-grid {
+  grid-template-columns: minmax(0, 1fr) 352px;
+  gap: 24px;
+}
+.studio-page .button,
+.studio-page .field-label,
+.studio-page .proposal-textarea,
+.studio-page .char-count,
+.studio-page .suggestion-chip,
+.studio-page .author-chip,
+.studio-page .proposal-origin,
+.studio-page .proposal-id,
+.studio-page .proposal-copy,
+.studio-page .support-button,
+.studio-page .status-chip {
+  font-size: 14px;
+}
+.studio-page .button,
+.modal .button {
+  min-height: 44px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.studio-page .field-label {
+  letter-spacing: 0;
+  text-transform: none;
+}
+.setup-wrap {
+  max-width: 1440px;
+  padding: 48px 32px;
+}
+.setup-heading {
+  margin-bottom: 32px;
+}
+.setup-grid {
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  gap: 32px;
+  border: 0;
+  background: none;
+}
+.setup-scene {
+  border-radius: 12px;
+  overflow: hidden;
+}
+.setup-scene-copy {
+  padding: 24px;
+}
+.setup-scene-copy h2,
+.setup-option h3 {
+  font-size: 18px;
+}
+.setup-options {
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  align-content: center;
+}
+.setup-option,
+.setup-option.practice {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.setup-option .button {
+  margin-top: 24px;
+}
+.game-stage {
+  border-radius: 12px;
+}
+.stage-topline {
+  padding: 24px;
+  gap: 16px;
+}
+.stage-chapter {
+  font:
+    500 18px/1.3 var(--font-display),
+    sans-serif;
+  letter-spacing: 0;
+}
+.stage-objective {
+  font:
+    14px/1.5 var(--font-body),
+    sans-serif;
+  letter-spacing: 0;
+  margin-top: 8px;
+}
+.game-control-strip {
+  padding: 16px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.keyboard-controls {
+  gap: 16px;
+}
+.keyboard-control,
+.keyboard-control .key,
+.scene-footer button {
+  font-size: 14px;
+}
+.keyboard-control .key {
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.scene-footer {
+  padding-top: 8px;
+  gap: 16px;
+}
+.scene-footer .status-dot {
+  width: 8px;
+  height: 8px;
+}
+.scene-footer button {
+  min-height: 44px;
+}
+.pause-overlay h3 {
+  font-size: 18px;
+}
+.active-law-stack {
+  padding: 24px 0 0;
+  margin-top: 24px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: none;
+}
+.active-law-stack h3 {
+  font-size: 18px;
+}
+.active-law-stack ol {
+  margin-top: 16px;
+  gap: 8px;
+}
+.active-law-stack li {
+  gap: 12px;
+  padding: 0;
+}
+.forge-rail {
+  background: var(--surface);
+  border-radius: 12px;
+}
+.rail-header {
+  padding: 16px 24px 0;
+  border: 0;
+  align-items: center;
+}
+.rail-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.rail-intake {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 24px 16px;
+}
+.rail-intake .button {
+  padding: 8px;
+}
+.law-plan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.law-plan > .status-chip {
+  flex-shrink: 0;
+}
+.law-mode {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--ink);
+}
+.law-mode label {
+  position: relative;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  min-height: 36px;
+  margin: 0;
+  padding: 8px;
+  border: 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.law-mode input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+.law-mode label:has(input:checked) {
+  background: #24372e;
+  color: var(--mint);
+}
+.law-mode label:has(input:focus-visible) {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+.law-mode:disabled {
+  opacity: 0.6;
+}
+.rail-body,
+.candidate-card {
+  padding: 24px;
+}
+.command-block {
+  margin: 0;
+  padding: 12px;
+  font-size: 14px;
+}
+.command-block span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.command-block button {
+  min-width: 32px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+}
+.empty-forge {
+  padding: 32px 16px;
+}
+.empty-forge p {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.proposal-list {
+  margin-top: 24px;
+}
+.proposal-card,
+.proposal-select {
+  min-width: 0;
+  max-width: 100%;
+}
+.proposal-copy {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.proposal-card-head {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.proposal-card-foot {
+  gap: 12px;
+}
+.proposal-card .author-chip {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.proposal-card .author-avatar {
+  flex-shrink: 0;
+}
+.proposal-form {
+  margin-top: 24px;
+}
+.proposal-form-footer {
+  justify-content: flex-end;
+  gap: 12px;
+}
+.proposal-form-footer .char-count {
+  margin-right: auto;
+}
+.capability-guide {
+  margin-top: 24px;
+}
+.capability-guide summary {
+  font-size: 14px;
+  padding: 12px 0;
+}
+.capability-guide .capability-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0 16px;
+}
+.capability-guide .capability-chips .status-chip {
+  font-size: 14px;
+}
+.candidate-card h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.candidate-card > p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.candidate-card .candidate-icon {
+  margin-bottom: 16px;
+}
+.candidate-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.verified-chip {
+  min-height: 32px;
+  cursor: pointer;
+}
+.verified-chip:hover {
+  border-color: var(--mint);
+}
+.rail-action {
+  padding: 0 24px 24px;
+}
+.rail-action .button {
+  font-size: 14px;
+}
+.forge-access {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.forge-access:empty {
+  display: none;
+}
+.rail-fallback {
+  padding: 16px 24px;
+}
+.rail-fallback .button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mint);
+}
+.rail-recovery {
+  padding: 0 24px 16px;
+  border: 0;
+  justify-content: flex-end;
+}
+.rail-recovery button {
+  font-size: 14px;
+  min-height: 44px;
+}
+.pipeline {
+  padding: 32px 24px;
+}
+.pipeline h3 {
+  font-size: 18px;
+  margin: 16px 0;
+}
+.connection-strip {
+  padding: 16px 24px;
+  gap: 24px;
+}
+.connection-info {
+  gap: 16px;
+}
+.connection-info p {
+  font-size: 14px;
+}
+.modal,
+.modal-wide {
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  border-radius: 12px;
+}
+.modal-content {
+  padding: 24px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.modal-header {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.modal-header > div {
+  min-width: 0;
+}
+.modal-header h2 {
+  font-size: 28px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.modal-header .icon-button {
+  flex-shrink: 0;
+  margin: 0;
+}
+.modal h3 {
+  font-size: 18px;
+}
+.modal .button,
+.modal .field-label,
+.modal .dialog-field,
+.modal .modal-copy,
+.modal .proposal-textarea,
+.modal .rail-footnote,
+.modal .reply-settings p,
+.modal .show-list-item strong,
+.modal .show-list-item > span:nth-child(2) > span,
+.modal .library-card > p,
+.modal .library-credit,
+.modal .adaptation-help,
+.modal .adaptation-text,
+.modal .evidence-tabs button,
+.modal .evidence-meta dt,
+.modal .evidence-meta dd,
+.modal .evidence-timeline p,
+.modal .evidence-timeline time,
+.modal .evidence-source,
+.modal .verification-list li,
+.modal .verification-list strong,
+.modal .verification-list span {
+  font-size: 14px;
+}
+.modal .field-label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.modal-actions {
+  margin-top: 24px;
+  padding-top: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.preview-grid {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.preview-game {
+  min-width: 0;
+  border-radius: 8px;
+}
+.preview-game .game-viewport {
+  aspect-ratio: 16/10;
+  min-height: 280px;
+}
+.preview-switch {
+  padding: 8px;
+  gap: 8px;
+}
+.preview-switch button {
+  font-size: 14px;
+  flex: 1;
+  justify-content: center;
+  padding: 8px;
+}
+.preview-details {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+.preview-details > p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.preview-attribution {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.preview-combination {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.preview-combination summary {
+  min-height: 44px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+.preview-combination li {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.preview-decision {
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+}
+.preview-decision .button-group {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.verification-disclosure {
+  min-width: 0;
+}
+.verification-disclosure > summary {
+  list-style: none;
+  min-height: 32px;
+  cursor: pointer;
+}
+.verification-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.verification-list {
+  gap: 16px;
+  margin-top: 24px;
+}
+.verification-list li > div {
+  min-width: 0;
+}
+.evidence-tabs {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.evidence-tabs button {
+  padding: 8px 12px;
+}
+.evidence-meta {
+  gap: 24px;
+}
+.evidence-meta dt {
+  letter-spacing: 0;
+  text-transform: none;
+}
+.evidence-meta dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.evidence-source,
+.library-source pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: 14px;
+}
+.library-source .mono {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.share-section {
+  padding: 24px 0;
+}
+.share-section:first-of-type {
+  padding-top: 0;
+}
+.share-section h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.share-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px 44px;
+  gap: 8px;
+  align-items: center;
+}
+.share-row .dialog-field {
+  min-width: 0;
+  width: 100%;
+  font-size: 14px;
+}
+.share-row .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.game-focus-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding: 12px 20px;
+  border: 1px solid #8cae9c;
+  border-radius: 8px;
+  background: #111e25e6;
+  color: var(--cream);
+  font-size: 14px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.game-viewport:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: -2px;
+}
+.broadcast-page .brand {
+  font-size: 18px;
+}
+.broadcast-heading h1,
+.broadcast-law h2,
+.broadcast-empty h1 {
+  font-size: 28px;
+}
+.broadcast-law p,
+.broadcast-empty p,
+.broadcast-actions .button {
+  font-size: 14px;
+}
+.broadcast-header .status-chip {
+  margin-top: 12px;
+}
+.broadcast-law .status-chip {
+  margin-top: 12px;
+}
+.broadcast-header,
+.broadcast-law {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 960px) {
+  .studio-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .setup-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .setup-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .preview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .studio-main {
+    padding: 24px 16px;
+  }
+  .studio-heading {
+    gap: 16px;
+  }
+  .studio-page .brand {
+    font-size: 18px;
+  }
+  .studio-heading > .button-group {
+    width: auto;
+    gap: 4px;
+  }
+  .title-line h1,
+  .setup-heading h1 {
+    font-size: 28px;
+  }
+  .setup-wrap {
+    padding: 32px 16px;
+  }
+  .setup-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .setup-grid {
+    gap: 24px;
+  }
+  .stage-topline {
+    padding: 16px;
+  }
+  .stage-chapter {
+    font-size: 18px;
+  }
+  .stage-objective {
+    font-size: 14px;
+  }
+  .game-stage .game-viewport {
+    aspect-ratio: 1.2;
+    min-height: 280px;
+  }
+  .keyboard-controls {
+    gap: 12px;
+  }
+  .rail-header {
+    padding: 16px 24px 0;
+  }
+  .rail-body,
+  .candidate-card {
+    padding: 24px;
+  }
+  .rail-action {
+    padding: 0 24px 24px;
+  }
+  .rail-header h2,
+  .candidate-card h3 {
+    font-size: 18px;
+  }
+  .connection-strip {
+    padding: 16px;
+  }
+  .modal,
+  .modal-wide {
+    width: calc(100vw - 32px);
+  }
+  .modal-content {
+    padding: 20px;
+  }
+  .modal-header h2 {
+    font-size: 28px;
+  }
+  .preview-game .game-viewport {
+    min-height: 240px;
+  }
+  .evidence-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .preview-decision .button-group {
+    width: 100%;
+  }
+  .show-list-item {
+    gap: 12px;
+    padding: 16px;
+  }
+  .show-list-item > span:nth-child(2) {
+    flex: 1 1 160px;
+  }
+  .broadcast-header {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .broadcast-heading h1,
+  .broadcast-law h2,
+  .broadcast-empty h1 {
+    font-size: 28px;
+  }
+}

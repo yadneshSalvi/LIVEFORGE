@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  isSampleLaw,
   proposalOrigin,
   ruleCredit,
   ruleDescription,
@@ -15,16 +16,25 @@ describe("honest rule presentation", () => {
       ),
     ).toBe(description);
   });
-  it("labels new and historical sample credit as reuse, never a fictitious inventor", () => {
+  it("uses a Sample chip instead of fictitious sample credit", () => {
     expect(
       ruleCredit({ author: "Previously generated sample", origin: "practice" }),
-    ).toBe("From a previously generated sample (reused)");
-    expect(ruleCredit({ author: "Example", origin: "sample" })).toBe(
-      "From a previously generated sample (reused)",
-    );
+    ).toBe("");
+    expect(ruleCredit({ author: "Example", origin: "sample" })).toBe("");
     expect(ruleCredit({ author: "Viewer", origin: "twitch" })).toBe(
       "Invented by Viewer",
     );
-    expect(proposalOrigin("sample")).toBe("REUSED ARTIFACT");
+    expect(isSampleLaw({ origin: "library", author: "Viewer" })).toBe(true);
+    expect(
+      isSampleLaw({
+        origin: "practice",
+        author: "Previously generated sample",
+      }),
+    ).toBe(true);
+    expect(isSampleLaw({ origin: "twitch", author: "Viewer" })).toBe(false);
+    expect(ruleCredit({ origin: "library", author: "Viewer" })).toBe(
+      "Saved law by Viewer",
+    );
+    expect(proposalOrigin("sample")).toBe("Sample");
   });
 });

@@ -461,20 +461,12 @@ describe("optional restrained server replies", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
   it.each([
-    [
-      "sample",
-      "Previously generated sample",
-      "Law live — from a previously generated sample (reused verified source).",
-    ],
-    [
-      "practice",
-      "Previously generated sample",
-      "Law live — from a previously generated sample (reused verified source).",
-    ],
+    ["sample", "Previously generated sample", "Sample law live"],
+    ["practice", "Previously generated sample", "Sample law live"],
     [
       "library",
       "Library importer",
-      "Law live — original idea by @OriginalContributor (reused verified source).",
+      "Law live — original idea by @OriginalContributor · Sample.",
     ],
     ["twitch", "ActualViewer", "Law live — invented by @ActualViewer."],
   ] as const)(
@@ -517,6 +509,6 @@ describe("optional restrained server replies", () => {
     event(show, "generation.failed", "PRIVATE RAW ERROR", { proposalId: "P1" });
     const item = show.events.at(-1)!;
     expect(buildChatReply(show, item)).not.toContain("PRIVATE");
-    expect(buildChatReply(show, item)).toContain("preserved");
+    expect(buildChatReply(show, item)).toBe("Forge failed — try another idea");
   });
 });

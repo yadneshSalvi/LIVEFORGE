@@ -3,6 +3,9 @@ import { useId, useState } from "react";
 import { Code2, Download, FileCheck2, GitBranch } from "lucide-react";
 import { Modal } from "./Modal";
 import { VerificationChecks } from "./CandidatePreview";
+import { StatusChip } from "./StatusChip";
+import { isSampleLaw } from "@/lib/rule-copy";
+import { generationMilestones } from "@/lib/generation-progress";
 import type { Candidate, ShowState } from "@/server/contracts";
 
 export function downloadEvidence(show: ShowState, candidate: Candidate) {
@@ -89,15 +92,13 @@ export function EvidencePanel({
   const [tab, setTab] = useState<"story" | "source" | "checks">("story");
   const tabId = useId();
   const selected = candidate || show.candidates.at(-1);
-  const job = selected && show.jobs.find((item) => item.id === selected.jobId);
+  const job = selected
+    ? show.jobs.find((item) => item.id === selected.jobId)
+    : show.jobs.at(-1);
+  const report = selected?.composition?.verification || selected?.verification;
+  const milestones = job ? generationMilestones(job) : [];
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Every law has a story."
-      eyebrow="THE EVIDENCE DRAWER"
-      wide
-    >
+    <Modal open={open} onClose={onClose} title="Evidence" wide>
       <div
         className="evidence-tabs"
         role="tablist"
@@ -149,10 +150,6 @@ export function EvidencePanel({
           id={`${tabId}-story-panel`}
           aria-labelledby={`${tabId}-story`}
         >
-          <p className="modal-copy">
-            These events record what this show actually did. Practice events
-            remain labeled; no viewer activity is simulated.
-          </p>
           <dl className="evidence-meta">
             <div>
               <dt>Show</dt>
@@ -161,13 +158,24 @@ export function EvidencePanel({
             <div>
               <dt>Mode</dt>
               <dd>
-                {show.mode === "practice"
-                  ? "Practice / host-authored ideas"
-                  : `Twitch / ${show.twitch.channelLogin || "awaiting connection"}`}
+                {show.mode === "practice" ? (
+                  <StatusChip variant="warm">Practice</StatusChip>
+                ) : (
+                  `Twitch / ${show.twitch.channelLogin || "awaiting connection"}`
+                )}
               </dd>
             </div>
             {selected && (
               <>
+                <div>
+                  <dt>Law</dt>
+                  <dd>
+                    {selected.program.name}{" "}
+                    {isSampleLaw(
+                      show.proposals.find((p) => p.id === selected.proposalId),
+                    ) && <StatusChip variant="warm">Sample</StatusChip>}
+                  </dd>
+                </div>
                 <div>
                   <dt>Source SHA-256</dt>
                   <dd>{selected.sourceHash}</dd>
@@ -220,6 +228,21 @@ export function EvidencePanel({
               </>
             )}
           </dl>
+          {milestones.length > 0 && (
+            <ol
+              className="pipeline-events"
+              aria-label="Recorded generation events"
+            >
+              {milestones.map((milestone) => (
+                <li key={milestone.key}>
+                  <span>{milestone.label}</span>
+                  <time dateTime={milestone.at}>
+                    Attempt {milestone.attempt} · +{milestone.seconds}s
+                  </time>
+                </li>
+              ))}
+            </ol>
+          )}
           <ul className="evidence-timeline">
             {show.events
               .slice()
@@ -247,20 +270,12 @@ export function EvidencePanel({
         >
           {selected ? (
             <>
-              <p className="modal-copy">
-                This is the artifact’s exact source. The compiler accepts a
-                bounded rule language; imports, functions, loops, and arbitrary
-                JavaScript are rejected.
-              </p>
               <pre className="evidence-source">
                 <code>{selected.source}</code>
               </pre>
             </>
           ) : (
-            <div className="evidence-empty">
-              Your first completed generation will appear here, with its exact
-              source and hash.
-            </div>
+            <div className="evidence-empty">No law yet</div>
           )}
         </div>
       )}
@@ -272,29 +287,20 @@ export function EvidencePanel({
         >
           {selected ? (
             <>
-              <p className="modal-copy">
-                {selected.verification.summary} These checks run in the trusted
-                verifier, independently of the generated artifact.
-              </p>
-              <VerificationChecks report={selected.verification} />
+              <VerificationChecks report={report!} />
               <dl className="evidence-meta">
                 <div>
                   <dt>Engine</dt>
-                  <dd>{selected.verification.engineVersion}</dd>
+                  <dd>{report!.engineVersion}</dd>
                 </div>
                 <div>
                   <dt>Ticks simulated</dt>
-                  <dd>
-                    {selected.verification.ticksSimulated.toLocaleString()}
-                  </dd>
+                  <dd>{report!.ticksSimulated.toLocaleString()}</dd>
                 </div>
               </dl>
             </>
           ) : (
-            <div className="evidence-empty">
-              There is no generated candidate to verify yet. The baseline game
-              remains playable.
-            </div>
+            <div className="evidence-empty">No law yet</div>
           )}
         </div>
       )}
@@ -307,7 +313,7 @@ export function EvidencePanel({
           <Download size={15} /> Export evidence
         </button>
         <button className="button button-primary" onClick={onClose}>
-          Back to the world
+          Done
         </button>
       </div>
     </Modal>

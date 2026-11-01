@@ -157,20 +157,21 @@ describe("alternative form semantics", () => {
 
   it("offers a blank, host-written form when the real refusal shape has no suggestion", () => {
     const html = render();
-    expect(html).toContain("Codex did not suggest an alternative");
+    expect(html).toContain("Write an alternative");
     expect(html).toContain("Host-written wording");
     expect(html).toMatch(/<textarea[^>]*><\/textarea>/);
-    expect(html).toContain("Only you can see this draft");
-    expect(html).toContain("No generation starts until you choose Forge");
+    expect(html).toContain("Private draft");
+    expect(html).toContain("Publish a separate idea with original credit");
+    expect(html).toContain("Forge starts only when you choose it");
     expect(html).toMatch(/<button[^>]*type="submit"[^>]*disabled=""/);
   });
 
   it("shows a genuine suggestion as editable model wording without starting a job", () => {
     const html = render({ job: { ...job, adaptedProposal: text } });
-    expect(html).toContain("Codex suggested the wording below");
+    expect(html).toContain("Review an alternative");
     expect(html).toContain("Model-suggested wording");
     expect(html).toContain(text);
-    expect(html).toContain("Create reviewed alternative");
+    expect(html).toContain("Publish alternative");
     expect(html).not.toContain("Forge this adaptation");
   });
 
@@ -178,17 +179,17 @@ describe("alternative form semantics", () => {
     const html = render({ accepted });
     expect(html).toContain("Host-written alternative");
     expect(html).toContain("Original idea by Fixture viewer");
-    expect(html).toContain("Select P2 to forge");
+    expect(html).toContain("Select P2");
     expect(html).not.toContain("<textarea");
     expect(html).not.toContain('type="submit"');
   });
 
   it("explains a moderated original or accepted alternative rather than exposing a submit path", () => {
     const draft = render({ original: { ...original, status: "hidden" } });
-    expect(draft).toContain("The original idea was moderated");
+    expect(draft).toContain("Original moderated");
     expect(draft).toMatch(/<textarea[^>]*disabled=""/);
     const saved = render({ accepted: { ...accepted, status: "rejected" } });
-    expect(saved).toContain("This alternative was moderated");
+    expect(saved).toContain("Alternative moderated");
     expect(saved).not.toContain("<button");
   });
 });
@@ -229,7 +230,7 @@ describe("adaptation authorship survives later presentation", () => {
           ancestry: { ...ancestry, kind: "library" },
         }),
       ).toBe(
-        `Original idea by Fixture viewer · ${adaptationLabel(adaptationSource).toLowerCase()} alternative (reused from library)`,
+        `Original idea by Fixture viewer · ${adaptationLabel(adaptationSource).toLowerCase()} alternative`,
       );
     },
   );

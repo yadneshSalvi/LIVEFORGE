@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -11,7 +10,6 @@ import {
   Copy,
   ExternalLink,
   EyeOff,
-  Flame,
   FlaskConical,
   FolderOpen,
   Heart,
@@ -33,11 +31,12 @@ import {
   X,
 } from "lucide-react";
 import { AppHeader } from "./AppHeader";
-import { Brand, ForgeMark } from "./Brand";
+import { ForgeMark } from "./Brand";
 import { GameViewport, type GameViewportHandle } from "./GameViewport";
 import { CandidatePreview, SamplePreview } from "./CandidatePreview";
 import { EvidencePanel } from "./EvidencePanel";
 import { Modal } from "./Modal";
+import { StatusChip } from "./StatusChip";
 import { ShowManager } from "./ShowManager";
 import { LawLibrary } from "./LawLibrary";
 import { ModerationPanel } from "./ModerationPanel";
@@ -46,15 +45,14 @@ import {
   keepNewerReviewState,
   type AlternativeRequest,
 } from "@/lib/adaptation-review";
-import { api, ApiError, elapsed, errorMessage, shortHash } from "@/lib/api";
+import { api, ApiError, errorMessage } from "@/lib/api";
 import {
   adaptationLabel,
-  proposalOrigin,
+  isSampleLaw,
   publicRuleAncestry,
   ruleCredit,
   ruleDescription,
 } from "@/lib/rule-copy";
-import { generationMilestones } from "@/lib/generation-progress";
 import { CAPABILITY_HINT } from "@/lib/capabilities";
 import { StudioViewFence } from "@/lib/view-fence";
 import {
@@ -63,11 +61,7 @@ import {
   type RuntimeRecoveryTarget,
 } from "@/lib/runtime-recovery";
 import { TwitchConnector } from "@/lib/twitch-client";
-import {
-  compileRuleSource,
-  PRACTICE_RULE_SOURCE,
-  RULE_CAPABILITY_HINTS,
-} from "@/game/rules";
+import { compileRuleSource, PRACTICE_RULE_SOURCE } from "@/game/rules";
 import { ENGINE_VERSION } from "@/game/contracts";
 import type {
   GameCheckpoint,
@@ -78,7 +72,6 @@ import type {
   AuthorityLease,
   ActivationMode,
   Candidate,
-  GenerationJob,
   HostShowResponse,
   Proposal,
   ShowMode,
@@ -143,6 +136,9 @@ export function Studio() {
   );
   const [sampleOpen, setSampleOpen] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [evidenceCandidate, setEvidenceCandidate] = useState<Candidate | null>(
+    null,
+  );
   const [shareOpen, setShareOpen] = useState(false);
   const [recoveryOpen, setRecoveryOpen] = useState(false);
   const [showManagerOpen, setShowManagerOpen] = useState(false);
@@ -888,9 +884,7 @@ export function Studio() {
       );
       setShow(result.show);
       setNextRound(false);
-      notify(
-        "Previously generated artifact loaded. No AI call was made in this run.",
-      );
+      notify("Sample law loaded");
     });
   const saveLaw = (candidate: Candidate) =>
     action("save-law", async () => {
@@ -1162,7 +1156,6 @@ export function Studio() {
         <AppHeader />
         <main className="setup-wrap">
           <div className="setup-heading">
-            <p className="eyebrow">A MOMENT TO RECONNECT</p>
             <h1>Let’s reconnect.</h1>
             <p role="alert">
               {error || "The studio couldn’t load your saved show."}
@@ -1184,38 +1177,22 @@ export function Studio() {
         <AppHeader />
         <main className="setup-wrap">
           <div className="setup-heading">
-            <p className="eyebrow">WELCOME TO YOUR NEXT GAME NIGHT</p>
-            <h1>
-              A world waiting
-              <br />
-              for your community.
-            </h1>
-            <p>
-              Carry the last ember through a broken sky. Let your audience
-              invent the laws that help you find a way.
-            </p>
+            <h1>Start a show</h1>
           </div>
           {error && <Notice message={error} onClose={() => setError(null)} />}
           <div className="setup-grid">
             <div className="setup-scene">
               <GameViewport presentation="world" showHud={false} />
               <div className="setup-scene-copy">
-                <p className="eyebrow">THE FIRST ADVENTURE</p>
                 <h2>The Last Light</h2>
-                <p>Three encounters. One ember. Your rules.</p>
               </div>
             </div>
             <div className="setup-options">
               <div className="setup-option">
                 <h3>
                   <Radio size={20} />
-                  Bring your community
+                  Twitch show
                 </h3>
-                <p>
-                  Connect your Twitch channel. Viewers propose with{" "}
-                  <code>!forge</code>, support with <code>!back</code>, and you
-                  choose what becomes real.
-                </p>
                 <button
                   className="button button-primary button-full"
                   disabled={Boolean(busy)}
@@ -1226,18 +1203,14 @@ export function Studio() {
                   ) : (
                     <Radio size={15} />
                   )}{" "}
-                  Set up a Twitch show <ArrowRight size={15} />
+                  Start Twitch show <ArrowRight size={15} />
                 </button>
               </div>
               <div className="setup-option practice">
                 <h3>
                   <FlaskConical size={20} />
-                  Find your feet first
+                  Practice
                 </h3>
-                <p>
-                  Explore the game, write a practice idea, and try the complete
-                  preview and approval flow with a labeled sample.
-                </p>
                 <button
                   className="button button-outline button-full"
                   disabled={Boolean(busy)}
@@ -1255,11 +1228,6 @@ export function Studio() {
                   )}
                 </button>
               </div>
-              <p className="setup-disclosure">
-                <ShieldCheck size={14} />
-                Every new law passes independent checks and waits for your
-                approval. Recovery stays within reach.
-              </p>
             </div>
           </div>
         </main>
@@ -1271,72 +1239,47 @@ export function Studio() {
       <a className="skip-link" href="#forge">
         Skip to the forge
       </a>
-      <AppHeader>
-        <div className="show-meta">
-          <span
-            className={`status-dot ${chat?.status === "connected" ? "mint" : "brass"}`}
-          />
-          <span>
-            {show.mode === "practice"
-              ? "Practice studio"
-              : chat?.status === "connected"
-                ? show.twitch.channelLogin || "Twitch connected"
-                : "Twitch awaiting connection"}
-          </span>
-        </div>
-        <button
-          className="button button-outline button-small"
-          disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
-          onClick={() => setShowManagerOpen(true)}
-        >
-          <FolderOpen size={13} /> Your shows
-        </button>
-      </AppHeader>
+      <AppHeader />
       <main className="studio-main">
         <div className="studio-heading">
-          <div>
-            <p className="eyebrow">YOUR WORLD. THEIR WHAT-IFS.</p>
-            <div className="title-line">
-              <h1>
-                The Last Light<span style={{ color: "var(--coral)" }}>.</span>
-              </h1>
-              <span
-                className={`pill ${show.mode === "practice" ? "pill-brass" : "pill-mint"}`}
-              >
-                <span className="status-dot" />
-                {show.mode === "practice" ? "PRACTICE" : "TWITCH SHOW"}
-              </span>
-            </div>
-          </div>
+          <StudioTitle mode={show.mode} />
           <div className="button-group">
             <button
-              className="button button-quiet"
+              className="icon-button"
+              title="Library"
+              aria-label="Library"
               disabled={Boolean(busy) || recoveringFault}
               onClick={() => setLibraryOpen(true)}
             >
-              <BookOpen size={15} /> Law library
+              <BookOpen size={18} />
             </button>
             <button
-              className="button button-quiet"
+              className="icon-button"
+              title="Shows"
+              aria-label="Shows"
               disabled={Boolean(busy) || recoveringFault || Boolean(faultIssue)}
               onClick={() => setShowManagerOpen(true)}
             >
-              <FolderOpen size={15} />
-              Your shows
+              <FolderOpen size={18} />
             </button>
             <button
-              className="button button-quiet"
-              onClick={() => setEvidenceOpen(true)}
+              className="icon-button"
+              title="Evidence"
+              aria-label="Evidence"
+              onClick={() => {
+                setEvidenceCandidate(null);
+                setEvidenceOpen(true);
+              }}
             >
-              <Code2 size={15} />
-              Behind the law
+              <Code2 size={18} />
             </button>
             <button
-              className="button button-outline"
+              className="icon-button"
+              title="Outputs"
+              aria-label="Outputs"
               onClick={() => setShareOpen(true)}
             >
-              <ExternalLink size={15} />
-              Open outputs
+              <ExternalLink size={18} />
             </button>
           </div>
         </div>
@@ -1361,20 +1304,14 @@ export function Studio() {
           <div className="notice recovery-notice" role="status">
             <Sparkles size={22} />
             <div>
-              <strong>Your saved world has more possibilities ahead.</strong>
-              <p>
-                This save uses the earlier engine. Start the expanded world from
-                its opening checkpoint, or create a new show. Your earlier save
-                and source history stay preserved; previous approvals do not
-                carry into changed physics.
-              </p>
+              <strong>Update this saved world to continue.</strong>
             </div>
             <button
               className="button button-outline button-small"
               disabled={Boolean(busy) || !authority}
               onClick={() => setUpgradeOpen(true)}
             >
-              Review world upgrade
+              Review upgrade
             </button>
           </div>
         )}
@@ -1441,11 +1378,15 @@ export function Studio() {
             <div className="connection-info">
               <Radio size={20} />
               <div>
-                <h3>Your community is one connection away.</h3>
-                <p>
-                  {chat?.message ||
-                    "Authorize your channel, then listen for new ideas."}
-                </p>
+                <StatusChip variant="warm">
+                  {chat?.status === "connecting"
+                    ? "Connecting…"
+                    : "Chat disconnected"}
+                </StatusChip>
+                {chat &&
+                  ["error", "revoked", "reconnecting"].includes(
+                    chat.status,
+                  ) && <p role="alert">{chat.message}</p>}
               </div>
             </div>
             <div className="button-group">
@@ -1501,10 +1442,7 @@ export function Studio() {
               <div className="stage-topline">
                 <div>
                   <div className="stage-chapter">
-                    <span className="stage-chapter-number">
-                      0{currentChapter + 1}
-                    </span>
-                    {CHAPTERS[currentChapter].toUpperCase()}
+                    {CHAPTERS[currentChapter]}
                   </div>
                   <div className="stage-objective">
                     {snapshot?.completed
@@ -1516,40 +1454,18 @@ export function Studio() {
                           : "Bring the last light to the beacon."}
                   </div>
                 </div>
-                <div className="stage-badges">
-                  <span className="stage-practice">
-                    {show.mode === "practice" ? "PRACTICE" : "LIVE WORLD"}
-                  </span>
-                </div>
               </div>
-              {activeCandidate && !needsUpgrade && (
-                <div className="stage-law">
-                  <Sparkles size={18} />
-                  <div>
-                    <p className="law-label">A COMMUNITY LAW</p>
-                    <p className="law-name">{activeCandidate.program.name}</p>
-                    <p className="law-credit">
-                      {ruleCredit(
-                        show.proposals.find(
-                          (p) => p.id === activeCandidate.proposalId,
-                        ),
-                      )}
-                    </p>
-                  </div>
-                </div>
-              )}
               {paused && !preview && !sampleOpen && (
                 <div className="pause-overlay">
                   <Pause size={25} />
-                  <h3>A moment of stillness.</h3>
-                  <p>Your world is paused. The ember is safe.</p>
+                  <h3>Paused</h3>
                   <button
                     className="button button-primary"
                     disabled={!authority || Boolean(faultIssue) || needsUpgrade}
                     onClick={() => setPaused(false)}
                   >
                     <Play size={15} />
-                    Return to the world
+                    Resume
                   </button>
                 </div>
               )}
@@ -1601,52 +1517,31 @@ export function Studio() {
                 </button>
               </div>
             </div>
-            <div className="world-story">
-              <div>
-                <h2>
-                  {snapshot?.completed
-                    ? "A little brighter, together."
-                    : "Keep the last light alive."}
-                </h2>
-                <p>
-                  {snapshot?.interaction ||
-                    "Click the world to take control. Explore the lower path, move the prop, and imagine a better way across."}
-                </p>
-              </div>
-              <div
-                className="chapter-map"
-                aria-label={`Encounter ${currentChapter + 1} of 3`}
-              >
-                {CHAPTERS.map((name, index) => (
-                  <span key={name} style={{ display: "contents" }}>
-                    {index > 0 && <span className="chapter-line" />}
-                    <span
-                      title={name}
-                      className={`chapter-node ${index === currentChapter ? "current" : index < currentChapter ? "done" : ""}`}
-                    >
-                      {index < currentChapter ? (
-                        <Check size={11} />
-                      ) : (
-                        `0${index + 1}`
-                      )}
-                    </span>
-                  </span>
-                ))}
-              </div>
-            </div>
             <div className="scene-footer">
-              <p>
-                <ShieldCheck size={13} />
-                {checkpointIssue
-                  ? "Progress needs saving"
-                  : faultIssue
-                    ? "Recovery pending"
-                    : show.checkpoint
-                      ? "Recovery checkpoint saved"
+              <span
+                className={`status-dot ${checkpointIssue || faultIssue || !authority ? "brass" : "mint"}`}
+                role="img"
+                aria-label={
+                  checkpointIssue
+                    ? "Progress needs saving"
+                    : faultIssue
+                      ? "Recovery pending"
                       : authority
-                        ? "World authority connected"
-                        : "Connecting world authority"}
-              </p>
+                        ? "World connected"
+                        : "Connecting world"
+                }
+                title={
+                  checkpointIssue
+                    ? "Progress needs saving"
+                    : faultIssue
+                      ? "Recovery pending"
+                      : show.checkpoint
+                        ? "Checkpoint saved"
+                        : authority
+                          ? "World connected"
+                          : "Connecting world"
+                }
+              />
               <button
                 disabled={needsUpgrade || Boolean(faultIssue) || !authority}
                 onClick={() => {
@@ -1660,17 +1555,14 @@ export function Studio() {
             </div>
             {activeCandidates.length > 0 && !needsUpgrade && (
               <div className="active-law-stack">
-                <p className="field-label">
-                  {activeCandidates.length} / 3 laws shaping this world
-                </p>
+                <h3>Active laws</h3>
                 <ol>
                   {activeCandidates.map((entry) => (
                     <li key={entry.id}>
                       <Sparkles size={14} />
                       <span>{entry.program.name}</span>
-                      <code>{shortHash(entry.sourceHash)}</code>
                       <button
-                        className="button button-outline button-small"
+                        className="button button-quiet button-small"
                         disabled={Boolean(busy)}
                         onClick={() => void saveLaw(entry)}
                         aria-label={`Save ${entry.program.name} to your law library`}
@@ -1685,47 +1577,65 @@ export function Studio() {
           </section>
           <aside className="forge-rail" id="forge" aria-label="Community forge">
             <div className="rail-header">
-              <div>
-                <p className="eyebrow">WHERE WHAT-IFS BECOME REAL</p>
-                <h2>The forge</h2>
-              </div>
-              <span className="round-chip">
-                ROUND {String(show.round).padStart(2, "0")}
-              </span>
+              <h2>The forge</h2>
+              <button
+                className="icon-button"
+                title="Moderation & chat settings"
+                aria-label="Moderation & chat settings"
+                disabled={Boolean(busy) || recoveringFault}
+                onClick={() => setModerationOpen(true)}
+              >
+                <ShieldCheck size={18} />
+              </button>
             </div>
-            <button
-              className="moderation-open"
-              disabled={Boolean(busy) || recoveringFault}
-              onClick={() => setModerationOpen(true)}
-            >
-              <ShieldCheck size={15} /> Moderation & chat settings
-            </button>
-            <div className="rail-phase" aria-live="polite">
-              <span className={`status-dot ${isWorking ? "brass" : "mint"}`} />
-              {needsUpgrade
-                ? "Saved world awaits its upgrade"
-                : isWorking
-                  ? "An idea is taking shape"
-                  : candidateReady
-                    ? candidate?.approvedAt
-                      ? "Approved. Waiting for your moment."
-                      : "Your new law is ready"
-                    : activeCandidate && !nextRound
-                      ? "A new law is in the world"
-                      : show.votingOpen
-                        ? "Open for a little possibility"
-                        : "Shortlist closed"}
-              <span className="phase-note">
-                {isWorking
-                  ? "FORGING"
-                  : candidateReady
-                    ? "REVIEW"
-                    : "YOUR CALL"}
-              </span>
+            <div className="rail-intake">
+              <StatusChip variant={show.votingOpen ? "good" : "neutral"}>
+                {show.votingOpen ? "Intake open" : "Intake closed"}
+              </StatusChip>
+              <button
+                className="button button-quiet button-small"
+                disabled={Boolean(busy)}
+                onClick={() => void toggleIntake()}
+              >
+                {show.votingOpen ? "Close intake" : "Open intake"}
+              </button>
+            </div>
+            <div className="law-plan">
+              <fieldset
+                className="law-mode"
+                disabled={
+                  Boolean(busy) ||
+                  isWorking ||
+                  Boolean(candidateReady) ||
+                  needsUpgrade
+                }
+              >
+                <legend className="sr-only">Plan the next law</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="law-mode"
+                    value="append"
+                    checked={activationMode === "append"}
+                    onChange={() => setActivationMode("append")}
+                  />
+                  <span>Add</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="law-mode"
+                    value="replace"
+                    checked={activationMode === "replace"}
+                    onChange={() => setActivationMode("replace")}
+                  />
+                  <span>Replace</span>
+                </label>
+              </fieldset>
+              <StatusChip>{activeCandidates.length}/3</StatusChip>
             </div>
             {isWorking && latestJob ? (
               <Pipeline
-                job={latestJob}
                 onCancel={() =>
                   void action("cancel", async () => {
                     const result = await api<HostShowResponse>(
@@ -1744,14 +1654,6 @@ export function Studio() {
                   <div className="candidate-icon">
                     <WandSparkles size={22} />
                   </div>
-                  {latestJob?.reused && (
-                    <span
-                      className="pill pill-brass"
-                      style={{ marginBottom: 12 }}
-                    >
-                      REUSED GENERATION
-                    </span>
-                  )}
                   <h3>{candidate.program.name}</h3>
                   <p>
                     {ruleDescription(
@@ -1759,34 +1661,22 @@ export function Studio() {
                       candidate.sourceHash,
                     )}
                   </p>
-                  <div className="candidate-checks">
-                    <span className="candidate-check">
-                      <CircleCheck size={13} />
-                      {
-                        candidate.verification.checks.filter((c) => c.passed)
-                          .length
-                      }{" "}
-                      independent checks passed
-                    </span>
-                    <span className="candidate-check">
-                      <CircleCheck size={13} />
-                      {candidate.verification.ticksSimulated.toLocaleString()}{" "}
-                      ticks simulated
-                    </span>
-                    <span className="candidate-check">
-                      <ShieldCheck size={13} />
-                      {candidate.approvedAt
-                        ? "Exact version approved by you"
-                        : "Live world waits for your approval"}
-                    </span>
-                  </div>
-                  <div className="candidate-info">
-                    <span>VERSION {shortHash(candidate.sourceHash)}</span>
-                    <span>
-                      {latestJob?.reused
-                        ? "PREVIOUSLY GENERATED"
-                        : "GENERATED WITH CODEX"}
-                    </span>
+                  <div className="candidate-status">
+                    {(latestJob?.reused ||
+                      isSampleLaw(
+                        show.proposals.find(
+                          (p) => p.id === candidate.proposalId,
+                        ),
+                      )) && <StatusChip variant="warm">Sample</StatusChip>}
+                    <button
+                      className="chip status-chip status-chip--good verified-chip"
+                      onClick={() => {
+                        setEvidenceCandidate(candidate);
+                        setEvidenceOpen(true);
+                      }}
+                    >
+                      <Check size={14} /> Verified
+                    </button>
                   </div>
                   {candidate.approvedAt && (
                     <button
@@ -1795,7 +1685,7 @@ export function Studio() {
                       disabled={Boolean(busy)}
                       onClick={() => void saveLaw(candidate)}
                     >
-                      <BookOpen size={13} /> Save this exact version
+                      <BookOpen size={13} /> Save law
                     </button>
                   )}
                 </div>
@@ -1812,19 +1702,15 @@ export function Studio() {
                         ) : (
                           <Sparkles size={15} />
                         )}
-                        Activate at a checkpoint
+                        Activate
                         <ArrowRight size={15} />
                       </button>
                       <button
                         className="button button-quiet button-full"
                         onClick={() => void openPreview(candidate)}
                       >
-                        Visit the preview again
+                        Preview
                       </button>
-                      <p className="rail-footnote">
-                        Land on a platform first. Your current position becomes
-                        the recovery checkpoint.
-                      </p>
                     </>
                   ) : (
                     <>
@@ -1834,12 +1720,9 @@ export function Studio() {
                         onClick={() => void openPreview(candidate)}
                       >
                         <FlaskConical size={15} />
-                        Preview & decide
+                        Preview
                         <ArrowRight size={15} />
                       </button>
-                      <p className="rail-footnote">
-                        Try it before it enters your world.
-                      </p>
                     </>
                   )}
                 </div>
@@ -1847,36 +1730,41 @@ export function Studio() {
             ) : activeCandidate && !nextRound && !needsUpgrade ? (
               <>
                 <div className="candidate-card active-card">
-                  <div className="active-badge">
-                    <span className="status-dot mint" />
-                    NOW PART OF YOUR WORLD
-                  </div>
-                  <blockquote>“{activeCandidate.program.name}”</blockquote>
+                  <h3>{activeCandidate.program.name}</h3>
                   <p className="active-description">
                     {ruleDescription(
                       activeCandidate.program.description,
                       activeCandidate.sourceHash,
                     )}
                   </p>
-                  <div className="preview-attribution">
-                    <span className="author-chip">
-                      <span className="author-avatar">
-                        {
-                          (show.proposals.find(
-                            (p) => p.id === activeCandidate.proposalId,
-                          )?.author || "H")[0]
-                        }
-                      </span>
+                  {ruleCredit(
+                    show.proposals.find(
+                      (p) => p.id === activeCandidate.proposalId,
+                    ),
+                  ) && (
+                    <p className="law-credit">
                       {ruleCredit(
                         show.proposals.find(
                           (p) => p.id === activeCandidate.proposalId,
                         ),
                       )}
-                    </span>
-                  </div>
-                  <div className="candidate-info">
-                    <span>VERSION {shortHash(activeCandidate.sourceHash)}</span>
-                    <span>ACTIVE</span>
+                    </p>
+                  )}
+                  <div className="candidate-status">
+                    {isSampleLaw(
+                      show.proposals.find(
+                        (p) => p.id === activeCandidate.proposalId,
+                      ),
+                    ) && <StatusChip variant="warm">Sample</StatusChip>}
+                    <button
+                      className="chip status-chip status-chip--good verified-chip"
+                      onClick={() => {
+                        setEvidenceCandidate(activeCandidate);
+                        setEvidenceOpen(true);
+                      }}
+                    >
+                      <Check size={14} /> Verified
+                    </button>
                   </div>
                 </div>
                 <div className="rail-action">
@@ -1887,27 +1775,15 @@ export function Studio() {
                       setSelectedId(null);
                     }}
                   >
-                    Open the next what-if <ArrowRight size={15} />
+                    Next idea <ArrowRight size={15} />
                   </button>
-                  <p className="rail-footnote">
-                    {activationMode === "append"
-                      ? activeCandidates.length >= 3
-                        ? "Three laws are live. Choose Replace to start a new combination."
-                        : "Add mode keeps your current laws, up to three in one verified combination."
-                      : "Replace mode swaps the current combination for the next approved law."}
-                  </p>
                 </div>
               </>
             ) : (
               <>
                 <div className="rail-body">
-                  <p className="rail-intro">
-                    {show.mode === "practice"
-                      ? "Start with a small impossibility. Give the world a rule it has never had."
-                      : "Your audience has ideas. Let’s give one of them a place in the world."}
-                  </p>
                   <div className="command-block">
-                    <span>!forge &lt;your wild idea&gt;</span>
+                    <span>!forge &lt;idea&gt;</span>
                     <button
                       title="Copy command"
                       aria-label="Copy forge command"
@@ -1918,35 +1794,12 @@ export function Studio() {
                       <Copy size={12} />
                     </button>
                   </div>
-                  <div className="rail-subhead">
-                    <span>THE SHORTLIST</span>
-                    <span className="count">
-                      {
-                        show.proposals.filter(
-                          (p) => !["hidden", "rejected"].includes(p.status),
-                        ).length
-                      }{" "}
-                      IDEAS{" "}
-                      <button
-                        className="intake-toggle"
-                        disabled={Boolean(busy)}
-                        onClick={() => void toggleIntake()}
-                      >
-                        {show.votingOpen ? "Close intake" : "Open intake"}
-                      </button>
-                    </span>
-                  </div>
                   {show.proposals.filter(
                     (p) => !["hidden", "rejected"].includes(p.status),
                   ).length === 0 ? (
                     <div className="empty-forge">
                       <MessageCircle size={24} strokeWidth={1.3} />
-                      <h3>The first spark is yours.</h3>
-                      <p>
-                        {show.mode === "practice"
-                          ? "Add a host-authored idea below. We never fill the room with pretend viewers."
-                          : "When someone sends !forge in your connected Twitch chat, their idea appears here."}
-                      </p>
+                      <p>No ideas yet</p>
                     </div>
                   ) : (
                     <div className="proposal-list">
@@ -2016,7 +1869,7 @@ export function Studio() {
                   {show.mode === "practice" && (
                     <form className="proposal-form" onSubmit={submitProposal}>
                       <label className="field-label" htmlFor="idea">
-                        Your practice idea
+                        Idea
                       </label>
                       <textarea
                         id="idea"
@@ -2029,9 +1882,9 @@ export function Studio() {
                         minLength={8}
                       />
                       <div className="proposal-form-footer">
-                        <span className="char-count">
-                          {draft.length}/280 · HOST-AUTHORED
-                        </span>
+                        {draft.length > 0 && (
+                          <span className="char-count">{draft.length}/280</span>
+                        )}
                         <button
                           className="button button-outline button-small"
                           disabled={Boolean(busy) || draft.trim().length < 8}
@@ -2118,23 +1971,22 @@ export function Studio() {
                   )}
                   <details className="capability-guide">
                     <summary>What can this world learn?</summary>
-                    <div>
-                      <p>{CAPABILITY_HINT}</p>
-                      {RULE_CAPABILITY_HINTS.map((hint) => (
-                        <p key={hint.title}>
-                          <strong>{hint.title}</strong>
-                          <span>{hint.detail}</span>
-                        </p>
-                      ))}
+                    <div className="capability-chips">
+                      {CAPABILITY_HINT.replace(/^Try /, "")
+                        .replace(/\.$/, "")
+                        .replace(/,? and | or /g, ", ")
+                        .split(", ")
+                        .map((hint) => (
+                          <StatusChip key={hint}>{hint}</StatusChip>
+                        ))}
                     </div>
+                    <button
+                      className="button button-quiet button-small"
+                      onClick={() => setSampleOpen(true)}
+                    >
+                      <Play size={14} /> Try sample world
+                    </button>
                   </details>
-                  <button
-                    className="starter-button"
-                    onClick={() => setSampleOpen(true)}
-                  >
-                    <Play size={12} />
-                    See what a little stillness can do
-                  </button>
                 </div>
                 <div
                   className="rail-action"
@@ -2142,110 +1994,59 @@ export function Studio() {
                   tabIndex={-1}
                   aria-label="Forge the selected idea"
                 >
-                  {status?.generation.allowed &&
-                  status.generation.configured ? (
-                    <>
-                      <button
-                        className="button button-primary button-full"
-                        disabled={
-                          !selected ||
-                          Boolean(busy) ||
-                          needsUpgrade ||
-                          stackFull
-                        }
-                        onClick={generate}
-                      >
-                        <WandSparkles size={15} />
-                        Forge the selected idea
-                        <ArrowRight size={15} />
-                      </button>
-                      <p className="rail-footnote">
-                        A real Codex job. You review the result before it goes
-                        live.
-                      </p>
-                    </>
-                  ) : (
-                    <p className="rail-footnote">
-                      {status?.generation.quota?.exhausted
-                        ? "Today’s fresh-generation allowance is used. Your world stays playable; reuse a verified law below or return after the UTC reset."
-                        : status?.generation.allowed
-                          ? "Fresh generation is temporarily unavailable. You can still reuse a verified law below."
-                          : "Connect a Twitch account to forge fresh ideas with a daily allowance. You can reuse a verified law without a model call."}
-                    </p>
-                  )}
-                  {!status?.generation.allowed &&
-                    !status?.generation.quota?.exhausted && (
-                      <a
-                        className="button button-outline button-full"
-                        href={`/api/auth/twitch/login?showId=${show.id}`}
-                      >
-                        <Radio size={15} /> Connect a Twitch account
-                      </a>
-                    )}
-                  {status?.generation.quota &&
-                    !status.generation.quota.exempt && (
-                      <p className="rail-footnote">
-                        {status.generation.quota.userRemaining} of{" "}
-                        {status.generation.quota.perUserLimit} personal runs
-                        remain today · {status.generation.quota.globalRemaining}{" "}
-                        shared runs remain. Resets at 00:00 UTC.
-                      </p>
-                    )}
-                  <div className="rail-info">
-                    <ShieldCheck size={13} />
-                    <span>
-                      Support helps you choose. It never activates a law.
-                      <br />
-                      Bounded mechanics. Human approval. Up to three laws.
-                    </span>
+                  <button
+                    className="button button-primary button-full"
+                    disabled={
+                      !selected ||
+                      Boolean(busy) ||
+                      needsUpgrade ||
+                      stackFull ||
+                      !status?.generation.allowed ||
+                      !status.generation.configured
+                    }
+                    title={
+                      stackFull
+                        ? "Choose Replace to change a full stack"
+                        : !status?.generation.allowed
+                          ? "Connect Twitch or check your daily allowance"
+                          : undefined
+                    }
+                    onClick={generate}
+                  >
+                    <WandSparkles size={15} /> Forge selected idea{" "}
+                    <ArrowRight size={15} />
+                  </button>
+                  <div className="forge-access">
+                    {!status?.generation.allowed &&
+                      !status?.generation.quota?.exhausted && (
+                        <a
+                          className="button button-quiet button-small"
+                          href={`/api/auth/twitch/login?showId=${show.id}`}
+                        >
+                          <Radio size={15} /> Connect Twitch
+                        </a>
+                      )}
+                    {status?.generation.quota &&
+                      !status.generation.quota.exempt && (
+                        <StatusChip
+                          variant={
+                            status.generation.quota.exhausted
+                              ? "warm"
+                              : "neutral"
+                          }
+                        >
+                          {Math.min(
+                            status.generation.quota.userRemaining ?? Infinity,
+                            status.generation.quota.globalRemaining ?? Infinity,
+                          )}{" "}
+                          left today
+                        </StatusChip>
+                      )}
                   </div>
                 </div>
               </>
             )}
             <div className="rail-fallback">
-              <fieldset
-                className="law-mode"
-                disabled={
-                  Boolean(busy) ||
-                  isWorking ||
-                  Boolean(candidateReady) ||
-                  needsUpgrade
-                }
-              >
-                <legend>Plan the next law</legend>
-                <label>
-                  <input
-                    type="radio"
-                    name="law-mode"
-                    value="append"
-                    checked={activationMode === "append"}
-                    onChange={() => setActivationMode("append")}
-                  />
-                  <span>
-                    Add to this world{" "}
-                    <small>{activeCandidates.length} of 3 slots occupied</small>
-                  </span>
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="law-mode"
-                    value="replace"
-                    checked={activationMode === "replace"}
-                    onChange={() => setActivationMode("replace")}
-                  />
-                  <span>
-                    Replace the current laws{" "}
-                    <small>Preview a fresh combination of one</small>
-                  </span>
-                </label>
-              </fieldset>
-              {stackFull && (
-                <p className="rail-footnote">
-                  All three slots are in use. Choose replacement, or restore the
-                  previous combination before adding another law.
-                </p>
-              )}
               <button
                 className="button button-outline button-full"
                 disabled={
@@ -2262,21 +2063,10 @@ export function Studio() {
                 ) : (
                   <FlaskConical size={15} />
                 )}
-                Use a previously generated law
+                Load sample law
               </button>
-              <p className="rail-footnote">
-                No AI call. A separate reused proposal keeps its original
-                provenance. Preview and approval are still required.
-              </p>
             </div>
             <div className="rail-recovery">
-              <span>
-                <LockKeyhole
-                  size={10}
-                  style={{ verticalAlign: "middle", marginRight: 5 }}
-                />
-                You hold the final say.
-              </span>
               <button
                 disabled={!show.previousCheckpoint || Boolean(busy)}
                 onClick={() => setRecoveryOpen(true)}
@@ -2309,6 +2099,7 @@ export function Studio() {
         open={evidenceOpen}
         onClose={() => setEvidenceOpen(false)}
         show={show}
+        candidate={evidenceCandidate}
       />
       <LawLibrary
         open={libraryOpen}
@@ -2369,15 +2160,11 @@ export function Studio() {
       <Modal
         open={upgradeOpen}
         onClose={() => setUpgradeOpen(false)}
-        title="A new chapter for this world."
-        eyebrow="SAVED WORLD UPGRADE"
+        title="Update saved world"
       >
         <p className="modal-copy">
-          The expanded engine adds event rules, physics, temporary objects and
-          combinations of up to three laws. This starts at the opening
-          checkpoint with no active laws. Your earlier checkpoint, exact sources
-          and contributor history remain saved separately. Old laws need fresh
-          testing and approval before they can enter this world.
+          Start from the opening checkpoint with no active laws. Your earlier
+          save stays available; saved laws need a new preview and approval.
         </p>
         <div className="modal-actions">
           <button
@@ -2391,134 +2178,74 @@ export function Studio() {
             disabled={Boolean(busy) || !authority}
             onClick={() => void upgradeWorld()}
           >
-            Start the expanded world <ArrowRight size={15} />
+            Update world <ArrowRight size={15} />
           </button>
         </div>
       </Modal>
       <Modal
         open={shareOpen}
         onClose={() => setShareOpen(false)}
-        title="Give your world a window."
-        eyebrow="SHOW OUTPUTS"
+        title="Outputs"
       >
-        <div className="share-section">
-          <h3>Transparent community overlay</h3>
-          <p>
-            Add a Browser Source in OBS at 1920 × 1080 and paste this URL. It
-            shows public ideas, support, generation status and approved laws
-            over your game capture. No host login is needed in OBS.
-          </p>
-          <div className="share-row">
-            <input
-              className="dialog-field"
-              readOnly
-              value={`${publicOrigin}/overlay/${show.id}`}
-              aria-label="Transparent 1920 by 1080 OBS overlay URL"
-            />
-            <button
-              className="button button-primary button-small"
-              onClick={() =>
-                void copy(
-                  `${publicOrigin}/overlay/${show.id}`,
-                  "Transparent OBS overlay URL copied.",
-                )
-              }
-            >
-              <Copy size={13} /> Copy OBS URL
-            </button>
-          </div>
-          <a
-            className="button button-outline button-small"
-            style={{ marginTop: 12 }}
-            href={`/overlay/${show.id}?preview=1`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Preview overlay and background <ExternalLink size={13} />
-          </a>
-        </div>
-        <div className="share-section">
-          <h3>The broadcast projector</h3>
-          <p>
-            Open the clean game view in a new window in this browser. In OBS,
-            use Window Capture for that window. Keep this studio open; it
-            remains the game authority.
-          </p>
-          <div className="share-row">
-            <input
-              className="dialog-field"
-              readOnly
-              value={`${publicOrigin}/broadcast?show=${show.id}`}
-              aria-label="Broadcast projector URL"
-            />
-            <a
-              className="button button-primary button-small"
-              href={`/broadcast?show=${show.id}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open <ExternalLink size={13} />
-            </a>
-          </div>
-        </div>
-        <div className="share-section">
-          <h3>The community board</h3>
-          <p>
-            A public, read-only shortlist for your audience. People submit and
-            support through Twitch chat.
-          </p>
-          <div className="share-row">
-            <input
-              className="dialog-field"
-              readOnly
-              value={`${publicOrigin}/community/${show.id}`}
-              aria-label="Community board URL"
-            />
-            <button
-              className="button button-outline button-small"
-              onClick={() => void copy(`${publicOrigin}/community/${show.id}`)}
-            >
-              <Copy size={13} />
-              Copy
-            </button>
-            <a
-              className="button button-outline button-small"
-              href={`/community/${show.id}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <ExternalLink size={13} />
-              <span className="sr-only">Open community board</span>
-            </a>
-          </div>
-        </div>
-        <div className="rail-info">
-          <Info size={14} />
-          <span>
-            Use Window Capture for the game projector, and a separate Browser
-            Source for the transparent community overlay. Keep the studio open
-            as the game authority.
-          </span>
-        </div>
+        {[
+          {
+            label: "Overlay (Browser Source)",
+            path: `/overlay/${show.id}`,
+            openPath: `/overlay/${show.id}?preview=1`,
+          },
+          {
+            label: "Game (Window Capture)",
+            path: `/broadcast?show=${show.id}`,
+          },
+          { label: "Community board", path: `/community/${show.id}` },
+        ].map(({ label, path, openPath }) => (
+          <section className="share-section" key={label}>
+            <h3>{label}</h3>
+            <div className="share-row">
+              <input
+                className="dialog-field"
+                readOnly
+                value={`${publicOrigin}${path}`}
+                aria-label={`${label} URL`}
+              />
+              <button
+                className="icon-button"
+                title={`Copy ${label} URL`}
+                aria-label={`Copy ${label} URL`}
+                onClick={() => void copy(`${publicOrigin}${path}`)}
+              >
+                <Copy size={16} />
+              </button>
+              <a
+                className="icon-button"
+                title={`Open ${label}`}
+                aria-label={`Open ${label}`}
+                href={openPath || path}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ExternalLink size={16} />
+              </a>
+            </div>
+          </section>
+        ))}
         <div className="modal-actions">
           <button
             className="button button-primary"
             onClick={() => setShareOpen(false)}
           >
-            Back to the show
+            Done
           </button>
         </div>
       </Modal>
       <Modal
         open={recoveryOpen}
         onClose={() => setRecoveryOpen(false)}
-        title="Bring back the previous world."
-        eyebrow="RECOVERY CHECKPOINT"
+        title="Restore checkpoint"
       >
         <p className="modal-copy">
-          This restores the law and world position saved just before the last
-          activation. Movement and progress since that moment will reset. The
-          idea, source, and contributor credit remain in the evidence history.
+          Restore the world before the last activation. Progress since that
+          checkpoint will reset.
         </p>
         <div className="modal-actions">
           <button
@@ -2591,22 +2318,26 @@ function ProposalCard({
       >
         <span className="proposal-card-head">
           <span className="proposal-id">{proposal.id}</span>
-          <span className="proposal-origin">
-            {proposal.ancestry?.kind === "adaptation"
-              ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
-              : proposalOrigin(proposal.origin)}
-          </span>
+          {isSampleLaw(proposal) ? (
+            <StatusChip variant="warm">Sample</StatusChip>
+          ) : proposal.ancestry?.kind === "adaptation" ? (
+            <span className="proposal-origin">
+              {adaptationLabel(proposal.ancestry.adaptationSource)}
+            </span>
+          ) : null}
           <span className="proposal-selected-dot" />
         </span>
         <span className="proposal-copy">{proposal.text}</span>
       </button>
       <div className="proposal-card-foot">
-        <span className="author-chip">
-          <span className="author-avatar">
-            {proposal.author[0]?.toUpperCase()}
+        {(!isSampleLaw(proposal) || ruleCredit(proposal)) && (
+          <span className="author-chip">
+            <span className="author-avatar">
+              {proposal.author[0]?.toUpperCase()}
+            </span>
+            {isSampleLaw(proposal) ? ruleCredit(proposal) : proposal.author}
           </span>
-          {proposal.author}
-        </span>
+        )}
         <div className="button-group">
           <button
             className="icon-button proposal-hide"
@@ -2637,78 +2368,29 @@ function ProposalCard({
   );
 }
 
-function Pipeline({
-  job,
-  onCancel,
-  busy,
-}: {
-  job: GenerationJob;
-  onCancel: () => void;
-  busy: boolean;
-}) {
-  const milestones = generationMilestones(job);
-  const steps = [
-    "Preparing the forge",
-    "Writing a new law",
-    "Checking & simulating the world",
-  ];
-  const index =
-    job.status === "verifying" ? 2 : job.status === "generating" ? 1 : 0;
+function Pipeline({ onCancel, busy }: { onCancel: () => void; busy: boolean }) {
   return (
-    <div className="pipeline">
+    <div className="pipeline" role="status">
       <div className="pipeline-art">
         <ForgeMark size={37} />
       </div>
-      <h3>
-        A what-if is
-        <br />
-        taking shape.
-      </h3>
-      <p>{job.message}</p>
-      <div className="pipeline-steps">
-        {steps.map((step, i) => (
-          <div
-            key={step}
-            className={`pipeline-step ${i < index ? "done" : i === index ? "current" : ""}`}
-          >
-            <span className="pipeline-step-count">
-              {i < index ? (
-                <Check size={12} />
-              ) : i === index ? (
-                <LoaderCircle size={12} className="spinner" />
-              ) : (
-                `0${i + 1}`
-              )}
-            </span>
-            <span>{step}</span>
-          </div>
-        ))}
-      </div>
-      <p className="pipeline-duration">
-        {elapsed(job.createdAt)} ELAPSED · ATTEMPT {Math.max(1, job.attempt)}
-      </p>
-      {milestones.length > 0 && (
-        <ol className="pipeline-events" aria-label="Recorded generation events">
-          {milestones.map((milestone) => (
-            <li key={milestone.key}>
-              <Check size={12} />
-              <span>{milestone.label}</span>
-              <time dateTime={milestone.at}>+{milestone.seconds}s</time>
-            </li>
-          ))}
-        </ol>
-      )}
-      <p className="pipeline-note">
-        Keep playing while Codex works. This stage may take a minute or more.
-      </p>
+      <h3>Forging…</h3>
       <button
-        className="button button-quiet button-full"
+        className="button button-quiet"
         onClick={onCancel}
         disabled={busy}
-        style={{ marginTop: 15 }}
       >
-        Cancel generation
+        Cancel
       </button>
+    </div>
+  );
+}
+
+export function StudioTitle({ mode }: { mode: ShowMode }) {
+  return (
+    <div className="title-line">
+      <h1>The Last Light</h1>
+      {mode === "practice" && <StatusChip variant="warm">Practice</StatusChip>}
     </div>
   );
 }

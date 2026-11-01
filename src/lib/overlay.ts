@@ -1,17 +1,17 @@
 import type { PublicShowState } from "@/server/contracts";
 import { generationMilestones } from "./generation-progress";
-import { ruleCredit } from "./rule-copy";
+import { isSampleLaw, ruleCredit } from "./rule-copy";
 
 const PHASES = {
-  queued: "An idea is on its way",
-  starting: "Preparing the forge",
-  generating: "Codex is writing the law",
-  verifying: "Testing the new possibility",
-  ready: "The creator is reviewing",
-  failed: "That idea needs another approach",
-  cancelled: "The creator stopped this attempt",
-  stale: "The world changed; ready for another idea",
-  rejected: "The creator is refining the idea",
+  queued: "Queued",
+  starting: "Preparing…",
+  generating: "Forging…",
+  verifying: "Verifying…",
+  ready: "Reviewing",
+  failed: "Needs revision",
+  cancelled: "Cancelled",
+  stale: "World changed",
+  rejected: "Needs revision",
 } as const;
 
 /** Only trusted phase labels and approved law descriptions belong on a broadcast. */
@@ -64,7 +64,7 @@ export function overlayView(show: PublicShowState, now = Date.now()) {
     );
   const moment =
     recent?.type === "world.rollback"
-      ? "Law retired — the world is safe"
+      ? "Law retired"
       : recent?.type === "candidate.activated"
         ? "A new possibility is live"
         : recent?.type === "candidate.approved"
@@ -79,21 +79,32 @@ export function overlayView(show: PublicShowState, now = Date.now()) {
   const newestLaw = laws.at(-1);
   const phase =
     working && proposal
-      ? `Forging ${proposal.id} by ${author}`
+      ? isSampleLaw(proposal) || job?.reused
+        ? "Sample law"
+        : `Forging ${proposal.id} by ${author}`
       : reviewing && proposal
-        ? `${proposal.id} by ${author} — streamer is reviewing`
+        ? isSampleLaw(proposal) || job?.reused
+          ? "Sample law"
+          : `${proposal.id} by ${author} — reviewing`
         : retired
-          ? "Law retired — the world is safe"
+          ? "Law retired"
           : show.phase === "live" && newestLaw && job?.status === "ready"
-            ? `NEW LAW: ${newestLaw.name} — ${ruleCredit({ ...newestLaw, author: newestLaw.origin === "twitch" ? `@${newestLaw.author.replace(/^@/, "")}` : newestLaw.author })}`
+            ? `${isSampleLaw(newestLaw) ? "Sample law" : "Live law"}: ${newestLaw.name}${ruleCredit(newestLaw) ? ` — ${ruleCredit(newestLaw)}` : ""}`
             : job
-              ? job.status === "generating" && milestones.length
-                ? milestones.at(-1)!.label
-                : PHASES[job.status]
+              ? PHASES[job.status]
               : show.votingOpen
-                ? "The next idea could be yours"
-                : "The creator is choosing";
+                ? "Intake open"
+                : "Intake closed";
   return {
+    hasSample: Boolean(
+      isSampleLaw(selected) ||
+      job?.reused ||
+      ranked.some(isSampleLaw) ||
+      laws.some(isSampleLaw),
+    ),
+    sample: Boolean(
+      (working || reviewing) && (isSampleLaw(selected) || job?.reused),
+    ),
     ranked,
     maxVotes,
     laws,

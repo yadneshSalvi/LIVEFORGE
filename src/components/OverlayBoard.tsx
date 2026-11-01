@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Check, Heart, Radio, Sparkles } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
+import { StatusChip } from "./StatusChip";
 import { ForgeMark } from "./Brand";
-import { overlayDuration, overlayView } from "@/lib/overlay";
-import { adaptationLabel, proposalOrigin, ruleCredit } from "@/lib/rule-copy";
+import { overlayView } from "@/lib/overlay";
+import { isSampleLaw, ruleCredit } from "@/lib/rule-copy";
 import { CAPABILITY_HINT } from "@/lib/capabilities";
 import type { PublicShowState } from "@/server/contracts";
 import styles from "./OverlayBoard.module.css";
@@ -77,6 +78,36 @@ export function OverlayBoard({
       clearInterval(clock);
     };
   }, [showId]);
+  return (
+    <OverlayPresentation
+      show={show}
+      showId={showId}
+      disconnected={disconnected}
+      now={now}
+      previewMode={previewMode}
+      background={background}
+      onBackgroundChange={() => setBackground((value) => !value)}
+    />
+  );
+}
+
+export function OverlayPresentation({
+  show,
+  showId,
+  disconnected = false,
+  now = Date.now(),
+  previewMode = false,
+  background = false,
+  onBackgroundChange,
+}: {
+  show: PublicShowState | null;
+  showId: string;
+  disconnected?: boolean;
+  now?: number;
+  previewMode?: boolean;
+  background?: boolean;
+  onBackgroundChange?: () => void;
+}) {
   const view = show ? overlayView(show, now) : null;
   return (
     <main
@@ -85,15 +116,12 @@ export function OverlayBoard({
     >
       {previewMode && (
         <div className={styles.previewTools}>
-          <span>OVERLAY PREVIEW · OBS canvas 1920 × 1080</span>
-          <button
-            onClick={() => setBackground((value) => !value)}
-            aria-pressed={background}
-          >
+          <span>Overlay preview</span>
+          <button onClick={onBackgroundChange} aria-pressed={background}>
             {background ? "Show transparency" : "Show preview background"}
           </button>
           <a href={`/overlay/${showId}`} target="_blank" rel="noreferrer">
-            Open transparent OBS output ↗
+            Open output ↗
           </a>
         </div>
       )}
@@ -103,46 +131,28 @@ export function OverlayBoard({
           <strong>
             LIVE<span>FORGE</span>
           </strong>
-          <i />
-          {show?.mode === "practice"
-            ? "PRACTICE WORLD"
-            : show?.twitch.channelLogin
-              ? `@${show.twitch.channelLogin}`
-              : "COMMUNITY WORLD"}
+          {show?.mode === "practice" ? (
+            <StatusChip>Practice</StatusChip>
+          ) : show?.twitch.channelLogin ? (
+            <span>@{show.twitch.channelLogin}</span>
+          ) : null}
+          {view?.hasSample && <StatusChip>Sample</StatusChip>}
         </div>
-        <h1>
-          Invent the next <em>law.</em>
-        </h1>
-        <p>Small what-ifs. Real changes to the world.</p>
         <div className={styles.commands}>
           <code>
             !forge <span>your idea</span>
           </code>
           <code>
-            !back <span>P1</span>
+            !back <span>P#</span>
           </code>
         </div>
         <p className={styles.hint}>{CAPABILITY_HINT}</p>
-        <p className={styles.hint}>
-          {show?.mode === "practice"
-            ? "Host-authored practice ideas · live Twitch commands are not connected"
-            : show?.votingOpen === false
-              ? "The shortlist is closed while the creator decides."
-              : "Propose in Twitch chat. Back one idea. The creator approves every law."}
-        </p>
       </header>
 
       <aside className={styles.shortlist} aria-label="Community shortlist">
         <section
           className={`${styles.phaseCard} ${view?.working ? styles.forging : ""}`}
         >
-          <div className={styles.phaseTop}>
-            <span>
-              <Radio size={14} /> ROUND{" "}
-              {String(show?.round || 1).padStart(2, "0")}
-            </span>
-            <span>{disconnected ? "UPDATES PAUSED" : "LIVE STATUS"}</span>
-          </div>
           {view ? (
             <OverlayPhaseStatus view={view} />
           ) : (
@@ -151,33 +161,6 @@ export function OverlayBoard({
                 ? "Waiting to reconnect"
                 : "Opening the community’s world"}
             </h2>
-          )}
-          {view?.working && view.elapsedSeconds !== null && (
-            <p className={styles.elapsed}>
-              {overlayDuration(view.elapsedSeconds)}{" "}
-              <span>elapsed · real generation job</span>
-            </p>
-          )}
-          {view?.working && view.milestones.length > 0 && (
-            <ol
-              className={styles.phaseEvents}
-              aria-label="Recorded generation events"
-            >
-              {view.milestones.map((milestone) => (
-                <li key={milestone.key}>
-                  <Check size={13} />
-                  <span>{milestone.label}</span>
-                  <time dateTime={milestone.at}>
-                    +{overlayDuration(milestone.seconds)}
-                  </time>
-                </li>
-              ))}
-            </ol>
-          )}
-          {show?.generation?.status === "ready" && show.phase === "preview" && (
-            <p className={styles.phaseDetail}>
-              The live world waits for an exact-version preview and approval.
-            </p>
           )}
           {view?.working && (
             <div className={styles.activity} aria-hidden="true">
@@ -191,28 +174,26 @@ export function OverlayBoard({
         </section>
         <div className={styles.shortlistHeading}>
           <h2>Next possibilities</h2>
-          <span>{view?.ranked.length || 0} ON THE BOARD</span>
         </div>
         <div className={styles.proposals}>
-          {view?.ranked.map((proposal, index) => (
+          {view?.ranked.map((proposal) => (
             <article
               className={`${styles.proposal} ${proposal.status === "selected" ? styles.selected : ""}`}
               key={proposal.id}
             >
               <div className={styles.proposalTop}>
                 <b>{proposal.id}</b>
-                <span>
-                  {proposal.ancestry?.kind === "adaptation"
-                    ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
-                    : proposal.status === "selected"
-                      ? "CREATOR’S PICK"
-                      : proposalOrigin(proposal.origin)}
-                </span>
-                <small>{String(index + 1).padStart(2, "0")}</small>
               </div>
               <p>{proposal.text}</p>
               <div className={styles.proposalFoot}>
-                <span>{proposal.author}</span>
+                <span>
+                  {isSampleLaw(proposal) &&
+                  proposal.author === "Previously generated sample"
+                    ? ""
+                    : proposal.ancestry?.kind === "adaptation"
+                      ? ruleCredit(proposal)
+                      : proposal.author}
+                </span>
                 <strong>
                   <Heart size={13} />
                   {proposal.votes}
@@ -230,52 +211,25 @@ export function OverlayBoard({
           {view && !view.ranked.length && (
             <div className={styles.empty}>
               <Sparkles size={26} />
-              <h3>A little possibility starts here.</h3>
-              <p>
-                {show?.mode === "practice"
-                  ? "The host is gathering practice ideas."
-                  : "Send !forge and a what-if to the connected Twitch chat."}
-              </p>
+              <p>No ideas yet</p>
             </div>
           )}
         </div>
-        <p className={styles.supportNote}>
-          Support counts are choices, not viewer counts. They reset each round.
-        </p>
       </aside>
 
       <section className={styles.laws} aria-label="Approved laws in the world">
-        {view?.moment && (
-          <div className={styles.moment}>
-            <Check size={14} />
-            {view.moment}
-          </div>
-        )}
         <div className={styles.lawGrid}>
           {view?.laws.map((law, index) => (
             <article className={styles.law} key={`${index}-${law.sourceHash}`}>
-              <div className={styles.lawLabel}>
-                <Sparkles size={15} /> APPROVED LAW{" "}
-                {view.laws.length > 1
-                  ? `${index + 1} / ${view.laws.length}`
-                  : ""}
-              </div>
               <h2>{law.name}</h2>
               <p>{law.description}</p>
-              <span>{ruleCredit(law)}</span>
+              {ruleCredit(law) && <span>{ruleCredit(law)}</span>}
             </article>
           ))}
         </div>
       </section>
       <footer className={styles.footer}>
-        <span>
-          THE LAST LIGHT <i /> COMMUNITY IDEAS. CREATOR APPROVED.
-        </span>
-        {disconnected && (
-          <strong role="status">
-            Live updates interrupted · last confirmed state
-          </strong>
-        )}
+        {disconnected && <strong role="status">Updates paused</strong>}
       </footer>
     </main>
   );

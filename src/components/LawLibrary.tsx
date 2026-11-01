@@ -1,15 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  BookOpen,
-  Code2,
-  LoaderCircle,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, BookOpen, Code2, LoaderCircle } from "lucide-react";
 import { Modal } from "./Modal";
-import { api, errorMessage, shortHash } from "@/lib/api";
-import { ruleCredit } from "@/lib/rule-copy";
+import { StatusChip } from "./StatusChip";
+import { api, errorMessage } from "@/lib/api";
+import { isSampleLaw, ruleCredit } from "@/lib/rule-copy";
 import type {
   ActivationMode,
   HostShowResponse,
@@ -108,19 +103,9 @@ export function LawLibrary({
       onClose={() => {
         if (!busy) onClose();
       }}
-      title="A law worth coming back to."
-      eyebrow="YOUR LAW LIBRARY"
+      title="Law library"
       wide
     >
-      <p className="modal-copy">
-        Saved exact-source versions travel between your shows. Importing makes
-        no model call: the source and its{" "}
-        {mode === "append"
-          ? "combination with your current laws"
-          : "replacement world"}{" "}
-        are tested against the current engine, then await a fresh preview and
-        approval.
-      </p>
       {error && (
         <div className="notice notice-error" role="alert">
           <div>{error}</div>
@@ -134,39 +119,25 @@ export function LawLibrary({
       )}
       {loading ? (
         <p className="modal-copy" role="status">
-          <LoaderCircle size={18} className="spinner" /> Opening your saved
-          laws…
+          <LoaderCircle size={18} className="spinner" /> Loading…
         </p>
       ) : entries.length ? (
         <div className="library-grid">
           {entries.map((entry) => (
             <article key={entry.id} className="library-card">
-              <div className="library-heading">
-                <span className="pill pill-mint">
-                  <Sparkles size={11} /> SAVED SOURCE
-                </span>
-                <code>{shortHash(entry.sourceHash)}</code>
-              </div>
+              {isSampleLaw({ ...entry, origin: "library" }) && (
+                <StatusChip>Sample</StatusChip>
+              )}
               <h3>{entry.name}</h3>
               <p>{entry.description}</p>
               <span className="library-credit">{ruleCredit(entry)}</span>
-              <dl>
-                <div>
-                  <dt>Saved</dt>
-                  <dd>{new Date(entry.savedAt).toLocaleDateString()}</dd>
-                </div>
-                <div>
-                  <dt>Verified when saved</dt>
-                  <dd>{entry.engineVersion}</dd>
-                </div>
-              </dl>
               <div className="button-group">
                 <button
                   className="button button-outline button-small"
                   disabled={Boolean(busy)}
                   onClick={() => void inspectSource(entry)}
                 >
-                  <Code2 size={14} /> Exact source
+                  <Code2 size={14} /> Source
                 </button>
                 <button
                   className="button button-primary button-small"
@@ -178,7 +149,7 @@ export function LawLibrary({
                   ) : (
                     <ArrowRight size={14} />
                   )}{" "}
-                  Import for review
+                  Import
                 </button>
               </div>
             </article>
@@ -188,24 +159,15 @@ export function LawLibrary({
         !error && (
           <div className="empty-forge">
             <BookOpen size={30} />
-            <h3>Your favorite possibilities belong here.</h3>
-            <p>
-              Save an approved law from your studio. Its exact source, original
-              contributor and generation provenance stay with it.
-            </p>
+            <p>No saved laws yet</p>
           </div>
         )
-      )}
-      {disabled && (
-        <p className="modal-copy">
-          Imports unlock when the current action finishes and the world can
-          accept your chosen law plan.
-        </p>
       )}
       {selected && (
         <section className="library-source">
           <p className="field-label">{selected.name} · exact saved source</p>
           <p className="mono">SHA-256 {selected.sourceHash}</p>
+          <p className="mono">Engine {selected.engineVersion}</p>
           <pre>
             <code>{selected.source}</code>
           </pre>
@@ -217,7 +179,7 @@ export function LawLibrary({
           disabled={Boolean(busy)}
           onClick={onClose}
         >
-          Back to the studio
+          Close
         </button>
       </div>
     </Modal>

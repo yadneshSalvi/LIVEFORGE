@@ -64,6 +64,7 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
       sequence = useRef(0);
     callbacks.current = props;
     const [ready, setReady] = useState(false);
+    const [focused, setFocused] = useState(false);
     const send = (command: WorkerCommand) =>
       worker.current?.postMessage(command);
     useImperativeHandle(
@@ -258,7 +259,9 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
           overflow: "hidden",
           outlineOffset: 3,
         }}
+        onFocus={() => setFocused(true)}
         onBlur={() => {
+          setFocused(false);
           input.current = { ...EMPTY_INPUT };
           send({ type: "input", input: input.current });
         }}
@@ -281,10 +284,10 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
               letterSpacing: 2,
             }}
           >
-            LIGHTING THE FOUNDRY
+            Loading world…
           </div>
         )}
-        {props.paused && (
+        {props.paused && props.presentation !== "live" && (
           <div
             style={{
               position: "absolute",
@@ -304,28 +307,13 @@ export const GameViewport = forwardRef<GameViewportHandle, GameViewportProps>(
                 letterSpacing: 3,
               }}
             >
-              WORLD PAUSED
+              Paused
             </span>
           </div>
         )}
-        {(props.presentation === "candidate" ||
-          (!props.presentation && props.preview)) && (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: 18,
-              transform: "translateX(-50%)",
-              border: "1px solid #a0ddbe55",
-              borderRadius: 4,
-              padding: "5px 9px",
-              fontSize: 9,
-              letterSpacing: 2,
-              color: "#b4edcd",
-              background: "#0e242bd9",
-            }}
-          >
-            CANDIDATE PREVIEW
+        {ready && props.preview && !props.observer && !focused && (
+          <div className="game-focus-hint" aria-hidden="true">
+            Click to play
           </div>
         )}
         {!props.observer && (

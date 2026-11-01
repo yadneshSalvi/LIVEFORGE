@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, FlaskConical, LoaderCircle, Radio } from "lucide-react";
 import { Modal } from "./Modal";
+import { StatusChip } from "./StatusChip";
 import { api, errorMessage } from "@/lib/api";
 import type { HostShowResponse, ShowMode, ShowState } from "@/server/contracts";
 interface Summary {
@@ -81,32 +82,26 @@ export function ShowManager({
       onClose={() => {
         if (!busy) onClose();
       }}
-      title="A room for every what-if."
-      eyebrow="YOUR SHOWS"
+      title="Shows"
     >
       {error && (
         <div className="notice notice-error" role="alert">
           {error}
         </div>
       )}
-      <p className="modal-copy">
-        Resume a saved world or start a fresh show. Each show keeps its own
-        ideas, laws, and checkpoints.
-      </p>
       {busy && (
         <p className="modal-copy" role="status">
-          Opening your world. Keep this dialog open until the transition
-          finishes.
+          Opening…
         </p>
       )}
       {disabled && !busy && (
         <p className="modal-copy" role="status">
-          Finish the current show action before switching worlds.
+          Action in progress
         </p>
       )}
       <div className="show-list">
         {loading ? (
-          <p className="modal-copy">Opening your saved shows…</p>
+          <p className="modal-copy">Loading…</p>
         ) : (
           shows.map((show) => (
             <button
@@ -125,7 +120,12 @@ export function ShowManager({
               <span>
                 <strong>{show.activeRule || "The Last Light"}</strong>
                 <span>
-                  {show.mode === "twitch" ? "Twitch show" : "Practice"} ·{" "}
+                  {show.mode === "twitch" ? (
+                    "Twitch show"
+                  ) : (
+                    <StatusChip>Practice</StatusChip>
+                  )}{" "}
+                  ·{" "}
                   {new Date(show.updatedAt).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",
@@ -134,7 +134,7 @@ export function ShowManager({
                 </span>
               </span>
               {show.id === currentId ? (
-                <span className="pill pill-mint">CURRENT</span>
+                <StatusChip variant="good">Current</StatusChip>
               ) : busy === show.id ? (
                 <LoaderCircle size={16} className="spinner" />
               ) : (

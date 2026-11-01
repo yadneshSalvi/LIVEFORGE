@@ -43,7 +43,7 @@ function limit(name: string, fallback: number) {
       Number(raw) <= 2_000,
     503,
     "quota_configuration",
-    "Daily generation limits are not configured correctly. Use a previously generated law while the owner checks setup.",
+    "Forge setup unavailable — load a sample law",
   );
   return Number(raw);
 }
@@ -168,8 +168,8 @@ export async function reserveGenerationQuota(
       429,
       "generation_quota",
       quota.userRemaining === 0
-        ? "Your daily generation allowance is used up. It resets at midnight UTC; use a previously generated law now."
-        : "The shared daily generation allowance is used up. It resets at midnight UTC; use a previously generated law now.",
+        ? "Daily forges used — load a sample law"
+        : "Shared daily forges used — load a sample law",
     );
     const day = quota.day;
     if (!identity.exempt) {

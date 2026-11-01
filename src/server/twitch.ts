@@ -173,8 +173,7 @@ export async function twitchCallback(
       status: "disconnected",
       channelId: info.user_id,
       channelLogin: info.login,
-      message:
-        "Twitch is authorized. Connect chat to open the live proposal board.",
+      message: "Connect chat",
     };
     event(
       show,
@@ -318,8 +317,7 @@ export async function connectTwitchSession(
       sessionId,
       subscriptionId: result.data[0].id,
       lastHealthyAt: new Date().toISOString(),
-      message:
-        "Receiving real Twitch chat through the host browser connection.",
+      message: "Chat connected",
     };
     event(
       current,
@@ -341,7 +339,7 @@ async function generationIdentity(
     auth,
     403,
     "generation_host_required",
-    "Connect Twitch to become an authorized show host. Until then, explore a labeled previously generated law.",
+    "Connect Twitch to forge — or load a sample law",
   );
   const grant = await ensureOAuthGrant(
     auth.credentialId,
@@ -371,8 +369,7 @@ export async function generationAccess(ownerId: string | undefined): Promise<{
   if (!ownerId)
     return {
       allowed: false,
-      authorization:
-        "Connect Twitch for fresh generation, or use a labeled previously generated law.",
+      authorization: "Connect Twitch to forge",
       quota: null,
     };
   try {
@@ -381,10 +378,10 @@ export async function generationAccess(ownerId: string | undefined): Promise<{
     return {
       allowed: !quota.exhausted,
       authorization: quota.exhausted
-        ? "Today's generation allowance is used up. It resets at midnight UTC; a previously generated law is available now."
+        ? "Daily forges used — load a sample law"
         : quota.exempt
-          ? "Authenticated host · daily quota exempt"
-          : `Authenticated Twitch host · ${quota.userRemaining} fresh generations remaining today (UTC).`,
+          ? "Host connected"
+          : `${quota.userRemaining} left today`,
       quota,
     };
   } catch (error) {
@@ -393,7 +390,7 @@ export async function generationAccess(ownerId: string | undefined): Promise<{
       authorization:
         error instanceof HttpError && error.code === "quota_configuration"
           ? error.message
-          : "Reconnect your Twitch account for fresh generation, or use a labeled previously generated law.",
+          : "Reconnect Twitch to forge",
       quota: null,
     };
   }
@@ -420,8 +417,7 @@ export async function maintainTwitchSession(
         current.twitch.authorizationPaused
       ) {
         current.twitch.status = "connected";
-        current.twitch.message =
-          "Twitch authorization verified. Receiving genuine chat events.";
+        current.twitch.message = "Chat connected";
         delete current.twitch.authorizationPaused;
       }
     });
@@ -434,8 +430,8 @@ export async function maintainTwitchSession(
       current.twitch.status = revoked ? "revoked" : "gap";
       current.twitch.authorizationPaused = !revoked;
       current.twitch.message = revoked
-        ? "Twitch authorization was revoked. Reconnect your channel; live intake is paused."
-        : "Twitch authorization could not be checked. Live intake is paused until it recovers.";
+        ? "Intake paused — reconnect Twitch"
+        : "Intake paused — checking Twitch";
     });
   }
   return (await getStore().get<ShowRecord>(showKey(show.id)))!;

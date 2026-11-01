@@ -66,8 +66,7 @@ export function ModerationPanel({
       onClose={() => {
         if (!busy) onClose();
       }}
-      title="Keep a good room."
-      eyebrow="MODERATION & CHAT"
+      title="Moderation"
       wide
     >
       {error && (
@@ -77,18 +76,12 @@ export function ModerationPanel({
       )}
       {saved && (
         <div className="notice notice-success" role="status">
-          <Check size={16} /> Saved. Private reasons remain visible only to the
-          host.
+          <Check size={16} /> Saved
         </div>
       )}
       <div className="moderation-grid">
         <section className="moderation-settings">
-          <h3>Your room’s boundaries</h3>
-          <p className="modal-copy">
-            New proposals containing a blocked term are refused. Channel
-            moderators and the broadcaster can also use <code>!hide P1</code> or{" "}
-            <code>!reject P1</code> in Twitch chat.
-          </p>
+          <h3>Settings</h3>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -102,7 +95,7 @@ export function ModerationPanel({
             }}
           >
             <label className="field-label" htmlFor="blocked-terms">
-              Blocked terms · one per line, up to 40
+              Blocked terms · one per line
             </label>
             <textarea
               id="blocked-terms"
@@ -115,11 +108,10 @@ export function ModerationPanel({
               }}
               rows={5}
               maxLength={2500}
-              placeholder="Add a phrase your channel does not want in proposals"
+              placeholder="Blocked phrase"
             />
             <p className="rail-footnote">
-              Each term is 2–60 characters. The list and moderation reasons are
-              private.
+              Blocked terms and reasons stay private.
             </p>
             <div className="reply-settings">
               <label>
@@ -136,22 +128,21 @@ export function ModerationPanel({
                     setSaved(false);
                   }}
                 />
-                <span>Post occasional replies to my chat</span>
+                <span>Allow chat replies</span>
               </label>
               <p>
-                Optional acknowledgements for accepted ideas, selected forges
-                and results. Replies are off by default and rate limited.
-                Replies post as your account and may appear in Shared Chat.
+                Replies post as your account and may appear in Shared Chat. Off
+                by default; rate limited.
               </p>
               {show.mode !== "twitch" ? (
-                <p>Chat replies are available in a Twitch show.</p>
+                <p>Twitch show required</p>
               ) : (
                 !repliesAuthorized && (
                   <a
                     className="button button-outline button-small"
                     href={`/api/auth/twitch/login?showId=${show.id}&writeChat=1`}
                   >
-                    Allow optional chat replies <ArrowUpRight size={13} />
+                    Authorize replies <ArrowUpRight size={13} />
                   </a>
                 )
               )}
@@ -161,7 +152,7 @@ export function ModerationPanel({
               disabled={busy || disabled}
               type="submit"
             >
-              <ShieldCheck size={15} /> Save room settings
+              <ShieldCheck size={15} /> Save settings
             </button>
           </form>
         </section>
@@ -196,9 +187,7 @@ export function ModerationPanel({
                   </button>
                 ))
             ) : (
-              <p className="modal-copy">
-                Ideas will appear here as your community submits them.
-              </p>
+              <p className="modal-copy">No ideas yet</p>
             )}
           </div>
           {selected && (
@@ -228,9 +217,9 @@ export function ModerationPanel({
                   setDecision(event.target.value as typeof decision)
                 }
               >
-                <option value="open">Visible on the shortlist</option>
-                <option value="hidden">Hidden from public outputs</option>
-                <option value="rejected">Not selected for this round</option>
+                <option value="open">Visible</option>
+                <option value="hidden">Hidden</option>
+                <option value="rejected">Rejected</option>
               </select>
               <label className="field-label" htmlFor="moderation-reason">
                 Private reason · optional
@@ -244,10 +233,6 @@ export function ModerationPanel({
                 disabled={busy || disabled}
                 onChange={(event) => setReason(event.target.value)}
               />
-              <p className="rail-footnote">
-                This changes the shortlist. An active law stays in the world
-                until you restore the previous combination.
-              </p>
               <button
                 className="button button-outline"
                 disabled={busy || disabled}
@@ -265,7 +250,7 @@ export function ModerationPanel({
           disabled={busy}
           onClick={onClose}
         >
-          Back to the studio
+          Close
         </button>
       </div>
     </Modal>

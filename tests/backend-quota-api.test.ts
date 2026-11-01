@@ -138,7 +138,7 @@ describe("public-host generation API quota policy", () => {
       proposalId: another,
     });
     expect(denied.status).toBe(429);
-    expect((await denied.json()).message).toContain("previously generated law");
+    expect((await denied.json()).message).toContain("sample law");
     const health = await status(
       new Request("http://localhost:3100/api/status", {
         headers: { Cookie: second.cookie },

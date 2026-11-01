@@ -33,3 +33,12 @@ export function Brand({ small = false }: { small?: boolean }) {
     </Link>
   );
 }
+
+export function SiteFooter() {
+  return (
+    <footer className="site-footer">
+      <Brand small />
+      <Link href="/how-built">How it&apos;s built ↗</Link>
+    </footer>
+  );
+}

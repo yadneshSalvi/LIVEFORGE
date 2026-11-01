@@ -48,9 +48,9 @@ export function AdaptationComposer({
   const unavailable =
     disabledReason ||
     (!original
-      ? "The original idea is unavailable. Choose another idea from the board."
+      ? "Original unavailable — choose another idea."
       : ["hidden", "rejected"].includes(original.status)
-        ? "The original idea was moderated. Restore it on the board before creating an alternative."
+        ? "Original moderated — restore it to continue."
         : undefined);
 
   const submit = async (event: React.FormEvent) => {
@@ -87,7 +87,7 @@ export function AdaptationComposer({
       setError(
         cause instanceof ApiError &&
           ["stale_revision", "stale_job"].includes(cause.code || "")
-          ? "The world or failed run changed. Your draft is still here. Review the current state, then try creating the alternative again."
+          ? "World changed — review and retry. Your draft is saved."
           : errorMessage(cause),
       );
     } finally {
@@ -100,20 +100,14 @@ export function AdaptationComposer({
     const moderated = ["hidden", "rejected"].includes(accepted.status);
     return (
       <section className="adaptation-card" aria-labelledby={`${id}-title`}>
-        <p className="field-label">REVIEWED ALTERNATIVE · {accepted.id}</p>
         <h3 id={`${id}-title`}>
           {adaptationLabel(accepted.ancestry?.adaptationSource)} alternative
         </h3>
         <p className="adaptation-text">{accepted.text}</p>
         <p className="adaptation-credit">{ruleCredit(accepted)}</p>
-        <p className="adaptation-help">
-          Your original idea and failed run are preserved. This separate idea
-          needs a fresh forge, preview and exact-version approval.
-        </p>
         {moderated ? (
           <p className="adaptation-help" role="status">
-            This alternative was moderated. Restore it on the board before
-            forging.
+            Alternative moderated — restore it to forge.
           </p>
         ) : (
           <button
@@ -123,9 +117,7 @@ export function AdaptationComposer({
             onClick={onSelect}
           >
             {selected ? <Check size={15} /> : <ArrowRight size={15} />}
-            {selected
-              ? `${accepted.id} selected · go to Forge`
-              : `Select ${accepted.id} to forge`}
+            {selected ? `${accepted.id} selected` : `Select ${accepted.id}`}
           </button>
         )}
       </section>
@@ -134,18 +126,12 @@ export function AdaptationComposer({
 
   return (
     <section className="adaptation-card" aria-labelledby={`${id}-title`}>
-      <p className="field-label">KEEP THE IDEA. CHOOSE A NEW APPROACH.</p>
       <h3 id={`${id}-title`}>
         {hasSuggestion ? "Review an alternative" : "Write an alternative"}
       </h3>
-      <p className="adaptation-help">
-        {hasSuggestion
-          ? "Codex suggested the wording below. Review or edit it before creating a separate proposal."
-          : "Codex did not suggest an alternative. You can write one using the world’s supported controls, physics and objects."}
-      </p>
       {original && (
         <details className="adaptation-original">
-          <summary>Request that failed · {original.id}</summary>
+          <summary>Original idea · {original.id}</summary>
           <p>{original.text}</p>
           <p>{ruleCredit(original)}</p>
         </details>
@@ -157,7 +143,7 @@ export function AdaptationComposer({
         <textarea
           id={`${id}-draft`}
           className="proposal-textarea"
-          placeholder="Describe an alternative using the controls and capabilities below."
+          placeholder="Describe your alternative"
           value={draft}
           onChange={(event) => {
             setDraft(event.target.value);
@@ -175,9 +161,8 @@ export function AdaptationComposer({
           <span>{normalized.length}/280</span>
         </div>
         <p id={`${id}-help`} className="adaptation-help">
-          Only you can see this draft. Creating it publishes a separate proposal
-          with the original contributor’s credit. No generation starts until you
-          choose Forge.
+          Private draft. Publish a separate idea with original credit. Forge
+          starts only when you choose it.
         </p>
         {unavailable && (
           <p className="adaptation-help" role="status">
@@ -205,9 +190,7 @@ export function AdaptationComposer({
           ) : (
             <ArrowRight size={15} />
           )}
-          {saving
-            ? "Saving reviewed alternative…"
-            : "Create reviewed alternative"}
+          {saving ? "Publishing…" : "Publish alternative"}
         </button>
       </form>
     </section>

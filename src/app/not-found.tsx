@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowRight, Compass } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 export default function NotFound() {
   return (
@@ -7,20 +6,9 @@ export default function NotFound() {
       <AppHeader />
       <main className="guide-main">
         <div className="archive-empty">
-          <Compass size={38} strokeWidth={1.2} />
-          <p className="eyebrow">UNMAPPED TERRITORY / 404</p>
-          <h1>
-            This part of the sky
-            <br />
-            hasn’t been forged.
-          </h1>
-          <p>
-            The page could not be found. Your saved show is waiting in the
-            studio.
-          </p>
+          <h1>Page not found.</h1>
           <Link className="button button-primary" href="/studio">
-            Find your way back
-            <ArrowRight size={16} />
+            Return to Studio
           </Link>
         </div>
       </main>

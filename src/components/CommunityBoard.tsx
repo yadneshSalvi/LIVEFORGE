@@ -1,21 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Radio, Sparkles } from "lucide-react";
-import { Brand } from "./Brand";
+import { Heart, MessageCircle, Sparkles } from "lucide-react";
+import { Brand, SiteFooter } from "./Brand";
+import { StatusChip } from "./StatusChip";
+import { overlayView } from "@/lib/overlay";
 import { api, errorMessage } from "@/lib/api";
 import { CAPABILITY_HINT } from "@/lib/capabilities";
-import {
-  adaptationLabel,
-  proposalOrigin,
-  ruleCredit,
-  ruleDescription,
-} from "@/lib/rule-copy";
+import { isSampleLaw, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import type { PublicProposal, PublicShowState } from "@/server/contracts";
 
 export function CommunityProposalCard({
   proposal,
+  showSample = true,
 }: {
   proposal: PublicProposal;
+  showSample?: boolean;
 }) {
   if (proposal.status === "hidden") return null;
   if (proposal.status === "rejected")
@@ -31,18 +30,17 @@ export function CommunityProposalCard({
     <article className="proposal-card">
       <div className="proposal-card-head">
         <span className="proposal-id">{proposal.id}</span>
-        <span className="proposal-origin">
-          {proposal.ancestry?.kind === "adaptation"
-            ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
-            : proposalOrigin(proposal.origin)}
-        </span>
+        {showSample && isSampleLaw(proposal) && <StatusChip>Sample</StatusChip>}
       </div>
       <p>{proposal.text}</p>
       <div className="proposal-card-foot">
-        <span className="author-chip">
-          <span className="author-avatar">{proposal.author[0]}</span>
-          {proposal.author}
-        </span>
+        {proposal.author !== "Previously generated sample" && (
+          <span className="author-chip">
+            {proposal.ancestry?.kind === "adaptation"
+              ? ruleCredit(proposal)
+              : proposal.author}
+          </span>
+        )}
         <span className="support-button">
           <Heart size={13} />
           {proposal.votes}
@@ -75,44 +73,48 @@ export function CommunityBoard({ showId }: { showId: string }) {
       clearInterval(timer);
     };
   }, [showId]);
+  return <CommunityPresentation show={show} error={error} />;
+}
+
+export function CommunityPresentation({
+  show,
+  error = null,
+}: {
+  show: PublicShowState | null;
+  error?: string | null;
+}) {
+  const view = show ? overlayView(show) : null;
   return (
     <div className="community-page">
       <header className="community-header">
         <Brand />
-        <span
-          className={`pill ${show?.mode === "practice" ? "pill-brass" : "pill-mint"}`}
-        >
-          <Radio size={11} />
-          {show?.mode === "practice"
-            ? "PRACTICE BOARD"
-            : show?.twitch.channelLogin
-              ? `@${show.twitch.channelLogin}`
-              : "COMMUNITY BOARD"}
-        </span>
+        {show?.mode === "practice" ? (
+          <StatusChip>Practice</StatusChip>
+        ) : show?.twitch.channelLogin ? (
+          <StatusChip>@{show.twitch.channelLogin}</StatusChip>
+        ) : null}
+        {view?.hasSample && <StatusChip>Sample</StatusChip>}
       </header>
       <main className="community-main">
         <div className="community-heading">
-          <p className="eyebrow">YOUR NEXT WHAT-IF COULD CHANGE EVERYTHING</p>
-          <h1>
-            Make a little
-            <br />
-            <span style={{ color: "var(--mint)" }}>possibility.</span>
-          </h1>
-          <p>
-            {show?.mode === "practice"
-              ? "This is a host’s practice board. These ideas are labeled practice; they are not live Twitch submissions."
-              : "Invent a law in Twitch chat. Back a good idea. Watch the creator bring your community’s imagination into the world."}
-          </p>
+          <h1>Community board</h1>
         </div>
         <div className="command-block community-command">
           <span>!forge &lt;your idea&gt;</span>
-          <span style={{ fontSize: 14, color: "var(--muted)" }}>!back P1</span>
+          <span style={{ fontSize: 14, color: "var(--muted)" }}>!back P#</span>
         </div>
         <p className="community-notice">{CAPABILITY_HINT}</p>
         {error && (
           <div className="notice notice-error" role="alert">
             {error}
           </div>
+        )}
+        {view && (
+          <section className="community-phase">
+            <h2>{view.phase}</h2>
+            {view.proposalText && <p>{view.proposalText}</p>}
+            {view.proposalCredit && <p>{view.proposalCredit}</p>}
+          </section>
         )}
         {(show?.activeLaws || (show?.active ? [show.active] : [])).map(
           (law, index) => (
@@ -122,48 +124,33 @@ export function CommunityBoard({ showId }: { showId: string }) {
             >
               <Sparkles size={20} />
               <div>
-                <strong>Now in the world: {law.name}</strong>
+                <strong>{law.name}</strong>
                 <p>
-                  {ruleDescription(law.description, law.sourceHash)} ·{" "}
-                  {ruleCredit(law)}
+                  {ruleDescription(law.description, law.sourceHash)}
+                  {ruleCredit(law) && <> · {ruleCredit(law)}</>}
                 </p>
               </div>
             </div>
           ),
         )}
-        {show && show.proposals.length ? (
+        {view?.ranked.length ? (
           <div className="community-grid">
-            {show.proposals
-              .filter((proposal) => proposal.status !== "hidden")
-              .slice()
-              .sort(
-                (a, b) =>
-                  b.votes - a.votes || a.createdAt.localeCompare(b.createdAt),
-              )
-              .map((proposal) => (
-                <CommunityProposalCard key={proposal.id} proposal={proposal} />
-              ))}
+            {view?.ranked.map((proposal) => (
+              <CommunityProposalCard
+                key={proposal.id}
+                proposal={proposal}
+                showSample={false}
+              />
+            ))}
           </div>
         ) : (
           <div className="empty-forge" style={{ minHeight: 220 }}>
             <MessageCircle size={30} />
-            <h3>The forge is open.</h3>
-            <p>
-              {show
-                ? show.mode === "practice"
-                  ? "The host is collecting practice ideas."
-                  : "The next idea could be yours. Send !forge in the connected Twitch chat."
-                : "Opening this community’s board…"}
-            </p>
+            <p>{show ? "No ideas yet" : "Opening board…"}</p>
           </div>
         )}
-        <p className="community-notice">
-          One current support choice per account each round, with no paid
-          priority. The creator chooses what enters the game. Every candidate is
-          checked and previewed before approval. Support counts are
-          contributions, not viewer counts.
-        </p>
       </main>
+      <SiteFooter />
     </div>
   );
 }

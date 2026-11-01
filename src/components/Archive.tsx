@@ -5,14 +5,15 @@ import {
   Archive as ArchiveIcon,
   ArrowUpRight,
   Code2,
-  Download,
   LoaderCircle,
   Sparkles,
 } from "lucide-react";
 import { AppHeader } from "./AppHeader";
-import { EvidencePanel, downloadEvidence } from "./EvidencePanel";
-import { api, ApiError, errorMessage, shortHash } from "@/lib/api";
-import { proposalOrigin, ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import { SiteFooter } from "./Brand";
+import { StatusChip } from "./StatusChip";
+import { EvidencePanel } from "./EvidencePanel";
+import { api, ApiError, errorMessage } from "@/lib/api";
+import { isSampleLaw, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 import type {
   Candidate,
   HostShowResponse,
@@ -47,13 +48,8 @@ export function Archive() {
       <main className="archive-main">
         <div className="archive-heading">
           <div>
-            <p className="eyebrow">SMALL IDEAS. LASTING POSSIBILITIES.</p>
-            <h1>The archive.</h1>
-            <p>
-              This show’s laws and the story of how they became real. Save an
-              approved law from the studio to keep it in your private Law
-              library.
-            </p>
+            <h1>Archive</h1>
+            {show?.mode === "practice" && <StatusChip>Practice</StatusChip>}
           </div>
           <Link className="button button-outline" href="/studio">
             Back to the studio <ArrowUpRight size={15} />
@@ -72,14 +68,9 @@ export function Archive() {
         ) : !show?.candidates.length ? (
           <div className="archive-empty">
             <ArchiveIcon size={34} strokeWidth={1.2} />
-            <h2>Your first law belongs here.</h2>
-            <p>
-              Complete a generation or try the reused artifact in practice. Its
-              source, creator credit, and verification stay together in the
-              archive.
-            </p>
+            <p>No laws yet</p>
             <Link className="button button-primary" href="/studio">
-              Make room for a what-if <ArrowUpRight size={15} />
+              Start a show <ArrowUpRight size={15} />
             </Link>
           </div>
         ) : (
@@ -99,17 +90,7 @@ export function Archive() {
                       <Sparkles size={49} strokeWidth={1} />
                     </div>
                     <div className="archive-card-body">
-                      <span
-                        className={`pill ${candidate.activatedAt ? "pill-mint" : "pill-brass"}`}
-                      >
-                        {candidate.rejectedAt
-                          ? "REJECTED VERSION"
-                          : candidate.activatedAt
-                            ? "PLAYED IN THE WORLD"
-                            : candidate.approvedAt
-                              ? "APPROVED"
-                              : "AWAITING REVIEW"}
-                      </span>
+                      {isSampleLaw(proposal) && <StatusChip>Sample</StatusChip>}
                       <h2>{candidate.program.name}</h2>
                       <p>
                         {ruleDescription(
@@ -117,33 +98,19 @@ export function Archive() {
                           candidate.sourceHash,
                         )}
                       </p>
-                      <span className="author-chip">
-                        <span className="author-avatar">
-                          {(proposal?.author || "H")[0]}
+                      {ruleCredit(proposal) && (
+                        <span className="author-chip">
+                          {ruleCredit(proposal)}
                         </span>
-                        {ruleCredit(proposal)} ·{" "}
-                        {proposalOrigin(
-                          proposal?.origin || "practice",
-                        ).toLowerCase()}
-                      </span>
+                      )}
                       <div className="archive-card-footer">
-                        <span className="mono muted" style={{ fontSize: 9 }}>
-                          {shortHash(candidate.sourceHash)}
-                        </span>
                         <div className="button-group">
-                          <button
-                            className="icon-button"
-                            aria-label={`Export ${candidate.program.name}`}
-                            onClick={() => downloadEvidence(show, candidate)}
-                          >
-                            <Download size={15} />
-                          </button>
                           <button
                             className="button button-outline button-small"
                             onClick={() => setSelected(candidate)}
                           >
                             <Code2 size={13} />
-                            Evidence
+                            Details
                           </button>
                         </div>
                       </div>
@@ -162,6 +129,7 @@ export function Archive() {
           />
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -5,7 +5,8 @@ import { ArrowUpRight, Maximize2, Radio } from "lucide-react";
 import { Brand } from "./Brand";
 import { GameViewport } from "./GameViewport";
 import { ENGINE_VERSION, type GameSnapshot } from "@/game/contracts";
-import { ruleCredit } from "@/lib/rule-copy";
+import { isSampleLaw, ruleCredit } from "@/lib/rule-copy";
+import { StatusChip } from "./StatusChip";
 
 interface BroadcastFrame {
   type: "frame";
@@ -62,9 +63,6 @@ export function BroadcastView({ showId }: { showId: string }) {
         <div className="broadcast-chrome">
           <div className="broadcast-header">
             <div className="broadcast-heading">
-              <p className="eyebrow">
-                THE LAST LIGHT / 0{Math.min(2, frame.snapshot.checkpoint) + 1}
-              </p>
               <h1>
                 {frame.snapshot.completed
                   ? "The beacon lives."
@@ -74,24 +72,17 @@ export function BroadcastView({ showId }: { showId: string }) {
             <div>
               <Brand />
               {frame.mode === "practice" && (
-                <p
-                  className="pill pill-brass"
-                  style={{
-                    display: "flex",
-                    marginTop: 10,
-                    justifyContent: "center",
-                  }}
-                >
-                  PRACTICE SESSION
-                </p>
+                <StatusChip variant="warm">Practice</StatusChip>
               )}
             </div>
           </div>
           {frame.active && (
             <div className="broadcast-law">
-              <p className="eyebrow">YOUR COMMUNITY CHANGED THE RULES</p>
               <h2>{frame.active.name}</h2>
-              <p>{ruleCredit(frame.active)}</p>
+              {isSampleLaw(frame.active) && (
+                <StatusChip variant="warm">Sample</StatusChip>
+              )}
+              {ruleCredit(frame.active) && <p>{ruleCredit(frame.active)}</p>}
             </div>
           )}
         </div>
@@ -99,29 +90,20 @@ export function BroadcastView({ showId }: { showId: string }) {
         <div className="broadcast-empty">
           <Brand />
           <Radio size={28} style={{ color: "var(--mint)", marginTop: 20 }} />
-          <h1>Your world is on its way.</h1>
-          <p>
-            Keep the host studio open in this browser profile. This projector
-            receives the real game’s frames; it does not start a second
-            simulation.
-          </p>
+          <h1>Waiting for the studio</h1>
           <Link className="button button-primary" href="/studio">
             Open the studio <ArrowUpRight size={15} />
           </Link>
         </div>
       )}
-      {stale && (
-        <div className="broadcast-disconnect">
-          The studio has stopped sending frames. The last view is preserved.
-        </div>
-      )}
+      {stale && <div className="broadcast-disconnect">Studio disconnected</div>}
       <div className="broadcast-actions">
         <button
           className="button button-outline"
           onClick={() => void document.documentElement.requestFullscreen()}
         >
           <Maximize2 size={16} />
-          Fullscreen projector
+          Fullscreen
         </button>
       </div>
     </main>

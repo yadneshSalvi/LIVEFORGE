@@ -29,6 +29,16 @@ export function ruleDescription(
   return description;
 }
 
+export function isSampleLaw(
+  proposal?: { origin?: string; author?: string } | null,
+): boolean {
+  return Boolean(
+    proposal &&
+    (["sample", "library"].includes(proposal.origin || "") ||
+      proposal.author === "Previously generated sample"),
+  );
+}
+
 export function ruleCredit(
   proposal?: {
     author?: string;
@@ -46,17 +56,17 @@ export function ruleCredit(
     proposal?.origin === "sample" ||
     proposal?.author === "Previously generated sample"
   )
-    return "From a previously generated sample (reused)";
+    return "";
   if (proposal?.origin === "library" && proposal.ancestry?.adaptationSource)
-    return `Original idea by ${proposal.ancestry.originalAuthor || proposal.author || "the original contributor"} · ${adaptationLabel(proposal.ancestry.adaptationSource).toLowerCase()} alternative (reused from library)`;
+    return `Original idea by ${proposal.ancestry.originalAuthor || proposal.author || "the original contributor"} · ${adaptationLabel(proposal.ancestry.adaptationSource).toLowerCase()} alternative`;
   if (proposal?.origin === "library")
-    return `Saved law by ${proposal.ancestry?.originalAuthor || proposal.author || "the original contributor"} (reused)`;
+    return `Saved law by ${proposal.ancestry?.originalAuthor || proposal.author || "the original contributor"}`;
   return `Invented by ${proposal?.author || "the host"}`;
 }
 
 export function proposalOrigin(origin: string): string {
-  if (origin === "sample") return "REUSED ARTIFACT";
-  if (origin === "library") return "SAVED LAW";
+  if (origin === "sample") return "Sample";
+  if (origin === "library") return "Sample";
   if (origin === "adaptation") return "APPROVED ADAPTATION";
   return origin === "twitch" ? "TWITCH IDEA" : "HOST PRACTICE";
 }

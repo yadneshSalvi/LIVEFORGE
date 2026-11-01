@@ -45,7 +45,7 @@ export function buildChatReply(
     return `${mention(proposal.author)} your idea is ${proposal.id} — !back ${proposal.id} to support it. ${CAPABILITY_HINT}`;
   }
   if (item.type === "generation.queued" && proposal)
-    return `${proposal.id} is selected. Codex is forging the next law; the current game continues.`;
+    return `${proposal.id} selected — forging now`;
   if (item.type === "candidate.activated") {
     const candidate = show.candidates.find(
       (c) => c.id === item.candidateId && c.approvedAt,
@@ -56,14 +56,14 @@ export function buildChatReply(
         author.ancestry?.kind === "adaptation" ||
         author.ancestry?.adaptationSource
       )
-        return `Law live — ${alternativeCredit(author.ancestry.adaptationSource)} alternative to ${mention(author.ancestry.originalAuthor)}'s idea${author.ancestry.kind === "library" ? " (reused verified source)" : ""}.`;
+        return `Law live — ${alternativeCredit(author.ancestry.adaptationSource)} alternative to ${mention(author.ancestry.originalAuthor)}'s idea${author.ancestry.kind === "library" ? " · Sample" : ""}.`;
       if (
         author.origin === "sample" ||
         author.author === "Previously generated sample"
       )
-        return "Law live — from a previously generated sample (reused verified source).";
+        return "Sample law live";
       if (author.origin === "library")
-        return `Law live — original idea by ${mention(author.ancestry?.originalAuthor || author.author)} (reused verified source).`;
+        return `Law live — original idea by ${mention(author.ancestry?.originalAuthor || author.author)} · Sample.`;
       return `Law live — invented by ${mention(author.author)}.`;
     }
   }
@@ -72,8 +72,8 @@ export function buildChatReply(
       .reverse()
       .find((j) => j.proposalId === item.proposalId);
     return job?.adaptedProposal
-      ? "That idea needs an adaptation. The host can review a supported alternative; the original idea is preserved."
-      : "That idea could not become a verified law this time. The current game is preserved.";
+      ? "Alternative ready for host review"
+      : "Forge failed — try another idea";
   }
 
   return null;

@@ -98,7 +98,7 @@ describe("broadcast overlay projection", () => {
     const view = overlayView(fixture(), Date.parse("2026-11-01T00:01:05Z"));
     expect(view.ranked.map((proposal) => proposal.id)).toEqual(["P3", "P1"]);
     expect(view.maxVotes).toBe(5);
-    expect(view.phase).toBe("Codex is writing the law");
+    expect(view.phase).toBe("Forging…");
     expect(view.elapsedSeconds).toBe(65);
     expect(overlayDuration(view.elapsedSeconds!)).toBe("1:05");
     expect(JSON.stringify(view)).not.toMatch(
@@ -127,7 +127,7 @@ describe("broadcast overlay projection", () => {
       message: "ignored server message",
     });
     const view = overlayView(show);
-    expect(view.phase).toBe("NEW LAW: Approved — Invented by @Viewer");
+    expect(view.phase).toBe("Live law: Approved — Invented by Viewer");
     expect(view.moment).toBe("A new possibility is live");
     expect(view.laws[0].description).toBe("The approved description");
   });
@@ -145,7 +145,7 @@ describe("broadcast overlay projection", () => {
       { phase: "source-returned", at: "invalid", attempt: 1 },
     ];
     const view = overlayView(show);
-    expect(view.phase).toBe("Codex began writing this idea");
+    expect(view.phase).toBe("Forging…");
     expect(view.milestones.map((item) => item.seconds)).toEqual([10, 12]);
     expect(JSON.stringify(view)).not.toContain("UNREVIEWED MODEL TEXT");
   });

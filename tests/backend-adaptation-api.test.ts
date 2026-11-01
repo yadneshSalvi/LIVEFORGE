@@ -176,9 +176,7 @@ describe("host-reviewed alternatives to failed generations", () => {
       const received = show.events.find(
         (item) => item.type === "proposal.received" && item.proposalId === "P2",
       )!;
-      expect(received.message).toBe(
-        "The host reviewed a separate alternative with the original contributor’s credit.",
-      );
+      expect(received.message).toBe("Alternative added with original credit");
       expect(received.message).not.toContain("Twitch viewer");
       if (origin === "twitch") {
         const reply = buildChatReply(show, received);
@@ -629,7 +627,7 @@ describe("host-reviewed alternatives to failed generations", () => {
       expect(
         importedShow.events.find((item) => item.type === "proposal.received")
           ?.message,
-      ).toBe("A saved law joined the board for fresh review.");
+      ).toBe("Saved law added");
       const publicImport = publicView(importedShow);
       expect(publicImport.proposals[0].ancestry).toEqual({
         kind: "library",

@@ -5,8 +5,12 @@ import { overlayView } from "../src/lib/overlay";
 import {
   OverlayBoard,
   OverlayPhaseStatus,
+  OverlayPresentation,
 } from "../src/components/OverlayBoard";
-import { CommunityProposalCard } from "../src/components/CommunityBoard";
+import {
+  CommunityProposalCard,
+  CommunityPresentation,
+} from "../src/components/CommunityBoard";
 import { CAPABILITY_HINT } from "../src/lib/capabilities";
 import type { PublicShowState } from "../src/server/contracts";
 
@@ -71,7 +75,7 @@ describe("public broadcast and community rendering", () => {
       },
     };
     show.generation!.proposal = show.proposals[0];
-    expect(render(show)).toContain("P3 by Three — streamer is reviewing");
+    expect(render(show)).toContain("P3 by Three — reviewing");
     expect(render(show)).toContain("Original idea by OriginalViewer");
     expect(render(show)).toContain("host-edited alternative");
     show.proposals[0] = {
@@ -81,7 +85,9 @@ describe("public broadcast and community rendering", () => {
     };
     show.generation!.proposal = show.proposals[0];
     show.generation!.reused = true;
-    expect(render(show)).toContain("previously generated sample (reused)");
+    expect(render(show)).toContain("Sample law");
+    expect(overlayView(show).hasSample).toBe(true);
+    expect(render(show)).not.toContain("previously generated");
     expect(render(show)).not.toContain("Invented by");
   });
 
@@ -107,7 +113,7 @@ describe("public broadcast and community rendering", () => {
       at: "2026-11-01T00:02:00Z",
       message: "ignored",
     });
-    expect(render(show)).toContain("Law retired — the world is safe");
+    expect(render(show)).toContain("Law retired");
     expect(render(show)).not.toContain("NEW LAW");
   });
 
@@ -137,10 +143,49 @@ describe("public broadcast and community rendering", () => {
         programHash: "b".repeat(64),
       },
     ];
-    expect(render(show)).toContain("NEW LAW: Approved shadow");
-    expect(render(show)).toContain("Saved law by OriginalViewer (reused)");
+    expect(render(show)).toContain("Sample law: Approved shadow");
+    expect(render(show)).toContain("Saved law by OriginalViewer");
     expect(render(show)).not.toContain("Invented by");
   });
+
+  it.each(["preview", "live"] as const)(
+    "shows one Sample chip across each entire %s public board",
+    (phase) => {
+      const show = fixture();
+      show.mode = "practice";
+      show.phase = phase;
+      show.generation!.status = "ready";
+      show.generation!.reused = true;
+      show.proposals[0] = {
+        ...show.proposals[0],
+        origin: "sample",
+        author: "Previously generated sample",
+      };
+      show.generation!.proposal = show.proposals[0];
+      show.activeLaws = [
+        {
+          name: "Shadow bridge",
+          description: "Shadows support the courier",
+          author: "Previously generated sample",
+          origin: "sample",
+          sourceHash: "a".repeat(64),
+          programHash: "b".repeat(64),
+        },
+      ];
+      for (const content of [
+        createElement(OverlayPresentation, { show, showId: show.id }),
+        createElement(CommunityPresentation, { show }),
+      ]) {
+        const html = renderToStaticMarkup(content);
+        expect(html.match(/status-chip[^>]*>Sample<\/span>/g)).toHaveLength(1);
+        expect(html.match(/status-chip[^>]*>Practice<\/span>/g)).toHaveLength(
+          1,
+        );
+        expect(html).toContain("Sample law");
+        expect(html).not.toContain("Previously generated sample");
+      }
+    },
+  );
 
   it("renders the shared current capability invitation under the overlay commands", () => {
     const html = renderToStaticMarkup(

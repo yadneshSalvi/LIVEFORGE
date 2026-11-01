@@ -113,7 +113,7 @@ export async function createShow(
     lease: null,
     twitch: {
       status: "disconnected",
-      message: "Connect an authorized channel to receive live proposals.",
+      message: "Connect Twitch",
     },
     events: [],
     votingOpen: true,
@@ -199,12 +199,10 @@ export function effectiveTwitchConnection(
   const heartbeat = Date.parse(connection.lastHealthyAt || "");
   if (!show.lease || show.lease.expiresAt <= Date.now()) {
     connection.status = "gap";
-    connection.message =
-      "The active host tab has lost game authority. Twitch intake is paused until control resumes.";
+    connection.message = "Intake paused — return to the game tab";
   } else if (!Number.isFinite(heartbeat) || Date.now() - heartbeat > 70_000) {
     connection.status = "gap";
-    connection.message =
-      "The Twitch connector has missed its heartbeat. Reconnect chat; missed messages cannot be replayed.";
+    connection.message = "Chat disconnected — reconnect";
   }
   return connection;
 }
@@ -292,16 +290,15 @@ export function publicGenerationMessage(
   status: GenerationJob["status"],
 ): string {
   const messages: Record<GenerationJob["status"], string> = {
-    queued: "The next law is queued.",
-    starting: "An isolated workshop is starting.",
-    generating: "Codex is composing the selected idea.",
-    verifying: "Independent game checks are running.",
-    ready: "Checks passed. The host is reviewing the next law.",
-    failed:
-      "The next law needs another attempt. The current game is preserved.",
-    cancelled: "The host stopped forging. The current game continues.",
-    stale: "The world changed. The next law needs a fresh review.",
-    rejected: "The host chose to revise the candidate.",
+    queued: "Queued",
+    starting: "Starting…",
+    generating: "Forging…",
+    verifying: "Verifying…",
+    ready: "Ready for review",
+    failed: "Forge failed — try again",
+    cancelled: "Forge cancelled",
+    stale: "World changed — review again",
+    rejected: "Revision requested",
   };
   return messages[status];
 }
@@ -427,7 +424,7 @@ export function publicView(show: ShowRecord): PublicShowState {
               : undefined;
           })(),
           message: job.reused
-            ? "A previously generated law was loaded; no AI call was made in this show."
+            ? "Sample law loaded"
             : publicGenerationMessage(job.status),
         }
       : null,
@@ -610,14 +607,14 @@ export function addProposal(
     show,
     "proposal.received",
     ancestry?.kind === "adaptation"
-      ? "The host reviewed a separate alternative with the original contributor’s credit."
+      ? "Alternative added with original credit"
       : origin === "library"
-        ? "A saved law joined the board for fresh review."
+        ? "Saved law added"
         : origin === "practice"
-          ? "A practice idea joined the board."
+          ? "Practice idea added"
           : origin === "sample"
-            ? "A previously generated sample joined the board."
-            : "A Twitch viewer proposed a new mechanic.",
+            ? "Sample law added"
+            : "Idea received",
     { proposalId: proposal.id },
   );
   return proposal;
@@ -904,19 +901,14 @@ export function createGeneration(
     updatedAt: now(),
     attempt: 0,
     model: process.env.CODEX_MODEL || "gpt-6.1-sol",
-    message: "Queued for an isolated Codex workspace.",
+    message: "Queued",
     baseRevision: show.revision,
   };
   show.jobs.push(job);
   proposal.status = "selected";
   show.phase = "forging";
   show.votingOpen = false;
-  event(
-    show,
-    "generation.queued",
-    "The selected proposal is queued for Codex.",
-    { proposalId },
-  );
+  event(show, "generation.queued", "Selected — forging now", { proposalId });
   return job;
 }
 export function cancelGeneration(show: ShowRecord, id: string) {
@@ -1382,8 +1374,7 @@ export function importExactSource(
     attempt: 0,
     model: artifact.model,
     threadId: artifact.threadId,
-    message:
-      "Previously generated source imported and independently reverified. No model call was made in this run.",
+    message: "Sample law loaded",
     baseRevision: show.revision,
     reused: true,
     engineVersion: ENGINE_VERSION,
@@ -1429,17 +1420,12 @@ export function importExactSource(
   show.jobs.push(job);
   show.candidates.push(candidate);
   show.phase = "preview";
-  event(
-    show,
-    "candidate.reused",
-    "An exact previously generated source was imported and its current combination reverified. This run made no model call.",
-    {
-      proposalId: proposal.id,
-      candidateId: candidate.id,
-      sourceHash: candidate.sourceHash,
-      programHash: candidate.programHash,
-    },
-  );
+  event(show, "candidate.reused", "Sample law loaded", {
+    proposalId: proposal.id,
+    candidateId: candidate.id,
+    sourceHash: candidate.sourceHash,
+    programHash: candidate.programHash,
+  });
   return candidate;
 }
 export function importPracticeSample(

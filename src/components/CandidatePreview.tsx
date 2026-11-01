@@ -2,24 +2,23 @@
 import { useRef, useState } from "react";
 import {
   ArrowRight,
-  Check,
   CircleCheck,
   FlaskConical,
   LoaderCircle,
-  Play,
   ShieldCheck,
   X,
 } from "lucide-react";
 import { GameViewport, type GameViewportHandle } from "./GameViewport";
 import { Modal } from "./Modal";
+import { StatusChip } from "./StatusChip";
 import type { Candidate, Proposal } from "@/server/contracts";
 import type {
   GameCheckpoint,
   RuleProgram,
   VerificationReport,
 } from "@/game/contracts";
-import { errorMessage, shortHash } from "@/lib/api";
-import { adaptationLabel, ruleCredit, ruleDescription } from "@/lib/rule-copy";
+import { errorMessage } from "@/lib/api";
+import { isSampleLaw, ruleCredit, ruleDescription } from "@/lib/rule-copy";
 
 export function CandidatePreview({
   open,
@@ -46,13 +45,7 @@ export function CandidatePreview({
 }) {
   if (!candidate) return null;
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="A new law. Your call."
-      eyebrow="THE PREVIEW ROOM"
-      wide
-    >
+    <Modal open={open} onClose={onClose} title={candidate.program.name} wide>
       <PreviewContent
         key={candidate.composition?.compositionHash || candidate.sourceHash}
         candidate={candidate}
@@ -139,15 +132,17 @@ function PreviewContent({
           <div className="preview-switch">
             <button
               className={comparison === "baseline" ? "active" : ""}
+              aria-pressed={comparison === "baseline"}
               onClick={() => compare("baseline")}
             >
-              Original world
+              Original
             </button>
             <button
               className={comparison === "candidate" ? "active" : ""}
+              aria-pressed={comparison === "candidate"}
               onClick={() => compare("candidate")}
             >
-              <FlaskConical size={13} /> With your law
+              <FlaskConical size={13} /> With law
             </button>
           </div>
           <GameViewport
@@ -159,36 +154,29 @@ function PreviewContent({
             }}
             onFault={setError}
           />
-          <p className="preview-hint">
-            Click the world to play. A / D to move · Space to jump · E to
-            interact · Q to drop or pick up the ember. Your live world is paused
-            while you test.
-          </p>
         </div>
         <div className="preview-details">
-          <p className="eyebrow">THE PROPOSED LAW</p>
-          <h3>{candidate.program.name}</h3>
+          {(isSampleLaw(proposal) ||
+            candidate.provenance?.kind === "reused-generation" ||
+            candidate.provenance?.kind === "library-import") && (
+            <StatusChip variant="warm">Sample</StatusChip>
+          )}
           <p>
             {ruleDescription(
               candidate.program.description,
               candidate.sourceHash,
             )}
           </p>
-          <div className="preview-attribution">
-            <span className="author-chip">
-              <span className="author-avatar">
-                {(proposal?.author || "H")[0].toUpperCase()}
-              </span>
-              {ruleCredit(proposal)}
-            </span>
-          </div>
+          {ruleCredit(proposal) && (
+            <p className="preview-attribution">{ruleCredit(proposal)}</p>
+          )}
           {candidate.composition && (
-            <div className="preview-combination">
-              <p className="field-label">
+            <details className="preview-combination">
+              <summary>
                 {candidate.composition.mode === "append"
-                  ? "This law joins the current world"
-                  : "This law replaces the current laws"}
-              </p>
+                  ? "Law stack"
+                  : "Replacement"}
+              </summary>
               <ol>
                 {candidate.composition.members.map((member) => {
                   const item =
@@ -202,36 +190,38 @@ function PreviewContent({
                       <span>
                         {item?.program.name || "Previously approved law"}
                       </span>
-                      <code>{shortHash(member.sourceHash)}</code>
                     </li>
                   );
                 })}
               </ol>
-              <p>
-                The complete ordered combination was tested. Later laws take
-                precedence where modifiers overlap.
-              </p>
-            </div>
+            </details>
           )}
           {proposal?.ancestry?.kind === "adaptation" && (
-            <div className="preview-combination">
-              <p className="field-label">
-                {adaptationLabel(proposal.ancestry.adaptationSource)}{" "}
-                alternative
-                {" · "}original idea by {proposal.ancestry.originalAuthor}
-              </p>
+            <details className="preview-combination">
+              <summary>Original idea</summary>
               <p>{proposal.ancestry.originalText}</p>
-            </div>
+            </details>
           )}
-          <VerificationChecks report={report} compact />
-          <p className="preview-identity">
-            VERSION {shortHash(candidate.sourceHash)}
-            <br />
-            ENGINE {report.engineVersion}
-            <br />
-            {report.ticksSimulated.toLocaleString()} independent simulation
-            ticks
-          </p>
+          <details className="verification-disclosure">
+            <summary className="chip status-chip status-chip--good">
+              <CircleCheck size={14} /> Verified
+            </summary>
+            <VerificationChecks report={report} />
+            <dl className="evidence-meta">
+              <div>
+                <dt>Source SHA-256</dt>
+                <dd>{candidate.sourceHash}</dd>
+              </div>
+              <div>
+                <dt>Engine</dt>
+                <dd>{report.engineVersion}</dd>
+              </div>
+              <div>
+                <dt>Ticks simulated</dt>
+                <dd>{report.ticksSimulated.toLocaleString()}</dd>
+              </div>
+            </dl>
+          </details>
         </div>
       </div>
       {revising && (
@@ -243,8 +233,7 @@ function PreviewContent({
           }}
         >
           <label className="field-label" htmlFor="rule-revision">
-            What should change? This starts a fresh generation and preserves the
-            original idea’s credit.
+            Revision
           </label>
           <textarea
             id="rule-revision"
@@ -269,17 +258,12 @@ function PreviewContent({
               type="submit"
               disabled={busy || revision.trim().length < 8}
             >
-              Generate revision <ArrowRight size={13} />
+              Forge revision <ArrowRight size={13} />
             </button>
           </div>
         </form>
       )}
       <div className="preview-decision">
-        <p>
-          Approval belongs to this exact source, ordered combination and
-          preview. Changing the active laws requires a new preview and approval.
-          Activation happens at a checkpoint.
-        </p>
         <div className="button-group">
           <button
             className="button button-quiet"
@@ -291,7 +275,7 @@ function PreviewContent({
             Reject
           </button>
           <button
-            className="button button-outline"
+            className="button button-quiet"
             disabled={busy}
             onClick={() => setRevising((value) => !value)}
           >
@@ -312,7 +296,7 @@ function PreviewContent({
             ) : (
               <ShieldCheck size={16} />
             )}{" "}
-            Approve this version <ArrowRight size={16} />
+            Approve <ArrowRight size={16} />
           </button>
         </div>
       </div>
@@ -352,18 +336,7 @@ export function SamplePreview({
   program: RuleProgram;
 }) {
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Stillness makes a bridge."
-      eyebrow="PRACTICE SAMPLE · PREWRITTEN"
-      wide
-    >
-      <p className="preview-sample-note">
-        This sample was written with the engine to demonstrate its primitives.
-        It is not a new generation or a Twitch contribution. Use your own idea
-        in the studio to run a real Codex job.
-      </p>
+    <Modal open={open} onClose={onClose} title={program.name} wide>
       <div className="preview-grid">
         <div className="preview-game">
           <GameViewport
@@ -371,37 +344,15 @@ export function SamplePreview({
             artifactHash="practice-example"
             preview
           />
-          <p className="preview-hint">
-            Stand beside the wooden prop, then hold E while moving it. Leave it
-            still beside the lantern and cross its solid shadow.
-          </p>
         </div>
         <div className="preview-details">
-          <p className="eyebrow">TRY SOMETHING IMPOSSIBLE</p>
-          <h3>
-            A little stillness.
-            <br />A whole new way across.
-          </h3>
-          <p>
-            When a movable prop stays still in the lantern’s light, its
-            projected shadow becomes a solid surface. Move the prop and the
-            bridge disappears.
-          </p>
-          <div className="capability-chips">
-            <span>Entity queries</span>
-            <span>Conditions</span>
-            <span>Light projection</span>
-            <span>Temporary geometry</span>
-          </div>
-          <p>
-            Generated laws compose these same bounded primitives. No preset
-            selector stands in for generation.
-          </p>
+          <StatusChip variant="warm">Sample</StatusChip>
+          <p>{program.description}</p>
         </div>
       </div>
       <div className="modal-actions">
         <button className="button button-primary" onClick={onClose}>
-          <Check size={16} /> Back to my show <Play size={14} />
+          Done
         </button>
       </div>
     </Modal>

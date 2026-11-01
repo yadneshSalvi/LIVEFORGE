@@ -135,7 +135,7 @@ describe("P0 live state repair", () => {
       author: "Previously generated sample",
     });
     expect(show.jobs.at(-1)?.reused).toBe(true);
-    expect(publicView(show).generation?.message).toContain("no AI call");
+    expect(publicView(show).generation?.message).toBe("Sample law loaded");
   });
   it("rolls the exact current fault back on the server and accepts the next checkpoint", async () => {
     const show = await fixture();

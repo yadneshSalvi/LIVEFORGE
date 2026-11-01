@@ -274,7 +274,7 @@ export async function POST(request: Request, context: Context) {
         process.env.OPENAI_API_KEY,
         503,
         "generation_unconfigured",
-        "Codex generation requires the OpenAI key and Vercel Sandbox identity. Use a previously generated law while setup is checked.",
+        "Forge setup unavailable — load a sample law",
       );
       sandboxAuthentication = await captureSandboxCredentials();
       const requestDescriptor = generationRequest(

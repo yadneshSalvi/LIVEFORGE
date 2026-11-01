@@ -564,3 +564,139 @@
     transition: none;
   }
 }
+
+/* Round 3: calm broadcast presentation. */
+.invitation {
+  max-width: 680px;
+  border-radius: 12px;
+  padding: 24px;
+}
+.signature {
+  flex-wrap: wrap;
+  letter-spacing: 0;
+  font: 14px var(--font-body);
+}
+.commands {
+  flex-wrap: wrap;
+}
+.invitation .hint {
+  font-size: 14px;
+}
+.phaseCard {
+  border-radius: 12px;
+  padding: 24px;
+}
+.phaseCard h2 {
+  margin: 0;
+  font-size: 24px;
+  overflow-wrap: anywhere;
+}
+.phaseCard :global(.status-chip) {
+  margin-top: 12px;
+}
+.phaseDetail {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.proposalTop {
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.proposalTop b {
+  font-size: 14px;
+}
+.proposalFoot > span {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.proposalFoot strong {
+  flex-shrink: 0;
+}
+.proposal > p {
+  font-size: 18px;
+}
+.law {
+  border-radius: 12px;
+}
+.law h2 {
+  font-size: 24px;
+}
+.law > p {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.law > span {
+  font-size: 14px;
+}
+.law :global(.status-chip) {
+  display: inline-flex;
+  margin-top: 0;
+  font-size: 14px;
+}
+.previewTools button:focus-visible,
+.previewTools a:focus-visible {
+  outline: 2px solid #b0eccd;
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .canvas {
+    gap: 24px;
+  }
+  .invitation {
+    padding: 20px;
+  }
+  .commands {
+    gap: 8px;
+  }
+  .commands code {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .phaseCard {
+    padding: 20px;
+  }
+  .lawGrid {
+    gap: 16px;
+  }
+  .previewTools a,
+  .previewTools button {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Broadcast type scale: 24px headings, 18px ideas/brand, 14px detail. */
+.signature strong {
+  font-size: 18px;
+}
+.commands code,
+.proposalTop,
+.proposalTop b,
+.proposalFoot,
+.proposalFoot strong,
+.shortlistHeading > span,
+.previewTools,
+.previewTools button,
+.previewTools a,
+.footer {
+  font-size: 14px;
+}
+.shortlistHeading h2 {
+  font-size: 24px;
+}
+.empty p {
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  .signature strong {
+    font-size: 18px;
+  }
+  .signature,
+  .previewTools,
+  .footer > span {
+    font-size: 14px;
+  }
+}

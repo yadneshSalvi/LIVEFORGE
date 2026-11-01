@@ -291,7 +291,7 @@ describe("OAuth exact redirect, single-use state, encrypted server grants", () =
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("LIVEFORGE_GENERATION_HOST_IDS", "123");
     await expect(requireGenerationHost("host")).rejects.toThrow(
-      /authorized show host/,
+      /Connect Twitch to forge/,
     );
     await store.create("host-auth:host", {
       credentialId: "credential:one",
