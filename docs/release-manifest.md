@@ -1,6 +1,16 @@
 # Release verification
 
-## Current release: round 2 hardening — 1 November 2026
+## Current release: round 3 verifier and UI — 1 November 2026
+
+Source `c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5` passed typecheck, **432 tests across 39 files**, full formatting and an optimized build with **15 static page-generation tasks** (build ID `AxFVpMcmL_hL5IbXFDbJH`). It is pushed to `main`. Deployment `dpl_DGkRR7W79dsG3A3kf2umceq9Rram` is **Ready**, with the canonical alias and signed-out judge path verified after deployment. The canonical target remains [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app).
+
+The verifier now distinguishes safe ceiling contact from sustained runaway, measures dropped-ember and late-onset physics, and distinguishes clause-local cap skips from global budget denial. Gravity 0.999 still rejects, resource limits are unchanged, and canonical security serialization and public filtering remain intact. The [offline replay](evidence/review-round3-2026-11-01/verifier-replay.md) passes **20/20 stored singles and 8/8 review stacks** across both frozen provider sets. Four stack runs compose original provider sources and four are explicitly synthetic acceptance runs. No fresh provider calls, revisions or source substitutions were made; verifier acceptance is not a new intent-fidelity result.
+
+The UI update simplifies Studio, preview, Outputs, library, moderation and public pages; keeps technical data in Evidence or collapsed disclosures; preserves Practice/Sample disclosure and actual author credit; and adds a footer-only How it's built page. Final CSS normalizes mobile controls and dialog typography to the Studio scale and removes the decorative overlay preview label while preserving its transparency control.
+
+The [local browser rehearsal](evidence/review-round3-2026-11-01/local-browser.md) on `313d74f` passed sample preview → approval → activation and observed bridge traversal. Retained audits found no overflow at 390, 1280, 1440 and 1920 px. Typography findings were corrected and verified on production, including the final Archive and Community CSS followup. The [before/after UI index](evidence/ui-pass-2026-11-01/README.md) and [production browser record](evidence/review-round3-2026-11-01/production-browser.md) record the completed production checks. Actual OBS capture, current-release OS-minimized/OBS-covered operation and non-allowlisted quota exhaustion remain unverified.
+
+## Earlier release: round 2 hardening — 1 November 2026
 
 Source `3a74ae32747ec09ba54670cf44363fca32fbac57` passed typecheck, **405 tests across 36 files**, full formatting and an optimized **14-page build**, build ID `r0KgJgn4YzUJ9Wn1o8oVs`. This candidate adds repeated-fault retirement, soft runtime limits with stricter gameplay verification, bounded reply receipts, checkpoint grants, generation refunds, moderator support, public attribution and recorded generation milestones. The hash serialization remains compatible with saved approvals.
 

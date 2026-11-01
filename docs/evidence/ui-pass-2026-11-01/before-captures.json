@@ -1,0 +1,147 @@
+{
+  "deployedRuntime": "3a74ae32747ec09ba54670cf44363fca32fbac57",
+  "browser": "In-app browser; fresh Studio entry in signed-out Chrome",
+  "conditions": "Deployed application, including existing closed/paused show state and new labeled practice. No camera frames, private invitation codes, fresh generation or Twitch messages were created for these captures. Screenshots visually inspected.",
+  "images": [
+    {
+      "path": "before-archive.png",
+      "sha256": "1934b1d0e427ccbfc1a770ad2fc8f7822b37453f7fbac0d7fe604313fd7229bb",
+      "width": 1265,
+      "height": 712,
+      "capturedAt": "2026-11-01T10:32:56.475077+00:00",
+      "rgbStandardDeviationSum": 80.319
+    },
+    {
+      "path": "before-community.png",
+      "sha256": "8481e78647749808f3b84d780e64a39e9ed38dbfbf10ae701ec34bec34f680d1",
+      "width": 1265,
+      "height": 712,
+      "capturedAt": "2026-11-01T10:33:25.027477+00:00",
+      "rgbStandardDeviationSum": 61.234
+    },
+    {
+      "path": "before-entry.png",
+      "sha256": "b2a97f2e3e86a5a48ffc9e2198ae2a0851a0f36143167f7db765aecbe7207a21",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:35:24.415533+00:00",
+      "rgbStandardDeviationSum": 101.001
+    },
+    {
+      "path": "before-evidence.png",
+      "sha256": "e4311f80436909ecdc76e4ccdc6ce84f00316cb872c4a25f2fb485f37b5b4cc2",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:33:18.628510+00:00",
+      "rgbStandardDeviationSum": 60.785
+    },
+    {
+      "path": "before-guide.png",
+      "sha256": "a988f6f4592006912889b73123239dea76f1dd8594daf02290db2c81b8c932bf",
+      "width": 1265,
+      "height": 712,
+      "capturedAt": "2026-11-01T10:33:07.246322+00:00",
+      "rgbStandardDeviationSum": 77.011
+    },
+    {
+      "path": "before-landing.png",
+      "sha256": "deddb59d16f31fa096d59a2beb961c724bf364e6b73d64f121ce4137d3efa2ab",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:32:26.688139+00:00",
+      "rgbStandardDeviationSum": 111.857
+    },
+    {
+      "path": "before-law-card.png",
+      "sha256": "2afeb587a2e89ebb7a79dc28c73f9161e5a24374c40f03c3b9e3fd683dd4c7be",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:32:58.807360+00:00",
+      "rgbStandardDeviationSum": 106.013
+    },
+    {
+      "path": "before-library.png",
+      "sha256": "87d97936e1bb6aad3e11c22fef461e390443e5b180d604b67ab2184ecdecf8c7",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:33:24.965141+00:00",
+      "rgbStandardDeviationSum": 43.833
+    },
+    {
+      "path": "before-moderation.png",
+      "sha256": "2a3fe1a9acedc90586bb5f313678fa889a5951c980e2a3aec382ca0f16a10906",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:33:41.775129+00:00",
+      "rgbStandardDeviationSum": 64.084
+    },
+    {
+      "path": "before-outputs.png",
+      "sha256": "b003ce288b6bf1464bee9df290de32a393ccbf664f0c3254f59c5a3f7098d79f",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:33:07.149468+00:00",
+      "rgbStandardDeviationSum": 79.551
+    },
+    {
+      "path": "before-overlay.png",
+      "sha256": "24505fb1113b6ddb9bba078ea1b4fbe15b03e3e71ef34a2ecb671a0cb336520a",
+      "width": 1265,
+      "height": 712,
+      "capturedAt": "2026-11-01T10:33:18.700977+00:00",
+      "rgbStandardDeviationSum": 84.912
+    },
+    {
+      "path": "before-practice.png",
+      "sha256": "1a463077cf69845bdd4a1a361d11cf3072349322e26bf1c5cafc2637494c559f",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:32:50.319435+00:00",
+      "rgbStandardDeviationSum": 62.639
+    },
+    {
+      "path": "before-preview.png",
+      "sha256": "fbf5a3ff5796a48cd1baa2394357fe2f36c87b4039f1b487d21e11531331f1af",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:33:01.415005+00:00",
+      "rgbStandardDeviationSum": 67.872
+    },
+    {
+      "path": "before-shows.png",
+      "sha256": "59ea02a264a37bc20b246837dc3fb964b7753382ca1983483633f8e37e374780",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:32:36.876022+00:00",
+      "rgbStandardDeviationSum": 52.331
+    },
+    {
+      "path": "before-studio.png",
+      "sha256": "cc4a4a4d7f15d048b57a3b20b777d1033d601b32cebe68fc846d088377bd5df3",
+      "width": 1425,
+      "height": 990,
+      "capturedAt": "2026-11-01T10:32:33.764927+00:00",
+      "rgbStandardDeviationSum": 85.552
+    },
+    {
+      "path": "before-not-found.png",
+      "deployedRuntime": "d2e72175568c715da08e0027b0f7f63f42cd591e",
+      "note": "Functional P0 already deployed; this screen UI remained unchanged before the visual pass.",
+      "sha256": "75f53a35bd474d81d8e36b4ce6c974ecd94878124d58122c12b648046c1687c6",
+      "width": 1280,
+      "height": 720,
+      "capturedAt": "2026-11-01T10:44:50.434074+00:00",
+      "rgbStandardDeviationSum": 73.634
+    },
+    {
+      "path": "before-broadcast.png",
+      "deployedRuntime": "d2e72175568c715da08e0027b0f7f63f42cd591e",
+      "note": "Functional P0 already deployed; this screen UI remained unchanged before the visual pass.",
+      "sha256": "08ca602af56f255cae2e49e672f4e6ef10a3cc0ed19032d68894b02a752216a3",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:45:22.838889+00:00",
+      "rgbStandardDeviationSum": 72.963
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+[
+  {
+    "screen": "studio-candidate",
+    "phase": "local-after",
+    "width": 1280,
+    "height": 1080,
+    "documentWidth": 1280,
+    "visibleElements": 39,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "studio-candidate",
+    "phase": "local-after",
+    "width": 1440,
+    "height": 1080,
+    "documentWidth": 1440,
+    "visibleElements": 39,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "studio-candidate",
+    "phase": "local-after",
+    "width": 1920,
+    "height": 1080,
+    "documentWidth": 1905,
+    "visibleElements": 39,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "studio-candidate",
+    "phase": "local-after",
+    "width": 390,
+    "height": 844,
+    "documentWidth": 375,
+    "visibleElements": 44,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px", "16px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "preview",
+    "phase": "local-after",
+    "width": 1280,
+    "height": 1080,
+    "documentWidth": 1280,
+    "visibleElements": 58,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview",
+    "phase": "local-after",
+    "width": 1440,
+    "height": 1080,
+    "documentWidth": 1440,
+    "visibleElements": 58,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview",
+    "phase": "local-after",
+    "width": 1920,
+    "height": 1080,
+    "documentWidth": 1905,
+    "visibleElements": 58,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview",
+    "phase": "local-after",
+    "width": 390,
+    "height": 844,
+    "documentWidth": 375,
+    "visibleElements": 68,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px", "16px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview-revision",
+    "phase": "local-after",
+    "width": 1280,
+    "height": 1080,
+    "documentWidth": 1280,
+    "visibleElements": 61,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview-revision",
+    "phase": "local-after",
+    "width": 1440,
+    "height": 1080,
+    "documentWidth": 1440,
+    "visibleElements": 61,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview-revision",
+    "phase": "local-after",
+    "width": 1920,
+    "height": 1080,
+    "documentWidth": 1905,
+    "visibleElements": 61,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "preview-revision",
+    "phase": "local-after",
+    "width": 390,
+    "height": 844,
+    "documentWidth": 375,
+    "visibleElements": 71,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px", "16px"],
+    "chips": [
+      "Practice",
+      "Intake closed",
+      "0/3",
+      "Sample",
+      "Verified",
+      "Sample",
+      "Verified"
+    ]
+  },
+  {
+    "screen": "outputs",
+    "phase": "local-after",
+    "width": 1280,
+    "height": 1080,
+    "documentWidth": 1280,
+    "visibleElements": 51,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "outputs",
+    "phase": "local-after",
+    "width": 1440,
+    "height": 1080,
+    "documentWidth": 1440,
+    "visibleElements": 51,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "outputs",
+    "phase": "local-after",
+    "width": 1920,
+    "height": 1080,
+    "documentWidth": 1905,
+    "visibleElements": 51,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  },
+  {
+    "screen": "outputs",
+    "phase": "local-after",
+    "width": 390,
+    "height": 844,
+    "documentWidth": 375,
+    "visibleElements": 56,
+    "issues": [],
+    "fontSizes": ["18px", "14px", "28px", "16px"],
+    "chips": ["Practice", "Intake closed", "0/3", "Sample", "Verified"]
+  }
+]

@@ -4,19 +4,19 @@
 
 **[Open the live app](https://liveforge-iota.vercel.app)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
 
-![A real viewer's held-E gravity law active in the current adventure](docs/evidence/review-round2-2026-11-01/production-active.jpg)
+![The polished Studio with an active sample shadow bridge](docs/evidence/ui-pass-2026-11-01/after-studio.png)
 
-_Actual production session, 1 November 2026: one operator used two real Twitch accounts. A viewer's idea became a new Codex-generated law after host preview and approval._
+_Signed-out production Practice, 1 November 2026: a stored Codex-generated sample was previewed, approved and activated. This UI check made no fresh model call. Earlier real two-account generation remains in the round-2 evidence._
 
 ## Try it in 60 seconds
 
 No Twitch sign-in or API key is needed for this path.
 
-1. Open **The studio → Enter practice**. Click the world; **A/D** move, **Space** jumps, **E** interacts, **Q** drops/picks up the ember, and **R** returns to the encounter checkpoint. Mobile has touch controls.
-2. Choose **Use a previously generated law**. This loads an actual previously Codex-generated artifact, clearly labeled **reused**; it makes no new AI call.
-3. Open **Preview & decide** and walk on the stationary prop’s solid shadow. Your live world pauses during review.
+1. Open **Studio → Enter practice**. Click the world; **A/D** move, **Space** jumps, **E** interacts, **Q** drops/picks up the ember, and **R** returns to the encounter checkpoint. Mobile has touch controls.
+2. Choose **Load sample law**. This loads an actual previously Codex-generated artifact, clearly labeled **Sample**; it makes no new AI call.
+3. Open **Preview** and walk on the stationary prop’s solid shadow. Your live world pauses during review.
 4. Approve the exact version, then **Activate** while grounded. The source supplies the stillness/light/geometry relationship; the engine has no named shadow-bridge preset.
-5. **Restore previous law** returns to the prior combination and activation checkpoint. **Behind the law** shows exact source, hashes, checks and history.
+5. **Restore previous law** returns to the prior combination and activation checkpoint. **Evidence** shows exact source, hashes, checks and history.
 
 The complete lower route, Counterweight Hall and Beacon Guardian work without generated laws. Carry the ember to finish the beacon.
 
@@ -28,19 +28,19 @@ Fresh generation requires an independently authorized Twitch account and availab
 
 [Round-2 production acceptance, 1 November](docs/evidence/review-round2-2026-11-01/production-browser.md): one operator used two real accounts to complete this path under the ordinary public quota, with one generation charged, replies OFF/ON verified, and a real moderator command removing a proposal from all public views. The temporary moderator role was removed afterward. The signed-out practice path also passed on this release. A 15-minute unoperated background-tab run accepted all four sampled proposal/vote pairs; the browser reported visible, so true minimized-window behavior remains unverified.
 
-Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Create reviewed alternative** saves a separate, credited proposal; **Forge the selected idea** starts its fresh generation only when you choose. Model-suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
+Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Create reviewed alternative** saves a separate, credited proposal; **Forge selected idea** starts its fresh generation only when you choose. Model-suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
 
 ## One world, up to three laws
 
-Choose **Add to this world** or **Replace** before forging. Up to three ordered originals share the same limits and are verified together. Approval binds the sources, engine, prior stack, combined program and preview. Later matching property modifiers take precedence. A changed combination requires fresh review.
+Choose **Add** or **Replace** before forging. Up to three ordered originals share the same limits and are verified together. Approval binds the sources, engine, prior stack, combined program and preview. Later matching property modifiers take precedence. A changed combination requires fresh review.
 
-Save an approved law to the private **Law library** and import its exact source into another show with new verification and approval. **Moderation & chat** provides hide/reject actions and private blocked terms; broadcaster/moderator commands include `!hide P1` and `!reject P1`.
+Save an approved law to the private **Law library** and import its exact source into another show with new verification and approval. **Moderation & chat settings** provides hide/reject actions and private blocked terms; broadcaster/moderator commands include `!hide P1` and `!reject P1`.
 
-**Show outputs** provides a transparent, independent **1920 × 1080 OBS Browser Source overlay** for proposals, genuine generation progress and approved laws. Capture the separate game projector with **OBS Window Capture** in the studio’s browser profile. The overlay does not contain or independently simulate the game; keep the studio open.
+**Outputs** provides a transparent, independent **1920 × 1080 OBS Browser Source overlay** for proposals, genuine generation progress and approved laws. Capture the separate game projector with **OBS Window Capture** in the studio’s browser profile. The overlay does not contain or independently simulate the game; keep the studio open.
 
-![The independent public overlay credits the viewer and shows real generation progress](docs/evidence/review-round2-2026-11-01/production-overlay-generating.jpg)
+![The public overlay with one Practice chip and one Sample chip](docs/evidence/ui-pass-2026-11-01/after-overlay.png)
 
-_Actual browser output from the same session. This screenshot establishes the overlay rendering; an OBS capture has not yet been recorded._
+_Current deployed browser overlay from the same Practice flow. This establishes browser rendering; an OBS capture has not yet been recorded._
 
 ## What a law can change
 
@@ -91,7 +91,7 @@ npm run format:check
 npm run build
 ```
 
-The round-2 implementation passed **405 tests across 36 files**, type checking, formatting and an optimized build. **Ten predeclared original ideas → ten laws on the first Codex attempt**, each passing the new eight-check verifier and the unchanged independent intent probes. This is a small synthetic evaluation: every idea matched an available engine capability, and it does not establish arbitrary-language reliability. [Frozen protocol](docs/evidence/review-round2-2026-11-01/evaluation-protocol.json), [fresh generation records](docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-summary.json) and [measured intent results](docs/evidence/review-round2-2026-11-01/provider-3a74ae3/intent-summary.json) retain exact sources, attempts and outcomes.
+The round-3 implementation passed **432 tests across 39 files**, type checking, formatting and an optimized build. [Round-3 verifier replay](docs/evidence/review-round3-2026-11-01/verifier-replay.md) passes all 20 stored single laws and all eight stack cases (four original provider stacks plus four explicitly synthetic numeric fixtures). It made no fresh provider calls. Brief ceiling contact and a law’s own object caps are allowed; sustained ceiling pinning and global budget overflow still reject. Dropped-ember and delayed physics scenarios are covered. The following fresh-generation result belongs to round 2: **Ten predeclared original ideas → ten laws on the first Codex attempt**, each passing the new eight-check verifier and the unchanged independent intent probes. This is a small synthetic evaluation: every idea matched an available engine capability, and it does not establish arbitrary-language reliability. [Frozen protocol](docs/evidence/review-round2-2026-11-01/evaluation-protocol.json), [fresh generation records](docs/evidence/review-round2-2026-11-01/provider-3a74ae3/evaluation-summary.json) and [measured intent results](docs/evidence/review-round2-2026-11-01/provider-3a74ae3/intent-summary.json) retain exact sources, attempts and outcomes.
 
 The [review ledger](docs/review-progress.md) separates implementation, deterministic gates, browser observations, real-provider measurements and remaining acceptance. The [ten predeclared original ideas](docs/evidence/review-2026-11-01/evaluation-proposals.json) and historical [paired latency protocol](docs/evidence/review-2026-11-01/latency-protocol.json) distinguish verifier acceptance from independently measured intent. Reused or adapted laws do not count as original-proposal successes; later account-acceptance runs remain separate.
 

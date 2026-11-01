@@ -1,0 +1,20 @@
+{
+  "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+  "deploymentId": "dpl_DGkRR7W79dsG3A3kf2umceq9Rram",
+  "url": "https://liveforge-o7mzk189s-yadneshsalvis-projects.vercel.app",
+  "canonicalUrl": "https://liveforge-iota.vercel.app",
+  "status": "READY",
+  "typecheck": "passed",
+  "testFiles": 39,
+  "testsPassed": 432,
+  "format": "passed",
+  "build": "passed",
+  "staticPages": 15,
+  "localBuildId": "AxFVpMcmL_hL5IbXFDbJH",
+  "offlineReplay": {
+    "singlesPassed": 20,
+    "stackRunsPassed": 8,
+    "freshProviderCalls": 0
+  },
+  "browserRecord": "production-browser.md"
+}

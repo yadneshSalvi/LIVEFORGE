@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "d2e72175568c715da08e0027b0f7f63f42cd591e",
+  "deploymentId": "dpl_H61NiNY9Cz3h31sbKsD95ipAzehK",
+  "deploymentUrl": "https://liveforge-2d2z96y9n-yadneshsalvis-projects.vercel.app",
+  "canonicalUrl": "https://liveforge-iota.vercel.app",
+  "status": "READY",
+  "createdAt": "2026-11-01T10:37:31Z",
+  "sourceMethod": "Exact git archive of the P0 checkpoint; in-progress UI files excluded.",
+  "gates": {
+    "typecheck": "passed",
+    "tests": 418,
+    "testFiles": 37,
+    "format": "passed",
+    "build": "passed"
+  },
+  "verification": {
+    "frozenSourceSingles": 20,
+    "passingSingles": 20,
+    "stackCases": 8,
+    "passingStacks": 8,
+    "freshProviderCalls": 0
+  }
+}

@@ -1,6 +1,24 @@
 # LIVEFORGE review implementation — 1 November 2026
 
-Current production source is `bbf8ddc`, deployment `dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd`, with **359 tests across 34 files**. The [second-account acceptance record](evidence/review-2026-11-01/second-account-production.md) preserves the real relay failure, corrected retry and completed non-exempt generation path. Earlier checkpoints below retain their historical results.
+## Current status
+
+Round-3 implementation is complete at `c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5`, pushed to `main`. Final gates passed: typecheck, **432 tests across 39 files**, full formatting and an optimized build with **15 static page-generation tasks**. Build-only changes to `next-env.d.ts` were restored. Production deployment `dpl_DGkRR7W79dsG3A3kf2umceq9Rram` is **Ready** at the canonical alias; the signed-out sample-to-bridge judge path and public overlay passed on this final source.
+
+The verifier accepts ordinary ceiling contact and a clause reaching its own surface/spawn cap while still rejecting held-input runaway and global budget denial. Controlled comparisons include dropped embers and physics beginning after tick 300; gravity 0.999 remains an ineffective-law rejection. The Revise action takes the synchronous busy fence. Canonical security serialization, runtime limits, authorization and public filtering remain unchanged. The [offline replay](evidence/review-round3-2026-11-01/verifier-replay.md) passes **20/20 stored singles and 8/8 review stacks** across both original provider sets. The eight stacks include four original-provider compositions and four explicitly labeled synthetic acceptance runs. No fresh provider call, revision or source substitution was made, and these results do not replace the historical intent evaluations.
+
+Studio, dialogs and public pages now use concise labels and compact statuses, with technical details in Evidence or collapsed disclosures. Practice and Sample remain explicit without repeated disclosure chips. The footer links the new How it's built page. Final CSS aligns mobile touch controls, Moderation and Evidence with the Studio's 14/18/28 px type scale and removes the decorative overlay preview label while preserving the transparency control.
+
+The [local browser rehearsal](evidence/review-round3-2026-11-01/local-browser.md) on `313d74f` passed sample preview, Original/With law comparison, approval, activation and an observed crossing into The Counterweight Hall. Retained DOM audits found no overflow at **390, 1280, 1440 and 1920 px**. That initial audit records the typography findings corrected by `5b011d8`; it is not a final-font acceptance claim. The [before/after UI index](evidence/ui-pass-2026-11-01/README.md) and [production browser record](evidence/review-round3-2026-11-01/production-browser.md) record the completed final release checks, including 88 four-width layout observations with zero overflow findings and at most three text sizes.
+
+The verified starting release was runtime `3a74ae32747ec09ba54670cf44363fca32fbac57`, deployed from `e41209c27f3085b8d6d1c2b68705f26e5860d6da` as `dpl_HV7eBQe6qngfzCBUxtYK8MdWsqLC`; its baseline gates passed again with 405 tests across 36 files. [Round-2 production acceptance](evidence/review-round2-2026-11-01/production-browser.md) retains replies OFF/ON, a real moderator hide with subsequent role removal, fresh generation and signed-out practice. Three blank screenshots were removed and their historical capture failures are explicit.
+
+Actual OBS capture, current-release OS-minimized/OBS-covered operation and non-allowlisted quota exhaustion remain unverified. The 15-minute round-2 relay test was unoperated but the browser reported visible. Historical records below retain their original source identities, test counts and acceptance limits.
+
+## Historical round-1 ledger
+
+The records below preserve their original checkpoints; their test counts and pending items describe those older releases.
+
+The round-1 production source was `bbf8ddc`, deployment `dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd`, with **359 tests across 34 files**. The [second-account acceptance record](evidence/review-2026-11-01/second-account-production.md) preserves the real relay failure, corrected retry and completed non-exempt generation path. Earlier checkpoints below retain their historical results.
 
 Work branch: `review/liveforge-improvements`, starting from clean `main` at `5832d42`. This ledger tracks the work order in the parent `projects_review.md`; it does not treat implementation or mocked tests as real-world acceptance.
 

@@ -1,0 +1,215 @@
+{
+  "canonicalOrigin": "https://liveforge-iota.vercel.app",
+  "finalRuntime": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+  "finalDeployment": "dpl_DGkRR7W79dsG3A3kf2umceq9Rram",
+  "method": "Actual deployed Chrome browser screenshots. Per-image source identities retain the initial UI deployment and final CSS followup. All images visually inspected; no compositing of UI states. No fresh generation or Twitch messages.",
+  "images": [
+    {
+      "path": "after-archive-details.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "fd011aa4ca41567df6d0eba70a0998094d8c105fb4c0644de6e897247c29f5e0",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:57:39.927796+00:00",
+      "rgbStandardDeviationSum": 56.866
+    },
+    {
+      "path": "after-archive.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "6fd2d157719f91b81dfaa32828c1af43f6d187e3a7d1f321ea8a5b741f1c3267",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:04.408183+00:00",
+      "rgbStandardDeviationSum": 51.547
+    },
+    {
+      "path": "after-bridge-crossed.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "fe4596f6a9dcb4f225845533ab3ffaf996abd5e1281f31ef588b43b8594ce4a1",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:57:57.177932+00:00",
+      "rgbStandardDeviationSum": 111.554
+    },
+    {
+      "path": "after-broadcast.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "3b2123476c3443d067f4a301143e5a6935ff0878424328b67224fdeebcc7b255",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:30.904852+00:00",
+      "rgbStandardDeviationSum": 78.701
+    },
+    {
+      "path": "after-community.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "cf0d461dfd32571ee066bcbf017aefcc194fe508a876e5ce99719c733997f78f",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:57:41.254093+00:00",
+      "rgbStandardDeviationSum": 65.904
+    },
+    {
+      "path": "after-entry.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "8cb91cb260c19d4e45f34056572ab72e0da3c66b374cee5a5bcfbaf492734c64",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:01.076462+00:00",
+      "rgbStandardDeviationSum": 71.518
+    },
+    {
+      "path": "after-evidence-source.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "779168dc828b8b762f50df46713b9c9e86ed60f8ef637d537671529645351ca1",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:50.196759+00:00",
+      "rgbStandardDeviationSum": 60.627
+    },
+    {
+      "path": "after-evidence-verification.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "4997e9361e5785de9668326c69e8ec2f6b4159d4803609640e8560b8360e40fa",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:50.685579+00:00",
+      "rgbStandardDeviationSum": 66.562
+    },
+    {
+      "path": "after-evidence.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "83a5669754d11234c29482dffbe8eb98550523fe9317cdad52eb647faa8883f4",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:49.718958+00:00",
+      "rgbStandardDeviationSum": 57.938
+    },
+    {
+      "path": "after-guide.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "7c8b329b8cff012d333c3ecae54edc9f1f340410e4c85ddad76465117655f4f0",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:10.527637+00:00",
+      "rgbStandardDeviationSum": 60.493
+    },
+    {
+      "path": "after-how-built.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "786e53786ffcad5169f708dd156ef746c441ca2e3a17e9168f733e343b083cde",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:10.901859+00:00",
+      "rgbStandardDeviationSum": 65.242
+    },
+    {
+      "path": "after-landing.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "ac85c3094a8379deae031dbaafa24488aa44ab0f14c262bf98fe868f6caed407",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:56:19.232877+00:00",
+      "rgbStandardDeviationSum": 131.646
+    },
+    {
+      "path": "after-law-card.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "901ee2c54c35015d981918012faf7ba0a424d0aa5baf4787699feb769e978bd4",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:08.980396+00:00",
+      "rgbStandardDeviationSum": 97.205
+    },
+    {
+      "path": "after-library.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "1c925edbb707ebc0f6d2d8159a2d8c5f88be10182f7ccd04337dc18660e21f08",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:27.154564+00:00",
+      "rgbStandardDeviationSum": 56.81
+    },
+    {
+      "path": "after-mobile.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "07ed59a65ee88cb3f4ff280b00ca906ee6ba0c0dc26197b6e8471fbcdf032d0e",
+      "width": 390,
+      "height": 844,
+      "capturedAt": "2026-11-01T10:58:10.334550+00:00",
+      "rgbStandardDeviationSum": 102.282
+    },
+    {
+      "path": "after-moderation.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "061bbd8f0754e6eb185d6e1d845d984b7541bec4e3721eae1d64af18b379ec80",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:48.709775+00:00",
+      "rgbStandardDeviationSum": 61.855
+    },
+    {
+      "path": "after-not-found.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "4a2548e3b2f0261b67332bcb1bea0bb5287f4919e687d762aea6be4601b38e90",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:55:27.653765+00:00",
+      "rgbStandardDeviationSum": 48.72
+    },
+    {
+      "path": "after-outputs.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "d43c87cb41b5cd3a4f486da06b7fda5acd9d91b3800b7a8f90f8034937586e09",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:58:04.315599+00:00",
+      "rgbStandardDeviationSum": 57.008
+    },
+    {
+      "path": "after-overlay.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "8ded72e29b8afe6b92912eeb10b5b6478ddd9c0067c52d1004d2d90e24918a46",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:58:05.564853+00:00",
+      "rgbStandardDeviationSum": 74.902
+    },
+    {
+      "path": "after-practice.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "c09c9f792ee3b26fb50e6293f258a081bc30ab3b81418f5ff877b16837369fdd",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:06.188177+00:00",
+      "rgbStandardDeviationSum": 66.187
+    },
+    {
+      "path": "after-preview.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "9775c6312ecbe542161a13be454b8ccbbfa04766296fbe0e77dbce3ca0d678ef",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:09.472417+00:00",
+      "rgbStandardDeviationSum": 69.988
+    },
+    {
+      "path": "after-shows.png",
+      "source": "5b011d8be01dc102ab82121e01fd40f7e786370e",
+      "sha256": "f7d3964ff53c7b9066717b2db5ad83be3381cddc94ac54ff3841bf7ae0eed68a",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:54:54.526212+00:00",
+      "rgbStandardDeviationSum": 56.565
+    },
+    {
+      "path": "after-studio.png",
+      "source": "c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5",
+      "sha256": "79fcc9b82616d1aacc1e66c88dea00f9156bb3edfa1f5a015e81e2c9238100f0",
+      "width": 1440,
+      "height": 1000,
+      "capturedAt": "2026-11-01T10:57:52.960774+00:00",
+      "rgbStandardDeviationSum": 108.839
+    }
+  ]
+}

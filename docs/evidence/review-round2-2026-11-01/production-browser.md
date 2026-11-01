@@ -8,11 +8,11 @@ One operator used two real accounts. The host was `yadneshsalvi96`; `yadneshujwa
 
 The new Twitch show was `43eb69c6-e1fa-4398-810b-7c04b8a65133`. OAuth used the expected account and existing scopes. Replies began off.
 
-- At 05:59:52 UTC, the second account sent `!forge Give the courier moon gravity so jumps float farther.` The studio accepted P1. The chat transcript showed the command and no automatic acknowledgement before replies were enabled at 06:00:42. [Replies-off screenshot](production-replies-off.jpg).
+- At 05:59:52 UTC, the second account sent `!forge Give the courier moon gravity so jumps float farther.` The studio accepted P1. The chat transcript showed the command and no automatic acknowledgement before replies were enabled at 06:00:42. Replies-off screenshot: capture failed; the blank artifact was removed during round 3.
 - The host refreshed its existing optional read/write-chat grant and explicitly switched replies on. The earlier P1 did not receive a retrospective acknowledgement.
 - `yadneshujwal` held a real Twitch moderator badge and sent `!hide P1` at 06:00:49. Twitch accepted the message; the studio shortlist, community board and overlay all removed P1. The evidence drawer recorded an authorized moderator action. [Studio result](production-moderator-hidden.jpg) and [anonymous public projection](production-moderator-public.json).
-- The role was immediately removed with `/unmod yadneshujwal`; Twitch confirmed removal. [Removal screenshot](production-moderator-removed.jpg). Subsequent proposal messages had no moderator badge.
-- At 06:01:06, the second account sent the held-E gravity proposal. P2 arrived and the host account posted one acknowledgement with the updated capability hint. A real `!back P2` produced support 1. Later, selection and activation produced the two expected additional replies. [Replies-on screenshot](production-replies-on.jpg).
+- The role was immediately removed with `/unmod yadneshujwal`; Twitch confirmed removal. Removal screenshot: capture failed; the blank artifact was removed during round 3. Subsequent proposal messages had no moderator badge.
+- At 06:01:06, the second account sent the held-E gravity proposal. P2 arrived and the host account posted one acknowledgement with the updated capability hint. A real `!back P2` produced support 1. Later, selection and activation produced the two expected additional replies. Replies-on screenshot: capture failed; the blank artifact was removed during round 3.
 - Replies were switched off again after this flow, and the UI confirmed the saved setting.
 
 ## Fresh proposal to active law

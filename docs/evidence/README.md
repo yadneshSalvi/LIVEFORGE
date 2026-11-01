@@ -2,9 +2,19 @@
 
 This index separates tests, real integrations and browser observations. No synthetic participant is presented as a Twitch viewer, no stored sample is presented as a fresh generation, and planned acceptance targets are not reported as results.
 
-The latest [second-account production record](review-2026-11-01/second-account-production.md) covers source `bbf8ddc` and its 359-test release: one operator, two real accounts, a non-exempt fresh generation with one quota debit, exact approval/activation, three observed replies, and corrected viewer/broadcaster moderation. It retains the original relay failure and stale-browser retry. Moderator-badge, quota-exhaustion, forced-replay and OBS claims remain excluded.
+The historical round-1 [second-account production record](review-2026-11-01/second-account-production.md) covers source `bbf8ddc` and its 359-test release: one operator, two real accounts, a non-exempt fresh generation with one quota debit, exact approval/activation, three observed replies, and corrected viewer/broadcaster moderation. It retains the original relay failure and stale-browser retry. Moderator-badge, quota-exhaustion, forced-replay and OBS claims remain excluded.
 
-## Current review: predeclared experiments
+## Round-3 verifier and UI
+
+Source `c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5` passed typecheck, **432 tests across 39 files**, full formatting and an optimized **15-page build**. The [current review status](../review-progress.md) records the verifier fixes, synchronous Revise fence, concise Studio/public UI, disclosure placement and final typography corrections. The final deployment is **Ready**; signed-out sample loading, preview, approval, activation, bridge traversal and public overlay passed.
+
+The [verifier replay report](review-round3-2026-11-01/verifier-replay.md) and [complete replay data](review-round3-2026-11-01/verifier-replay.json) retain **20/20 passing stored singles and 8/8 passing review stacks** across both frozen provider sets. Four stack runs use original provider sources; four are explicitly labeled synthetic acceptance runs. This was offline verification with no fresh provider calls, revisions or source substitutions. Historical generation results and intent reviews remain separate.
+
+The [local browser rehearsal](review-round3-2026-11-01/local-browser.md) on `313d74f` records sample preview, approval, activation, bridge traversal and zero overflow at 390, 1280, 1440 and 1920 px. Its initial typography findings drove the final CSS corrections and are retained as findings. The [before/after UI evidence index](ui-pass-2026-11-01/README.md) and [production browser record](review-round3-2026-11-01/production-browser.md) record the completed production acceptance and 88 passing four-width layout observations.
+
+[Round-2 production acceptance](review-round2-2026-11-01/production-browser.md) preserves actual moderator behavior and removal, reply toggles, fresh generation, signed-out practice, and a 15-minute unoperated relay check on its original release. Three blank captures from that record were removed; their failed captures remain disclosed.
+
+## Historical review: predeclared experiments
 
 The [implementation ledger](../review-progress.md) tracks L1–L17 without treating code or mocked tests as external acceptance. The root froze [ten original intent requests](review-2026-11-01/evaluation-proposals.json), [independent intent experiments](review-2026-11-01/intent-experiments.md), [composition experiments](review-2026-11-01/composition-experiments.json) and a [paired latency protocol](review-2026-11-01/latency-protocol.json) before evaluating generated artifacts. All provider outcomes are retained; adaptation, reuse and verifier acceptance are reported separately from original intent success. The [original frozen engine 2 evaluation](review-2026-11-01/provider-5ac7482-originals/) contains ten fresh generations and ten independent intent/replay/rollback passes. Every original run fell back cold; those records are not a snapshot-speed result. The [engine 2 browser record](review-2026-11-01/engine2-browser.md) and [ten case observations](review-2026-11-01/browser-intent-observations.md) separately record observed behavior, exact two/three-law activation and rollback, legacy upgrade and synthetic runtime-fault recovery.
 

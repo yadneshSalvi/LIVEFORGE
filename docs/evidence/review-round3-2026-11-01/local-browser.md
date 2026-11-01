@@ -1,0 +1,11 @@
+# Round-3 local browser acceptance
+
+Optimized build from `313d74f`, served on port 3100; 1 November 2026. The coordinating operator used the in-app browser for the product journey and Chrome for a fresh anonymous entry. No fresh generation, Twitch message, camera, or broadcast was used.
+
+Practice show `8e3230e5-359e-493d-ab17-d6110cc2400d` loaded the stored Settled Prop Shadow Bridge source, opened Preview, compared Original/With law, expanded verification, opened and cancelled revision, approved, then activated. After focusing the actual canvas, holding D for 3.5 seconds moved the courier from The Broken Crossing across the shadow bridge into The Counterweight Hall. The world was paused afterward. [Crossing screenshot](../ui-pass-2026-11-01/local-bridge-crossed.png).
+
+Library, Shows, all three Evidence tabs, Outputs, Moderation, landing, populated Archive, Guide, How it’s built, not-found, populated overlay and Community board were inspected. The review’s exact DOM overflow predicate returned no findings at 1280, 1440, 1920 and 390 px on the retained inspected surfaces. [Initial layout audit](../ui-pass-2026-11-01/local-overflow-initial.json) retains a subset covering candidate, preview, revision and Outputs, including the mobile touch-button inconsistency. Moderation and other initial audit results were observed in tool output but were not retained by that accumulator. Those findings drove CSS corrections; the initial report is not relabeled as a clean final-font audit. The decorative overlay preview eyebrow was also removed after this check.
+
+The audit runs through browser CDP Runtime.evaluate against actual DOM geometry. An earlier preliminary proxy-based inspection reported null offsetParent values for visible controls and was discarded; it is not evidence. Every retained audit row asserts the requested viewport width and a nonzero visible-element count. Populated Shows and Archive have separate rows from their loading states. Modal rows include the dimmed Studio underneath; repeated chips there are separate contexts.
+
+No OBS capture, genuinely minimized/OBS-covered session, or non-allowlisted quota exhaustion was attempted in this round. Earlier real integration evidence retains its original release identity. Final production checks are recorded separately.
