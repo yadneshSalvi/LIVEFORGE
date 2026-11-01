@@ -4,6 +4,10 @@ This index separates tests, real integrations and browser observations. No synth
 
 The historical round-1 [second-account production record](review-2026-11-01/second-account-production.md) covers source `bbf8ddc` and its 359-test release: one operator, two real accounts, a non-exempt fresh generation with one quota debit, exact approval/activation, three observed replies, and corrected viewer/broadcaster moderation. It retains the original relay failure and stale-browser retry. Moderator-badge, quota-exhaustion, forced-replay and OBS claims remain excluded.
 
+## Current release: round 4 fixes — 2 November 2026
+
+Source `4ff08544cf9bea3bed56b32a37a8faa85a8b4222` passed typecheck, **460 tests across 39 files**, formatting and an optimized build, and is deployed as `dpl_DRVPrz1F3C2bkQiWMgLeRg3zqCtx` (**Ready**) at https://liveforge-iota.vercel.app. The [round-4 replay](review-round4-2026-11-02/README.md) passes **20/20 stored singles and 8/8 review stacks** with reports identical to round 3, while laws that keep the courier pinned to the ceiling are now rejected. A signed-out production check loaded the stored sample, previewed it and crossed the shadow bridge.
+
 ## Round-3 verifier and UI
 
 Source `c0e5acdadc40d2d0d9eed7239b116e7a5ac032c5` passed typecheck, **432 tests across 39 files**, full formatting and an optimized **15-page build**. The [current review status](../review-progress.md) records the verifier fixes, synchronous Revise fence, concise Studio/public UI, disclosure placement and final typography corrections. The final deployment is **Ready**; signed-out sample loading, preview, approval, activation, bridge traversal and public overlay passed.
