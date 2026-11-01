@@ -1,5 +1,20 @@
 # Actual isolated generation evidence
 
+## Round 2 stricter verifier — 1 November 2026
+
+The [frozen protocol](../review-round2-2026-11-01/evaluation-protocol.json) reran all ten original proposals with real Codex calls on source `3a74ae3`. All ten passed on their first attempt with eight checks each. The unchanged independent intent probes also passed for all ten. [Generation results](../review-round2-2026-11-01/provider-3a74ae3/evaluation-summary.json) and [intent measurements](../review-round2-2026-11-01/provider-3a74ae3/intent-summary.json) retain the exact sources and observations. These are synthetic practice proposals that fit available primitives, not real chat participants or a universal correctness claim. Fresh browser observations remain separate from this provider evaluation.
+
+## Engine-2 evaluation of ten predeclared ideas
+
+The [ten original ideas](../review-2026-11-01/evaluation-proposals.json) were written down before the engine-2 implementation was frozen. All ten produced an accepted law on the first Codex attempt under that release's verifier; each request matched an available engine primitive. This is a small supported-input evaluation, not an estimate of success on arbitrary chat ideas. Preserve the distinction between a verifier pass and matching the requested behavior:
+
+- [Original provider results and exact sources](../review-2026-11-01/provider-5ac7482-originals/evaluation-summary.json)
+- [Independent intent, replay and rollback experiments](../review-2026-11-01/intent-experiments.md)
+- [Separate browser observations](../review-2026-11-01/browser-intent-observations.md)
+- [Five paired cold/snapshot latency trials](../review-2026-11-01/latency-analysis.md)
+
+The earlier four-case and integration records below remain historical measurements. Their original tick counts and outcomes are not rewritten to imply that a later verifier was used.
+
 These records are real server-side Codex SDK calls in short-lived Vercel Sandbox microVMs. Input origin is **synthetic practice**, not Twitch participation. They establish runtime generation and validation only; root's separate Twitch evidence must establish real viewer ingestion. No refresh token, API key, owner identifier, chat actor hash, or raw SDK conversation is included.
 
 Initial integration probes, 31 October 2026:

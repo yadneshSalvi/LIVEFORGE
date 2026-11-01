@@ -1,5 +1,11 @@
 # Release verification
 
+## Round 2 release candidate — 1 November 2026
+
+Source `3a74ae32747ec09ba54670cf44363fca32fbac57` passed typecheck, **405 tests across 36 files**, full formatting and an optimized **14-page build**, build ID `r0KgJgn4YzUJ9Wn1o8oVs`. This candidate adds repeated-fault retirement, soft runtime limits with stricter gameplay verification, bounded reply receipts, checkpoint grants, generation refunds, moderator support, public attribution and recorded generation milestones. The hash serialization remains compatible with saved approvals.
+
+The baseline was independently gated before edits: 359 tests across 34 files, typecheck, formatting and a 14-page build. The stricter ten-case rerun followed the [frozen evaluation protocol](evidence/review-round2-2026-11-01/evaluation-protocol.json): all ten original proposals passed on their first real Codex attempt, with eight checks each; all unchanged independent intent probes passed. The [local browser rehearsal](evidence/review-round2-2026-11-01/local-browser.md) separately verified reused-law preview, approval, activation, rollback, public moderation and a 1920 × 1080 overlay. This section does not claim production deployment yet.
+
 ## Current release: Twitch moderation relay — 1 November 2026
 
 Canonical app: https://liveforge-iota.vercel.app. Deployed/runtime source `bbf8ddc7c46784b3d67a671d2ba07efc8e12c793`, deployment `dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd`. Typecheck, **359 tests across 34 files**, changed-file formatting and diff checks passed. The release owner’s optimized build completed 14 pages (`dzegbGH3FPClVG8kNfmhv`). The browser now forwards bounded moderation commands with their original badges; the generation prompt and game/compiler are unchanged.
@@ -30,7 +36,7 @@ Root evidence commit `074ab32` retains ten original real generations with indepe
 
 LIVEFORGE is deployed at [liveforge-iota.vercel.app](https://liveforge-iota.vercel.app). Local and production browser verification passed; the remaining evidence limits are stated below.
 
-## Reproducible checks
+## Historical 31 October checks (superseded by the current release above)
 
 | Check                  | Observed result                                                                                                                    |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -60,7 +66,7 @@ Real Twitch OAuth, EventSub, and public command ingress passed after explicit us
 
 [Generation evidence](evidence/generation/README.md) retains actual SDK thread IDs, exact source bytes/hashes, model usage, sandbox identity and timings. Four curated new proposals passed the trusted verifier on their first attempt. A material-behavior nuance was found in one accepted source and corrected through a real new revision; verifier acceptance and full intent fidelity are reported separately. A real request to extract secrets produced no candidate.
 
-The runtime composes six generic actions through a restricted literal language. It does not execute arbitrary generated TypeScript. One experimental law is active at a time. Independent fixtures establish bounded observable behavior, determinism and recovery for those tests; they do not prove arbitrary natural-language correctness or every possible level state.
+That historical engine-1 release supported six generic actions and one active law. Engine 2 now supports nine action types (physics, material, shadow projection, surfaces, platform spawning, prop spawning, impulses, cues and timers), with up to three laws checked together. The [current runtime contract](rule-runtime.md) is authoritative for supported limits. Generated TypeScript is parsed as bounded data rather than executed. Independent fixtures establish behavior, determinism and recovery for their tested cases; they do not prove arbitrary natural-language correctness or every possible level state.
 
 No frame-rate benchmark, 30-proposal reliability result, human usability study or universal generation-latency guarantee is claimed. Generation coordination has a finite function/Sandbox lifetime and fails visibly after interruption; it is not a durable resumable worker service. The supported projector capture path is a same-browser window, with the studio kept open.
 

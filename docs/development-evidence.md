@@ -2,6 +2,8 @@
 
 The actual coordinating development session is `01a190da-3cee-7a10-b7c1-e0cdbb379510`. The implementation lead thread is `01a191a4-623f-7533-9ef5-5f69ebeb704f`. The root read its IDs from the trusted Codex environment; the implementation lead independently read `CODEX_THREAD_ID` and `CODEX_SESSION_ID`. These identify real build conversations, not reconstructed examples. The release owner should confirm the main submission thread with `/status` when preparing the submission.
 
+During round 2 on 1 November 2026, the root independently opened the implementation lead with the Codex app's `read_thread` tool. It returned the same thread ID and completed LIVEFORGE implementation history, including the explicit-alternative release. This verifies the project-specific development identifier; it does not claim that `/status` was executed or that a submission has been sent.
+
 The user explicitly requested a GPT-6 Astra lead and GPT-6.1 Sol implementation workers. The lead divided disjoint responsibilities between game/runtime and backend/integrations, then owned product UI, integration, review and release documentation. The coordinating root owned actual in-app-browser testing, provider/account provisioning and deployment. No private transcripts, keys or whole environment files are committed.
 
 Concrete Codex-assisted engineering iterations retained in this repository include:
@@ -34,7 +36,7 @@ Concrete additional iterations include:
 
 ### Deterministic gate at the review freeze
 
-The lead recorded passing typecheck, formatting, **263 tests across 28 files**, and an optimized **14-page build** at checkpoint `5ac7482`. This is a deterministic release gate, not a claim that all ten fresh provider generations or every browser intent experiment passed. The root froze the ten original proposals and comparative/composition protocols before those runs; the real ten-case generation results and at least five paired cold/warm latency trials were still pending at this documentation update.
+The lead recorded passing typecheck, formatting, **263 tests across 28 files**, and an optimized **14-page build** at checkpoint `5ac7482`. This is a historical deterministic gate. The ten proposals and comparative/composition protocols were frozen before provider calls. The subsequent [ten-case evaluation](evidence/review-2026-11-01/provider-5ac7482-originals/evaluation-summary.json), [independent intent experiments](evidence/review-2026-11-01/intent-experiments.md), and [five paired cold/snapshot trials](evidence/review-2026-11-01/latency-analysis.md) are now complete and retained with their original sources and measurements. Those historical results do not imply acceptance under a later verifier; later evaluations are recorded separately.
 
 ### Observed P0 browser evidence
 

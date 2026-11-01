@@ -1,0 +1,90 @@
+{
+  "observedAt": "2026-11-01T05:53:40.502Z",
+  "url": "http://localhost:3100/api/shows/209c055f-eeef-4e64-85e7-0efa74688110",
+  "status": 200,
+  "sourceCommit": "3a74ae32747ec09ba54670cf44363fca32fbac57",
+  "show": {
+    "id": "209c055f-eeef-4e64-85e7-0efa74688110",
+    "createdAt": "2026-11-01T05:51:00.466Z",
+    "updatedAt": "2026-11-01T05:53:34.324Z",
+    "engineVersion": "last-light/2.0.0",
+    "activeLaws": [],
+    "mode": "practice",
+    "votingOpen": true,
+    "phase": "collecting",
+    "round": 2,
+    "revision": 2,
+    "proposals": [
+      {
+        "id": "P1",
+        "text": "A movable prop casts a solid shadow only after staying still for 30 ticks; moving it should dissolve the shadow bridge immediately.",
+        "votes": 0,
+        "author": "Previously generated sample",
+        "origin": "sample",
+        "status": "rejected",
+        "createdAt": "2026-11-01T05:51:19.627Z"
+      }
+    ],
+    "active": null,
+    "generation": {
+      "status": "ready",
+      "createdAt": "2026-11-01T05:51:19.209Z",
+      "updatedAt": "2026-11-01T05:51:19.209Z",
+      "reused": true,
+      "message": "A previously generated law was loaded; no AI call was made in this show."
+    },
+    "twitch": {
+      "status": "disconnected"
+    },
+    "events": [
+      {
+        "at": "2026-11-01T05:51:00.466Z",
+        "id": "6666daea-ce03-4217-96fd-8c1be64c3112",
+        "type": "show.created",
+        "message": "Practice studio created. Inputs here are labeled practice."
+      },
+      {
+        "at": "2026-11-01T05:51:19.627Z",
+        "id": "99c27b71-0428-480f-9335-3073bdc139ef",
+        "type": "proposal.received",
+        "message": "A previously generated sample joined the board.",
+        "proposalId": "P1"
+      },
+      {
+        "at": "2026-11-01T05:51:19.627Z",
+        "id": "cc6c909f-4d95-484f-944a-96938317c3c8",
+        "type": "candidate.reused",
+        "message": "An exact previously generated source was imported and its current combination reverified. This run made no model call.",
+        "proposalId": "P1",
+        "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+        "candidateId": "e50531d4-0570-48f9-ba80-855516388960",
+        "programHash": "e2c587406b146dbed283c9bcec7fb620d377970a07211bc23ec907ef35956a6c"
+      },
+      {
+        "at": "2026-11-01T05:51:39.074Z",
+        "id": "f015df13-8ed6-411c-bed7-9f19c3355c5d",
+        "type": "candidate.approved",
+        "message": "The host approved the exact source, retained combination, and preview.",
+        "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+        "candidateId": "e50531d4-0570-48f9-ba80-855516388960",
+        "previewHash": "59ad0a95bd58518f7df668430b070c3ecde0ddc056ad1a2431549daa65271d96",
+        "programHash": "e2c587406b146dbed283c9bcec7fb620d377970a07211bc23ec907ef35956a6c"
+      },
+      {
+        "at": "2026-11-01T05:51:59.822Z",
+        "id": "828d5f05-bc7e-4cbf-84d6-dea26aa8a950",
+        "type": "candidate.activated",
+        "message": "Settled Prop Shadow Bridge entered the approved law stack at a saved checkpoint.",
+        "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+        "candidateId": "e50531d4-0570-48f9-ba80-855516388960",
+        "programHash": "e2c587406b146dbed283c9bcec7fb620d377970a07211bc23ec907ef35956a6c"
+      },
+      {
+        "at": "2026-11-01T05:52:51.450Z",
+        "id": "ed45fef2-a4de-4a1c-a427-a16b28dc6863",
+        "type": "world.rollback",
+        "message": "The previous activation checkpoint was restored. Progress after that checkpoint is reset."
+      }
+    ]
+  }
+}
