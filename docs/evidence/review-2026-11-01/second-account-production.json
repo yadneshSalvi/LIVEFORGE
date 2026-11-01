@@ -1,0 +1,330 @@
+{
+  "observedAt": "2026-11-01T04:00:10.856Z",
+  "showId": "c959ad07-1cc7-4ee9-893b-e01f97af654d",
+  "readOnly": "Two parameterized SELECTs; no store initialization or grant refresh",
+  "channel": {
+    "login": "yadneshsalvi96"
+  },
+  "oauth": {
+    "authorizationCodeGrant": true,
+    "grantReady": true,
+    "hostIdentityMatchesChannel": true
+  },
+  "show": {
+    "mode": "twitch",
+    "phase": "live",
+    "twitchStatus": "connected",
+    "chatRepliesEnabled": false,
+    "chatRepliesEnabledAt": null,
+    "proposalCount": 1,
+    "candidateCount": 1,
+    "proposals": [
+      {
+        "id": "P1",
+        "author": "yadneshujwal",
+        "origin": "twitch",
+        "status": "selected",
+        "support": 0,
+        "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity."
+      }
+    ],
+    "jobs": [
+      {
+        "id": "2c454278-73da-a333-8408-a8bdabd9a913",
+        "model": "gpt-6.1-sol",
+        "reused": false,
+        "status": "ready",
+        "attempt": 1,
+        "quotaDay": "2026-11-01",
+        "threadId": "01a19542-4658-7fe1-b704-ac4284c3432e",
+        "createdAt": "2026-11-01T03:58:21.052Z",
+        "updatedAt": "2026-11-01T03:58:46.006Z",
+        "proposalId": "P1",
+        "candidateId": "23f25ea5-4ddc-4471-8b03-670f3121f459",
+        "quotaExempt": false,
+        "engineVersion": "last-light/2.0.0",
+        "sandboxTimings": {
+          "mode": "snapshot",
+          "setupMs": 9184,
+          "cacheHit": false,
+          "createMs": 1089,
+          "fallback": false,
+          "installMs": 5623,
+          "snapshotMs": 1733
+        },
+        "elapsedMsFromRecordedTimestamps": 24954
+      }
+    ],
+    "candidates": [
+      {
+        "id": "23f25ea5-4ddc-4471-8b03-670f3121f459",
+        "jobId": "2c454278-73da-a333-8408-a8bdabd9a913",
+        "proposalId": "P1",
+        "engineVersion": "last-light/2.0.0",
+        "sourceHash": "584e981d03fccae35b53512a9ac71b2a6a1d5f64c9dd45e77b005e9e4df97319",
+        "programHash": "c79eea5e1234dd344c67fcbd88630e20e3f8480a5305071daea8141ac21d5866",
+        "artifactHash": "f2558dd254391170de528def4b523b41a63675fa565e61c2da791f21a661ff91",
+        "provenanceKind": "runtime-generation",
+        "verificationPassed": true,
+        "createdAt": "2026-11-01T03:58:45.700Z",
+        "approvedAt": "2026-11-01T03:59:19.621Z",
+        "activatedAt": "2026-11-01T03:59:33.650Z",
+        "active": true,
+        "storedApprovalHashComparisons": {
+          "source": true,
+          "program": true,
+          "composition": true,
+          "context": true,
+          "artifact": true
+        },
+        "activeArtifactMatches": true,
+        "source": "export default {\n  version: 1,\n  name: \"Light Gravity While Holding E\",\n  description: \"Hold E for one-third normal gravity. Release E to restore normal gravity.\",\n  rules: [\n    {\n      id: \"held-light-gravity\",\n      each: \"player\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"inputInteract\" },\n          op: \"eq\",\n          right: 1\n        }\n      },\n      actions: [\n        {\n          type: \"physics\",\n          target: \"self\",\n          gravityScale: 0.3333333333333333,\n          lifetime: 1\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;"
+      }
+    ],
+    "activeCandidateIds": ["23f25ea5-4ddc-4471-8b03-670f3121f459"],
+    "activeArtifactHash": "f2558dd254391170de528def4b523b41a63675fa565e61c2da791f21a661ff91",
+    "recentEvents": [
+      {
+        "type": "twitch.authorized",
+        "at": "2026-11-01T03:47:29.699Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.connected",
+        "at": "2026-11-01T03:47:38.936Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.disconnected",
+        "at": "2026-11-01T03:48:02.932Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.authorized",
+        "at": "2026-11-01T03:49:19.368Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.connected",
+        "at": "2026-11-01T03:49:27.786Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "private.settings.changed",
+        "at": "2026-11-01T03:49:30.158Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "proposal.received",
+        "at": "2026-11-01T03:49:43.507Z",
+        "details": {
+          "proposalId": "P1",
+          "candidateId": null
+        },
+        "replyReceipt": {
+          "at": 1793504983545,
+          "status": "sent"
+        }
+      },
+      {
+        "type": "private.chat.delivery",
+        "at": "2026-11-01T03:49:43.777Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.disconnected",
+        "at": "2026-11-01T03:52:14.103Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.connected",
+        "at": "2026-11-01T03:55:02.704Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.disconnected",
+        "at": "2026-11-01T03:57:02.899Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "twitch.connected",
+        "at": "2026-11-01T03:57:10.695Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "private.proposal.moderated",
+        "at": "2026-11-01T03:57:40.745Z",
+        "details": {
+          "proposalId": "P1",
+          "candidateId": null
+        }
+      },
+      {
+        "type": "private.proposal.moderated",
+        "at": "2026-11-01T03:58:04.034Z",
+        "details": {
+          "proposalId": "P1",
+          "candidateId": null
+        }
+      },
+      {
+        "type": "generation.queued",
+        "at": "2026-11-01T03:58:21.052Z",
+        "details": {
+          "proposalId": "P1",
+          "candidateId": null
+        },
+        "replyReceipt": {
+          "at": 1793505501088,
+          "status": "sent"
+        }
+      },
+      {
+        "type": "private.chat.delivery",
+        "at": "2026-11-01T03:58:21.347Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "candidate.approved",
+        "at": "2026-11-01T03:59:19.621Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": "23f25ea5-4ddc-4471-8b03-670f3121f459"
+        }
+      },
+      {
+        "type": "candidate.activated",
+        "at": "2026-11-01T03:59:33.650Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": "23f25ea5-4ddc-4471-8b03-670f3121f459"
+        },
+        "replyReceipt": {
+          "at": 1793505573707,
+          "status": "sent"
+        }
+      },
+      {
+        "type": "private.chat.delivery",
+        "at": "2026-11-01T03:59:33.893Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      },
+      {
+        "type": "private.settings.changed",
+        "at": "2026-11-01T03:59:51.033Z",
+        "details": {
+          "proposalId": null,
+          "candidateId": null
+        }
+      }
+    ],
+    "replyDeliveries": {
+      "total": 3,
+      "statusCounts": {
+        "sent": 3
+      }
+    },
+    "ingress": {
+      "seenMessageIdCount": 8,
+      "recentMessageIds": [
+        "b67a29f5-40f9-429c-8b0d-f21699bf7b96",
+        "22ce318e-839a-4bf0-89ee-e26ede50f671",
+        "ca91d899-28f4-46e8-aca8-d65ce97e564f",
+        "adf86b19-0625-4439-9c55-7b82800b0323"
+      ]
+    }
+  },
+  "quota": {
+    "day": "2026-11-01",
+    "ledgerRevision": "2",
+    "userUsed": 1,
+    "globalUsed": 1,
+    "showReservationCount": 1,
+    "actorTodayReservationCount": 1,
+    "actorSource": "durable show reservation",
+    "localActorMatchesReservation": true,
+    "recordedNonExemptJobCount": 1,
+    "observedProductionUiBefore": {
+      "perUserLimit": 3,
+      "userRemaining": 3,
+      "globalLimit": 40,
+      "globalRemaining": 40
+    },
+    "observedProductionUiAfter": {
+      "perUserLimit": 3,
+      "userRemaining": 2,
+      "globalLimit": 40,
+      "globalRemaining": 39
+    }
+  },
+  "applicationSource": "bbf8ddc7c46784b3d67a671d2ba07efc8e12c793",
+  "deploymentId": "dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd",
+  "canonicalUrl": "https://liveforge-iota.vercel.app",
+  "participants": {
+    "operators": 1,
+    "realOwnedTwitchAccounts": 2,
+    "host": "yadneshsalvi96",
+    "viewer": "yadneshujwal"
+  },
+  "publicMessageBudget": {
+    "budgetSlotsConsumed": 11,
+    "maxTotal": 12,
+    "confirmedPublicMessages": 10,
+    "uncertainAttempts": 1,
+    "note": "Includes three confirmed automatic replies, pre-fix and cached-bundle test attempts; one UI posting attempt has unconfirmed delivery and still consumes a slot."
+  },
+  "cleanupObservedAfterSnapshot": {
+    "source": "Release-owner browser observation",
+    "chatRepliesEnabled": false,
+    "intakeOpen": false,
+    "worldPaused": true
+  },
+  "limits": [
+    "One operator used two real accounts; no independent human usability study.",
+    "One quota debit, not production cap exhaustion, midnight-reset or forced request-retry acceptance.",
+    "Three replies were seen in Twitch and have sent receipts; no forced duplicate-delivery replay.",
+    "Replies-off persisted; no additional eligible public command was sent after disabling.",
+    "Ordinary-viewer and broadcaster cases passed; an actual moderator badge was not exercised.",
+    "No actual OBS capture or broadcast.",
+    "The 24.954-second job is one observation, separate from the frozen ten-original evaluation and paired latency experiment."
+  ]
+}

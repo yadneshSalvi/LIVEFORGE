@@ -1,0 +1,78 @@
+{
+  "source": "bbf8ddc7c46784b3d67a671d2ba07efc8e12c793",
+  "deployment": "dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd",
+  "fixedBrowserBundle": "0qtey-9ewd2dc.js",
+  "staleBrowserBundle": "1k9s4rq6irn34.js",
+  "ordinaryViewer": {
+    "messageId": "ca91d899-28f4-46e8-aca8-d65ce97e564f",
+    "command": "!hide P1",
+    "badges": [],
+    "apiStatus": 200,
+    "resultingProposalStatus": "open"
+  },
+  "broadcaster": {
+    "messageId": "adf86b19-0625-4439-9c55-7b82800b0323",
+    "command": "!hide P1",
+    "badges": [
+      {
+        "set_id": "broadcaster",
+        "id": "1",
+        "info": ""
+      }
+    ],
+    "apiStatus": 200,
+    "resultingProposalStatus": "hidden"
+  },
+  "limitations": [
+    "Real moderator-badge sender not exercised.",
+    "The first retry loaded an old cached browser document and is not a corrected-source acceptance pass.",
+    "Both accounts were controlled by the same operator."
+  ],
+  "durableObservations": [
+    {
+      "case": "ordinary-viewer",
+      "observedAt": "2026-11-01T03:57:30.142Z",
+      "proposals": [
+        {
+          "id": "P1",
+          "author": "yadneshujwal",
+          "origin": "twitch",
+          "status": "open",
+          "support": 1
+        }
+      ],
+      "ingress": {
+        "seenMessageIdCount": 6,
+        "recentMessageIds": [
+          "b67a29f5-40f9-429c-8b0d-f21699bf7b96",
+          "22ce318e-839a-4bf0-89ee-e26ede50f671",
+          "ca91d899-28f4-46e8-aca8-d65ce97e564f"
+        ]
+      },
+      "moderationEventTimes": []
+    },
+    {
+      "case": "broadcaster",
+      "observedAt": "2026-11-01T03:57:56.946Z",
+      "proposals": [
+        {
+          "id": "P1",
+          "author": "yadneshujwal",
+          "origin": "twitch",
+          "status": "hidden",
+          "support": 0
+        }
+      ],
+      "ingress": {
+        "seenMessageIdCount": 8,
+        "recentMessageIds": [
+          "b67a29f5-40f9-429c-8b0d-f21699bf7b96",
+          "22ce318e-839a-4bf0-89ee-e26ede50f671",
+          "ca91d899-28f4-46e8-aca8-d65ce97e564f",
+          "adf86b19-0625-4439-9c55-7b82800b0323"
+        ]
+      },
+      "moderationEventTimes": ["2026-11-01T03:57:40.745Z"]
+    }
+  ]
+}

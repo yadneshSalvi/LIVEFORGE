@@ -1,0 +1,49 @@
+{
+  "at": "2026-11-01T04:00:27.078Z",
+  "applicationSource": "bbf8ddc7c46784b3d67a671d2ba07efc8e12c793",
+  "showId": "c959ad07-1cc7-4ee9-893b-e01f97af654d",
+  "jobId": "2c454278-73da-a333-8408-a8bdabd9a913",
+  "sourceHash": "584e981d03fccae35b53512a9ac71b2a6a1d5f64c9dd45e77b005e9e4df97319",
+  "proposal": {
+    "id": "P1",
+    "text": "While I hold E, gravity is one-third of normal; releasing E restores normal gravity.",
+    "author": "yadneshujwal",
+    "origin": "twitch"
+  },
+  "purpose": "Independent deterministic intent measurements of the exact second-account production candidate; separate from browser observations and the frozen ten-original evaluation.",
+  "sourceRead": "One parameterized SELECT; no database mutation, provider call, source execution or grant access.",
+  "measurements": {
+    "idleScale": 1,
+    "held": [
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333, 0.3333333333333333, 0.3333333333333333,
+      0.3333333333333333
+    ],
+    "releasedScale": 1,
+    "baseline": {
+      "height": 129.7199999999999,
+      "airtime": 47,
+      "landed": true
+    },
+    "ordinary": {
+      "height": 129.7199999999999,
+      "airtime": 47,
+      "landed": true
+    },
+    "heldFlight": {
+      "height": 400.43999999999977,
+      "airtime": 142,
+      "landed": true
+    }
+  },
+  "checks": {
+    "idleNormal": true,
+    "heldNearOneThird": true,
+    "releaseRestoresNormal": true,
+    "unheldJumpMatchesBaseline": true,
+    "heldJumpHigherAndLonger": true,
+    "landsAgain": true
+  },
+  "passed": true
+}

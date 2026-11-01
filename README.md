@@ -6,14 +6,14 @@
 
 ![The real deployed adventure after beacon completion](docs/evidence/browser/production-completed.jpg)
 
-_Actual production playthrough, 31 October 2026. The review ledger distinguishes that release from the engine 2 improvements and their ongoing acceptance._
+_Actual production playthrough, 31 October 2026. The release manifest separately records the later engine 2 and real two-account acceptance._
 
 ## Try it in 60 seconds
 
 No Twitch sign-in or API key is needed for this path.
 
 1. Open **The studio → Enter practice**. Click the world; **A/D** move, **Space** jumps, **E** interacts, **Q** drops/picks up the ember, and **R** returns to the encounter checkpoint. Mobile has touch controls.
-2. Choose **Try a generated law**. This loads an actual previously Codex-generated artifact, clearly labeled **reused**; it makes no new AI call.
+2. Choose **Use a previously generated law**. This loads an actual previously Codex-generated artifact, clearly labeled **reused**; it makes no new AI call.
 3. Open **Preview & decide** and walk on the stationary prop’s solid shadow. Your live world pauses during review.
 4. Approve the exact version, then **Activate** while grounded. The source supplies the stillness/light/geometry relationship; the engine has no named shadow-bridge preset.
 5. **Restore previous law** returns to the prior combination and activation checkpoint. **Behind the law** shows exact source, hashes, checks and history.
@@ -25,6 +25,8 @@ The complete lower route, Counterweight Hall and Beacon Guardian work without ge
 Create a **New Twitch show**, **Connect Twitch**, then **Listen to chat**. A viewer sends `!forge <idea>`; others send `!back P1`. One current support choice per account resets each round. The creator chooses what to forge, previews the result, approves its exact ordered combination and activates it separately.
 
 Fresh generation requires an independently authorized Twitch account and available daily quota. Defaults are **3 per account / 40 shared runs per UTC day**; explicitly exempt hosts are configurable. Anonymous visitors always retain the reused-artifact path. Optional server chat replies need separate write permission and an explicit switch; they start off, post as the host, and may appear in Shared Chat.
+
+[Production acceptance, 1 November](docs/evidence/review-2026-11-01/second-account-production.md): one operator used two real accounts to complete this path with a non-exempt host, one quota debit and three observed replies. The record includes the moderation fix, corrected browser retry and remaining limits.
 
 Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Create reviewed alternative** saves a separate, credited proposal; **Forge the selected idea** starts its fresh generation only when you choose. Model-suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
 
@@ -67,7 +69,7 @@ npm run format:check
 npm run build
 ```
 
-The [review ledger](docs/review-progress.md) separates implementation, deterministic gates, browser observations, real-provider measurements and remaining acceptance. The [ten predeclared original ideas](docs/evidence/review-2026-11-01/evaluation-proposals.json) and [paired latency protocol](docs/evidence/review-2026-11-01/latency-protocol.json) preserve failures and distinguish verifier acceptance from independently measured intent. Reused or adapted laws do not count as original-proposal successes.
+The current release passed **359 tests across 34 files**. The [review ledger](docs/review-progress.md) separates implementation, deterministic gates, browser observations, real-provider measurements and remaining acceptance. The [ten predeclared original ideas](docs/evidence/review-2026-11-01/evaluation-proposals.json) and [paired latency protocol](docs/evidence/review-2026-11-01/latency-protocol.json) preserve failures and distinguish verifier acceptance from independently measured intent. Reused or adapted laws do not count as original-proposal successes; later account-acceptance runs remain separate.
 
 [MIT license](LICENSE) · [Original art, fonts and icon rights](docs/rights.md) · [Release manifest](docs/release-manifest.md)
 

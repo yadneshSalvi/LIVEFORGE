@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-11-01T04:00:36.270Z",
+  "method": "Anonymous HTTP GET without cookie or authorization",
+  "status": 200,
+  "cacheControl": "no-store",
+  "showId": "c959ad07-1cc7-4ee9-893b-e01f97af654d",
+  "phase": "live",
+  "active": {
+    "name": "Light Gravity While Holding E",
+    "description": "Hold E for one-third normal gravity. Release E to restore normal gravity.",
+    "author": "yadneshujwal",
+    "sourceHash": "584e981d03fccae35b53512a9ac71b2a6a1d5f64c9dd45e77b005e9e4df97319",
+    "programHash": "c79eea5e1234dd344c67fcbd88630e20e3f8480a5305071daea8141ac21d5866"
+  },
+  "lawCount": 1,
+  "forbiddenFieldsPresent": []
+}

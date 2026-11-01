@@ -1,6 +1,12 @@
 # Release verification
 
-## Current release: explicit alternatives — 1 November 2026
+## Current release: Twitch moderation relay — 1 November 2026
+
+Canonical app: https://liveforge-iota.vercel.app. Deployed/runtime source `bbf8ddc7c46784b3d67a671d2ba07efc8e12c793`, deployment `dpl_9b5xhLMTbP3WN7dP6tyxqDf7ZLGd`. Typecheck, **359 tests across 34 files**, changed-file formatting and diff checks passed. The release owner’s optimized build completed 14 pages (`dzegbGH3FPClVG8kNfmhv`). The browser now forwards bounded moderation commands with their original badges; the generation prompt and game/compiler are unchanged.
+
+[Second-account production acceptance](evidence/review-2026-11-01/second-account-production.md) records independent non-exempt OAuth, a distinct viewer’s real proposal, fresh generation → preview → exact approval → activation, one user/shared quota debit, three observed chat replies, viewer denial and broadcaster hide/host restore. One operator used both accounts. The original relay failure and a stale-bundle retry remain recorded. Replies are off, intake is closed and the world is paused. Actual moderator-badge behavior, production quota exhaustion/reset, forced duplicate replay and OBS capture remain separate limits. The earlier releases below retain their historical counts and evidence.
+
+## Explicit alternatives release — 1 November 2026
 
 Canonical app: https://liveforge-iota.vercel.app. Deployment `dpl_8MZL2kezSB8rxFMhCTGnnuRsAjYk`; deployed source `5fe10fbcb441180bdefc719fb9cd83b4bdec0f90`; runtime source `e02c25efb838a925b92002dcc940e438c76502fc`. Typecheck, **357 tests in 34 files**, full formatting, diff checks and an isolated optimized build passed. Vercel’s remote build completed 14 static tasks. No generation prompt or simulation/compiler changes were made in this follow-up.
 
