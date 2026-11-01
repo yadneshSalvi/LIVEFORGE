@@ -45,17 +45,6 @@
     radial-gradient(ellipse at 27% 78%, #34504c 0, transparent 47%),
     linear-gradient(145deg, #1d2934 0, #121a22 65%);
 }
-.background:before {
-  content: "PREVIEW BACKGROUND";
-  position: fixed;
-  top: 50%;
-  left: 30%;
-  color: #a4b1b61c;
-  font: 500 18px var(--font-mono);
-  letter-spacing: 0.3em;
-  transform: translate(-50%, -50%) rotate(-12deg);
-  pointer-events: none;
-}
 .previewTools {
   grid-column: 1/-1;
   display: flex;

@@ -5235,6 +5235,7 @@ body {
   max-width: calc(100vw - 32px);
   max-height: calc(100dvh - 32px);
   border-radius: 12px;
+  font-size: 14px;
 }
 .modal-content {
   padding: 24px;
@@ -5266,7 +5267,13 @@ body {
 .modal .modal-copy,
 .modal .proposal-textarea,
 .modal .rail-footnote,
+.modal .reply-settings label,
 .modal .reply-settings p,
+.modal .moderation-list button,
+.modal .moderation-list b,
+.modal .moderation-list span,
+.modal .moderation-list small,
+.modal .moderation-original > span,
 .modal .show-list-item strong,
 .modal .show-list-item > span:nth-child(2) > span,
 .modal .library-card > p,
@@ -5279,6 +5286,8 @@ body {
 .modal .evidence-timeline p,
 .modal .evidence-timeline time,
 .modal .evidence-source,
+.modal .evidence-empty,
+.modal .pipeline-events,
 .modal .verification-list li,
 .modal .verification-list strong,
 .modal .verification-list span {
@@ -5448,6 +5457,9 @@ body {
 .game-viewport:focus-visible {
   outline: 2px solid var(--mint);
   outline-offset: -2px;
+}
+.game-touch-controls button {
+  font-size: 14px;
 }
 .broadcast-page .brand {
   font-size: 18px;
