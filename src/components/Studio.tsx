@@ -1027,7 +1027,10 @@ export function Studio() {
     }
   };
   const revise = async (revision: string) => {
-    if (!show || !preview) return;
+    if (!show || !preview || currentBusy.current) return;
+    if (pendingFault.current)
+      throw new Error("Finish saving fault recovery before revising a law.");
+    currentBusy.current = "revise";
     setBusy("revise");
     try {
       const result = await api<HostShowResponse>(
@@ -1046,6 +1049,7 @@ export function Studio() {
         "A fresh revision is being generated. Original credit is preserved.",
       );
     } finally {
+      currentBusy.current = null;
       setBusy(null);
       void api<ServiceStatus>("/api/status")
         .then(setStatus)

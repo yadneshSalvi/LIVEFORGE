@@ -140,7 +140,7 @@ describe("round two bounded live execution", () => {
       ),
     ).toBe(true);
   });
-  it("capacity saturation rejects verification with a readable counter", () => {
+  it("own surface capacity saturation is accepted by verification", () => {
     const program = law([
       {
         type: "spawnPlatform",
@@ -153,10 +153,7 @@ describe("round two bounded live execution", () => {
       },
     ]);
     const report = verifyRuleProgram(program);
-    expect(report.passed).toBe(false);
-    expect(
-      report.checks.some((c) => c.detail.includes("surfacesSkipped")),
-    ).toBe(true);
+    expect(report.passed).toBe(true);
   });
   it("counts applied modifiers and prop spawns including activation", () => {
     const program = law([

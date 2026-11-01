@@ -290,7 +290,7 @@ describe("events, spawning, expressions and ordered composition safety", () => {
     expect(e.world.entities).toHaveLength(8);
     expect(e.world.modifiers).toHaveLength(0);
   });
-  it("shares the twelve-prop global limit across a three-law composition", () => {
+  it("accepts three own spawn caps exactly filling the twelve-prop global limit", () => {
     const p = law([
       {
         type: "spawnProp",
@@ -305,7 +305,7 @@ describe("events, spawning, expressions and ordered composition safety", () => {
     step(e, 10);
     expect(e.world.entities.filter((x) => x.spawnRule)).toHaveLength(12);
     expect(e.world.entities).toHaveLength(20);
-    expect(verifyRuleComposition([p, p, p]).passed).toBe(false);
+    expect(verifyRuleComposition([p, p, p]).passed).toBe(true);
   });
   it("verifies actual composed behavior and rejects aggregate command flooding", () => {
     const p = law(

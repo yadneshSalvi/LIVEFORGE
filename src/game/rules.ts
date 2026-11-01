@@ -235,8 +235,8 @@ function combined(sources: RuleProgram[]): RuleProgram {
 }
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
-  // The omitted object closing brace is compatibility-frozen: changing these
-  // serialized bytes requires a versioned hash migration after judging.
+  // This local serialization only compares a composition with its rebuilt IR.
+  // Security hashes use canonicalJson in src/server/security.ts.
   if (value && typeof value === "object")
     return `{${Object.entries(value)
       .sort(([a], [b]) => a.localeCompare(b))

@@ -25,16 +25,20 @@ export const MAX_RUNTIME_COMMANDS = 128;
 export interface RuntimeDiagnostics {
   commandsSkipped: number;
   surfacesSkipped: number;
+  globalSurfacesSkipped: number;
   modifiersSkipped: number;
   spawnsSkipped: number;
+  globalSpawnsSkipped: number;
   geometrySkipped: number;
   worldBoundsRecoveries: number;
 }
 export const emptyDiagnostics = (): RuntimeDiagnostics => ({
   commandsSkipped: 0,
   surfacesSkipped: 0,
+  globalSurfacesSkipped: 0,
   modifiersSkipped: 0,
   spawnsSkipped: 0,
+  globalSpawnsSkipped: 0,
   geometrySkipped: 0,
   worldBoundsRecoveries: 0,
 });
@@ -360,6 +364,14 @@ export function applyRuleProgram(
             ).length >= cap)
         ) {
           diagnostics.surfacesSkipped++;
+          if (
+            next.surfaces.filter((s) => s.generated).length >=
+              MAX_GENERATED_SURFACES &&
+            next.surfaces.filter(
+              (s) => s.generated && s.id.startsWith(rule + ":"),
+            ).length < cap
+          )
+            diagnostics.globalSurfacesSkipped++;
           continue;
         }
         if (
@@ -394,6 +406,12 @@ export function applyRuleProgram(
         next.entities.filter((e) => e.spawnRule).length >= MAX_SPAWNED_ENTITIES
       ) {
         diagnostics.spawnsSkipped++;
+        if (
+          next.entities.filter((e) => e.spawnRule).length >=
+            MAX_SPAWNED_ENTITIES &&
+          next.entities.filter((e) => e.spawnRule === rule).length < a.maxCount
+        )
+          diagnostics.globalSpawnsSkipped++;
         continue;
       }
       const spawned = makeEntity(
