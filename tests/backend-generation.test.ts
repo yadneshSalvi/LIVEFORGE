@@ -206,7 +206,16 @@ describe("production Sandbox runtime OIDC", () => {
     const result = (await store.get<ShowRecord>(showKey(show.id)))!;
     expect(result.jobs[0].status).toBe("ready");
     expect(result.jobs[0].phases).toEqual([
+      expect.objectContaining({ phase: "workspace-ready", attempt: 1 }),
       expect.objectContaining({ phase: "thread-started", attempt: 1 }),
+      expect.objectContaining({ phase: "source-returned", attempt: 1 }),
+      expect.objectContaining({ phase: "verifier-started", attempt: 1 }),
+      expect.objectContaining({
+        phase: "verification-complete",
+        attempt: 1,
+        checksPassed: result.candidates[0].verification.checks.length,
+        totalChecks: result.candidates[0].verification.checks.length,
+      }),
     ]);
     expect(JSON.stringify(result)).not.toContain(token);
     expect(JSON.stringify(fake.sandbox.writeFiles.mock.calls)).not.toContain(
@@ -362,7 +371,14 @@ describe("durable generation races against late provider output", () => {
         const before = (await store.get<ShowRecord>(key))!;
         const probe = structuredClone(before);
         change(probe as T);
-        if (!before.jobs[0].phases?.length && probe.jobs[0].phases?.length) {
+        if (
+          !before.jobs[0].phases?.some(
+            (phase) => phase.phase === "thread-started",
+          ) &&
+          probe.jobs[0].phases?.some(
+            (phase) => phase.phase === "thread-started",
+          )
+        ) {
           entered();
           await gate;
         }
@@ -380,7 +396,12 @@ describe("durable generation races against late provider output", () => {
     const ready = (await store.get<ShowRecord>(showKey(show.id)))!;
     expect(ready.jobs[0].status).toBe("ready");
     expect(fake.stop).toHaveBeenCalledOnce();
-    expect(ready.jobs[0].phases).toBeUndefined();
+    expect(ready.jobs[0].phases?.map((phase) => phase.phase)).toEqual([
+      "workspace-ready",
+      "source-returned",
+      "verifier-started",
+      "verification-complete",
+    ]);
     release();
     await new Promise((resolve) => setTimeout(resolve, 25));
     const after = (await store.get<ShowRecord>(showKey(show.id)))!;

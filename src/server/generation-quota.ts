@@ -193,3 +193,33 @@ export async function reserveGenerationQuota(
     return { ...reservation, jobId: request.jobId, exempt: false };
   });
 }
+
+/** Refund only after the show has fenced this request against a late job commit. */
+export async function releaseGenerationQuota(
+  identity: GenerationIdentity,
+  request: GenerationRequest,
+  store: DocumentStore = getStore(),
+) {
+  if (identity.exempt) return;
+  await store.update<QuotaLedger, void>(LEDGER_ID, (ledger) => {
+    const receipt = ledger.reservations[request.reservationId];
+    if (!receipt) return;
+    assert(
+      receipt.actorId === identity.actorId &&
+        receipt.showId === request.showId &&
+        receipt.requestHash === request.requestHash,
+      409,
+      "idempotency_conflict",
+      "Cannot refund a different generation request.",
+    );
+    const bucket = ledger.days[receipt.day];
+    if (bucket) {
+      bucket.total = Math.max(0, bucket.total - 1);
+      bucket.users[identity.actorId] = Math.max(
+        0,
+        (bucket.users[identity.actorId] ?? 0) - 1,
+      );
+    }
+    delete ledger.reservations[request.reservationId];
+  });
+}

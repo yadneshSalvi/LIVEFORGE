@@ -305,7 +305,7 @@ describe("events, spawning, expressions and ordered composition safety", () => {
     step(e, 10);
     expect(e.world.entities.filter((x) => x.spawnRule)).toHaveLength(12);
     expect(e.world.entities).toHaveLength(20);
-    expect(verifyRuleComposition([p, p, p]).passed).toBe(true);
+    expect(verifyRuleComposition([p, p, p]).passed).toBe(false);
   });
   it("verifies actual composed behavior and rejects aggregate command flooding", () => {
     const p = law(

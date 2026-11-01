@@ -114,7 +114,16 @@ export interface GenerationJob {
     failures?: SandboxFailureDiagnostic[];
   };
   phases?: Array<{
-    phase: "thread-started" | "turn-started" | "source-returned";
+    phase:
+      | "snapshot-restored"
+      | "workspace-ready"
+      | "thread-started"
+      | "turn-started"
+      | "source-returned"
+      | "verifier-started"
+      | "verification-complete";
+    checksPassed?: number;
+    totalChecks?: number;
     at: string;
     attempt: number;
   }>;

@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { retireFaultedLaw } from "../src/lib/runtime-recovery";
+import {
+  continueWithoutLaws,
+  retireFaultedLaw,
+} from "../src/lib/runtime-recovery";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -61,7 +64,7 @@ describe("durable client runtime-fault recovery", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("refreshes a benign revision race and retires the same law under the same authority", async () => {
+  it("stops after any conflict instead of retrying retirement at a newer revision", async () => {
     const fetch = vi
       .fn()
       .mockResolvedValueOnce(
@@ -81,19 +84,87 @@ describe("durable client runtime-fault recovery", () => {
             },
           },
         }),
-      )
-      .mockResolvedValueOnce(
-        Response.json({ show: { activeCandidateId: null, revision: 6 } }),
       );
     vi.stubGlobal("fetch", fetch);
-    const result = await retireFaultedLaw(target, fault, "Budget exceeded");
+    await expect(
+      retireFaultedLaw(target, fault, "Budget exceeded"),
+    ).rejects.toThrow("World revision changed");
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(
+      fetch.mock.calls.filter((call) => call[1].method === "POST"),
+    ).toHaveLength(1);
+  });
+
+  it("preserves a conflict when the reconciliation read fails", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({ message: "Rollback unavailable" }, { status: 409 }),
+      )
+      .mockRejectedValueOnce(new TypeError("Disconnected"));
+    vi.stubGlobal("fetch", fetch);
+    await expect(
+      retireFaultedLaw(target, fault, "Repeated fault"),
+    ).rejects.toMatchObject({ status: 409 });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("explicitly continues without laws against a fresh revision, preserving fault and authority fences", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({
+          show: {
+            id: target.showId,
+            revision: 7,
+            activeCandidateId: target.candidateId,
+            activeArtifactHash: target.artifactHash,
+            candidates: [
+              { id: target.candidateId, sourceHash: target.artifactHash },
+            ],
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          show: {
+            activeCandidateId: null,
+            activeArtifactHash: null,
+            revision: 8,
+          },
+        }),
+      );
+    vi.stubGlobal("fetch", fetch);
+    const result = await continueWithoutLaws(target, fault, "Repeated fault");
     expect(result.show.activeCandidateId).toBeNull();
-    expect(fetch).toHaveBeenCalledTimes(3);
-    expect(JSON.parse(fetch.mock.calls[2][1].body)).toMatchObject({
-      expectedRevision: 5,
+    expect(JSON.parse(fetch.mock.calls[1][1].body)).toMatchObject({
+      expectedRevision: 7,
       faultedArtifactHash: target.artifactHash,
+      retireAllLaws: true,
+      clientId: target.clientId,
       epoch: target.epoch,
     });
+    expect(fetch.mock.calls[1][1].headers["x-idempotency-key"]).toMatch(
+      /-all$/,
+    );
+  });
+
+  it("does not retire a new law when the explicit recovery read finds different source", async () => {
+    const fetch = vi.fn().mockResolvedValueOnce(
+      Response.json({
+        show: {
+          id: target.showId,
+          revision: 7,
+          activeCandidateId: "new-law",
+          activeArtifactHash: "b".repeat(64),
+          candidates: [],
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetch);
+    const result = await continueWithoutLaws(target, fault, "Late fault");
+    expect(result.show.activeCandidateId).toBe("new-law");
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it("reconciles a newer active law without retiring it", async () => {

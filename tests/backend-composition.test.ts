@@ -179,6 +179,33 @@ describe("immutable source composition and runtime fault identity", () => {
     });
     show.checkpoint = validateCheckpoint(engine.checkpoint(), show);
     expect(show.checkpoint.artifactHash).toBe(one.composition!.artifactHash);
+    expect(() =>
+      rollback(show, { clientId: "client-one", epoch: show.lease!.epoch }),
+    ).toThrow(/no previous/);
+    rollback(show, {
+      clientId: "client-one",
+      epoch: show.lease!.epoch,
+      expectedRevision: show.revision,
+      faultedArtifactHash: one.composition!.artifactHash,
+      runtimeFaultReason: "Repeated trusted worker fault",
+    });
+    expect(show.activeCandidateIds).toEqual([]);
+    expect(show.activeCandidateId).toBeNull();
+    expect(show.activeArtifactHash).toBeNull();
+    expect(show.phase).toBe("collecting");
+    expect(show.checkpoint!.snapshot.modifiers).toEqual([]);
+    expect(show.checkpoint!.snapshot.entities.some((e) => e.spawnRule)).toBe(
+      false,
+    );
+    expect(show.checkpoint!.snapshot.surfaces.some((s) => s.generated)).toBe(
+      false,
+    );
+    expect(show.events.at(-1)?.message).toBe(
+      "All laws retired after repeated runtime faults.",
+    );
+    engine.restore(show.checkpoint!);
+    engine.step();
+    expect(() => validateCheckpoint(engine.checkpoint(), show)).not.toThrow();
   });
   it("explicitly archives an old engine without deserializing its old save or reusing approvals", async () => {
     const show = await fixture();

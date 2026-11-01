@@ -128,6 +128,8 @@ export interface VerificationReport {
     surfacesCreated: number;
     impulsesApplied: number;
     cuesApplied: number;
+    modifiersApplied?: number;
+    entitiesSpawned?: number;
   };
 }
 export interface Entity {

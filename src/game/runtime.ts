@@ -15,7 +15,36 @@ export interface EffectCounts {
   surfacesCreated: number;
   impulsesApplied: number;
   cuesApplied: number;
+  modifiersApplied: number;
+  entitiesSpawned: number;
 }
+export const MAX_SPAWNED_ENTITIES = 12;
+export const MAX_GENERATED_SURFACES = 48;
+export const MAX_RULE_SURFACES = 8;
+export const MAX_RUNTIME_COMMANDS = 128;
+export interface RuntimeDiagnostics {
+  commandsSkipped: number;
+  surfacesSkipped: number;
+  modifiersSkipped: number;
+  spawnsSkipped: number;
+  geometrySkipped: number;
+  worldBoundsRecoveries: number;
+}
+export const emptyDiagnostics = (): RuntimeDiagnostics => ({
+  commandsSkipped: 0,
+  surfacesSkipped: 0,
+  modifiersSkipped: 0,
+  spawnsSkipped: 0,
+  geometrySkipped: 0,
+  worldBoundsRecoveries: 0,
+});
+export const emptyEffects = (): EffectCounts => ({
+  surfacesCreated: 0,
+  impulsesApplied: 0,
+  cuesApplied: 0,
+  modifiersApplied: 0,
+  entitiesSpawned: 0,
+});
 export const PHYSICS_LIMITS = {
   gravityScale: [0.3, 2],
   jumpStrength: [0.5, 1.6],
@@ -246,9 +275,14 @@ function applyModifier(e: Entity, m: TimedModifier) {
 export function applyRuleProgram(
   world: GameSnapshot,
   program: RuleProgram,
-): { world: GameSnapshot; effects: EffectCounts } {
+): {
+  world: GameSnapshot;
+  effects: EffectCounts;
+  diagnostics: RuntimeDiagnostics;
+} {
   const next = structuredClone(world),
-    effects = { surfacesCreated: 0, impulsesApplied: 0, cuesApplied: 0 };
+    effects = emptyEffects(),
+    diagnostics = emptyDiagnostics();
   next.modifiers = next.modifiers.filter(
     (m) =>
       m.expires >= world.tick &&
@@ -280,8 +314,10 @@ export function applyRuleProgram(
         condition(rule.when, e, world)
       )
         for (let i = 0; i < rule.actions.length; i++) {
-          if (commands.length >= 128)
-            throw new Error("Rule action budget exceeded");
+          if (commands.length >= MAX_RUNTIME_COMMANDS) {
+            diagnostics.commandsSkipped++;
+            continue;
+          }
           commands.push({
             entity: e,
             action: rule.actions[i],
@@ -298,13 +334,6 @@ export function applyRuleProgram(
       a.type === "createSurface" ||
       a.type === "spawnPlatform"
     ) {
-      if (
-        a.type === "spawnPlatform" &&
-        (next.surfaces.filter((s) => s.generated && s.id.startsWith(rule + ":"))
-          .length >= (a.maxCount ?? 4) ||
-          next.surfaces.filter((s) => s.generated).length >= 48)
-      )
-        continue;
       const geometry =
         a.type === "projectShadow"
           ? projectShadow(entity, world, a.maxLength, a.thickness)
@@ -316,6 +345,36 @@ export function applyRuleProgram(
             };
       if (geometry) {
         const key = a.type === "spawnPlatform" ? `${id}:${world.tick}` : id;
+        const replacing = next.surfaces.some((s) => s.id === key);
+        const cap =
+          a.type === "projectShadow"
+            ? MAX_RULE_SURFACES
+            : (a.maxCount ??
+              (a.type === "spawnPlatform" ? 4 : MAX_RULE_SURFACES));
+        if (
+          !replacing &&
+          (next.surfaces.filter((s) => s.generated).length >=
+            MAX_GENERATED_SURFACES ||
+            next.surfaces.filter(
+              (s) => s.generated && s.id.startsWith(rule + ":"),
+            ).length >= cap)
+        ) {
+          diagnostics.surfacesSkipped++;
+          continue;
+        }
+        if (
+          ![geometry.x, geometry.y, geometry.w, geometry.h].every(
+            Number.isFinite,
+          ) ||
+          geometry.w <= 0 ||
+          geometry.x < -500 ||
+          geometry.x + geometry.w > 3100 ||
+          geometry.y < -100 ||
+          geometry.y > 900
+        ) {
+          diagnostics.geometrySkipped++;
+          continue;
+        }
         next.surfaces = next.surfaces.filter((s) => s.id !== key);
         next.surfaces.push({
           id: key,
@@ -328,14 +387,15 @@ export function applyRuleProgram(
         effects.surfacesCreated++;
       }
     } else if (a.type === "spawnProp") {
+      if (self.spawnRule || world.tick % a.cooldown !== 0) continue;
       if (
-        self.spawnRule ||
-        world.tick % a.cooldown !== 0 ||
         next.entities.filter((e) => e.spawnRule === rule).length >=
           a.maxCount ||
-        next.entities.filter((e) => e.spawnRule).length >= 12
-      )
+        next.entities.filter((e) => e.spawnRule).length >= MAX_SPAWNED_ENTITIES
+      ) {
+        diagnostics.spawnsSkipped++;
         continue;
+      }
       const spawned = makeEntity(
         `spawn:${id}:${world.tick}`,
         "prop",
@@ -347,6 +407,7 @@ export function applyRuleProgram(
       spawned.expires = world.tick + a.lifetime - 1;
       spawned.spawnRule = rule;
       next.entities.push(spawned);
+      effects.entitiesSpawned++;
     } else if (a.type === "impulse") {
       if (target.kind === "ember" && world.emberCarried) continue;
       target.vx = clamp(
@@ -362,6 +423,13 @@ export function applyRuleProgram(
       effects.impulsesApplied++;
     } else if (a.type === "physics" || a.type === "material") {
       if (target.kind === "ember" && world.emberCarried) continue;
+      if (
+        !next.modifiers.some((m) => m.id === id) &&
+        next.modifiers.length >= 48
+      ) {
+        diagnostics.modifiersSkipped++;
+        continue;
+      }
       const modifier: TimedModifier = {
         id,
         entityId: target.id,
@@ -377,17 +445,20 @@ export function applyRuleProgram(
           const value = a[key];
           if (value !== undefined) {
             const limits = PHYSICS_LIMITS[key];
-            modifier.physics[key] = clamp(
+            const bounded = clamp(
               typeof value === "number" ? value : scalar(value, entity, world),
               limits[0],
               limits[1],
             );
+            modifier.physics[key] =
+              key === "airJumps" ? Math.floor(bounded) : bounded;
           }
         }
       }
       next.modifiers = next.modifiers.filter((m) => m.id !== id);
       next.modifiers.push(modifier);
       applyModifier(target, modifier);
+      effects.modifiersApplied++;
     } else if (a.type === "cue") {
       target.cue = { color: a.color, intensity: a.intensity };
       effects.cuesApplied++;
@@ -418,5 +489,5 @@ export function applyRuleProgram(
       Math.abs(e.vy) > 20.01
     )
       throw new Error("Rule entity batch outside protected bounds");
-  return { world: next, effects };
+  return { world: next, effects, diagnostics };
 }

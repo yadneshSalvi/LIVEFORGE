@@ -55,9 +55,11 @@ import {
   ruleDescription,
 } from "@/lib/rule-copy";
 import { generationMilestones } from "@/lib/generation-progress";
+import { CAPABILITY_HINT } from "@/lib/capabilities";
 import { StudioViewFence } from "@/lib/view-fence";
 import {
   retireFaultedLaw,
+  continueWithoutLaws,
   type RuntimeRecoveryTarget,
 } from "@/lib/runtime-recovery";
 import { TwitchConnector } from "@/lib/twitch-client";
@@ -134,6 +136,7 @@ export function Studio() {
   const [checkpointIssue, setCheckpointIssue] = useState<string | null>(null);
   const [faultIssue, setFaultIssue] = useState<string | null>(null);
   const [recoveringFault, setRecoveringFault] = useState(false);
+  const [recoveryConflict, setRecoveryConflict] = useState(false);
   const [preview, setPreview] = useState<Candidate | null>(null);
   const [previewBaseline, setPreviewBaseline] = useState<GameCheckpoint | null>(
     null,
@@ -167,6 +170,7 @@ export function Studio() {
     message: string;
   } | null>(null);
   const faultInFlight = useRef(false);
+  const faultConflict = useRef(false);
   const currentShow = useRef<ShowState | null>(null);
   const viewFence = useRef(new StudioViewFence());
   const currentBusy = useRef<string | null>(null);
@@ -512,9 +516,14 @@ export function Studio() {
     void saveCheckpoint(checkpoint);
   };
 
-  const recoverRuntimeFault = async () => {
+  const recoverRuntimeFault = async (retireAll = false) => {
     const pending = pendingFault.current;
-    if (!pending || faultInFlight.current) return;
+    if (
+      !pending ||
+      faultInFlight.current ||
+      (faultConflict.current && !retireAll)
+    )
+      return;
     const held = lease.current;
     if (!held || held.expiresAt <= Date.now()) {
       setFaultIssue(
@@ -525,7 +534,7 @@ export function Studio() {
     faultInFlight.current = true;
     setRecoveringFault(true);
     try {
-      const result = await retireFaultedLaw(
+      const result = await (retireAll ? continueWithoutLaws : retireFaultedLaw)(
         { ...pending.target, clientId: clientId.current, epoch: held.epoch },
         pending.fault,
         pending.message,
@@ -536,15 +545,25 @@ export function Studio() {
       currentShow.current = result.show;
       setShow(result.show);
       pendingFault.current = null;
+      faultConflict.current = false;
+      setRecoveryConflict(false);
       setFaultIssue(null);
       setCheckpointIssue(null);
       setNextRound(true);
       notify(
-        "Fault recovery saved. The current approved world is restored; resume when ready.",
+        result.show.activeCandidateId
+          ? "Fault recovery saved. The current approved world is restored; resume when ready."
+          : "All laws retired. Your saved world is safe; resume when ready.",
       );
     } catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        faultConflict.current = true;
+        setRecoveryConflict(true);
+      }
       setFaultIssue(
-        `The law stopped safely, but server recovery is not complete. ${errorMessage(error)} Retry before resuming.`,
+        faultConflict.current
+          ? `Recovery paused because the saved world changed. ${errorMessage(error)} Continue without laws to save a safe world.`
+          : `The law stopped safely, but server recovery is not complete. ${errorMessage(error)} Retry before resuming.`,
       );
     } finally {
       faultInFlight.current = false;
@@ -555,6 +574,7 @@ export function Studio() {
   const onGameFault = (message: string, fault?: WorkerRuntimeFaultContext) => {
     game.current?.pause(true);
     setPaused(true);
+    if (pendingFault.current) return;
     if (!fault || !fault.artifactHash) {
       setError(message);
       return;
@@ -577,6 +597,8 @@ export function Studio() {
       fault,
       message,
     };
+    faultConflict.current = false;
+    setRecoveryConflict(false);
     setFaultIssue(
       "A generated law stopped. Restoring and saving the previous approved world…",
     );
@@ -616,13 +638,15 @@ export function Studio() {
   };
 
   const action = async (name: string, callback: () => Promise<void>) => {
-    if (busy) return;
+    if (currentBusy.current) return;
     if (pendingFault.current && name !== "takeover") {
       setFaultIssue(
         "Finish saving fault recovery before changing the show. Retry recovery or take control here.",
       );
       return;
     }
+    // React state updates on the next render; fence rapid clicks synchronously.
+    currentBusy.current = name;
     setBusy(name);
     setError(null);
     try {
@@ -630,6 +654,7 @@ export function Studio() {
     } catch (e) {
       setError(errorMessage(e));
     } finally {
+      currentBusy.current = null;
       setBusy(null);
       if (["generate", "revise"].includes(name))
         void api<ServiceStatus>("/api/status")
@@ -658,6 +683,8 @@ export function Studio() {
         setCheckpointIssue(null);
         setFaultIssue(null);
         pendingFault.current = null;
+        faultConflict.current = false;
+        setRecoveryConflict(false);
         setNextRound(false);
         setActivationMode("append");
         setStatus(await api<ServiceStatus>("/api/status"));
@@ -685,6 +712,8 @@ export function Studio() {
       setCheckpointIssue(null);
       setFaultIssue(null);
       pendingFault.current = null;
+      faultConflict.current = false;
+      setRecoveryConflict(false);
       setSelectedId(null);
       setNextRound(false);
       setActivationMode("append");
@@ -1377,9 +1406,13 @@ export function Studio() {
             <button
               className="button button-outline button-small"
               disabled={recoveringFault || !authority}
-              onClick={() => void recoverRuntimeFault()}
+              onClick={() => void recoverRuntimeFault(recoveryConflict)}
             >
-              {recoveringFault ? "Saving recovery…" : "Retry recovery"}
+              {recoveringFault
+                ? "Saving recovery…"
+                : recoveryConflict
+                  ? "Continue without laws"
+                  : "Retry recovery"}
             </button>
           </div>
         )}
@@ -2082,6 +2115,7 @@ export function Studio() {
                   <details className="capability-guide">
                     <summary>What can this world learn?</summary>
                     <div>
+                      <p>{CAPABILITY_HINT}</p>
                       {RULE_CAPABILITY_HINTS.map((hint) => (
                         <p key={hint.title}>
                           <strong>{hint.title}</strong>

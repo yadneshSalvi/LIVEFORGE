@@ -13,6 +13,8 @@ import {
   defaultPhysics,
   makeEntity,
   type EffectCounts,
+  emptyEffects,
+  emptyDiagnostics,
 } from "./runtime";
 import { validateRuntimeRuleProgram } from "./rules";
 export const LEVEL_SURFACES: Surface[] = [
@@ -136,11 +138,16 @@ export class GameEngine {
   world: GameSnapshot = createWorld();
   program: RuleProgram | null = null;
   artifactHash: string | null = null;
-  effects: EffectCounts = {
-    surfacesCreated: 0,
-    impulsesApplied: 0,
-    cuesApplied: 0,
-  };
+  effects: EffectCounts = emptyEffects();
+  diagnostics = emptyDiagnostics();
+  private recordRuntime(result: ReturnType<typeof applyRuleProgram>) {
+    for (const key of Object.keys(this.effects) as (keyof EffectCounts)[])
+      this.effects[key] += result.effects[key];
+    for (const key of Object.keys(
+      this.diagnostics,
+    ) as (keyof typeof this.diagnostics)[])
+      this.diagnostics[key] += result.diagnostics[key];
+  }
 
   private rollbackPoint: GameCheckpoint | null = null;
   checkpoint(): GameCheckpoint {
@@ -184,8 +191,10 @@ export class GameEngine {
     clean.surfaces = clean.surfaces.filter((s) => !s.generated);
     clean.entities = clean.entities.filter((e) => !e.spawnRule);
     clean.modifiers = [];
-    const candidate = applyRuleProgram(clean, program).world;
+    const result = applyRuleProgram(clean, program);
+    const candidate = result.world;
     assertWorld(candidate);
+    this.recordRuntime(result);
     this.rollbackPoint = before;
     this.program = structuredClone(program);
     this.artifactHash = artifactHash;
@@ -238,8 +247,7 @@ export class GameEngine {
     if (this.program) {
       const result = applyRuleProgram(w, this.program);
       this.world = result.world;
-      for (const key of Object.keys(this.effects) as (keyof EffectCounts)[])
-        this.effects[key] += result.effects[key];
+      this.recordRuntime(result);
     }
     const world = this.world,
       p = world.entities[0],
@@ -369,6 +377,11 @@ export class GameEngine {
       e.vy = clamp(e.vy + 0.48 * e.physics.gravityScale * dt, -20, 20);
       e.x = clamp(e.x + e.vx * dt, 20, 2470 - e.w);
       e.y += e.vy * dt;
+      if (e.y < -80) {
+        e.y = -80;
+        e.vy = Math.max(0, e.vy);
+        this.diagnostics.worldBoundsRecoveries++;
+      }
       e.grounded = false;
       for (const s of world.surfaces) {
         if (!s.solid) continue;
@@ -612,4 +625,25 @@ export function assertWorld(w: GameSnapshot) {
       m.expires > w.tick + 600
     )
       throw new Error("Invalid timed modifier");
+}
+
+/** Remove generated grants from a trusted saved world while preserving show progress. */
+export function retireGeneratedCheckpoint(
+  checkpoint: GameCheckpoint,
+): GameCheckpoint {
+  const engine = new GameEngine();
+  engine.restore(checkpoint);
+  engine.rollback();
+  for (const entity of engine.world.entities) {
+    entity.timer = 0;
+    entity.airJumpsUsed = 0;
+  }
+  const ember = engine.world.entities.find((e) => e.kind === "ember")!;
+  if (engine.world.emberCarried) {
+    const player = engine.world.entities[0];
+    ember.x = player.x + player.w + 5;
+    ember.y = player.y + 18;
+  }
+  assertWorld(engine.world);
+  return engine.checkpoint();
 }

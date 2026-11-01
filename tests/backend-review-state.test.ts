@@ -161,6 +161,109 @@ describe("P0 live state repair", () => {
       "Law retired after a runtime fault",
     );
   });
+  it("explicitly retires all laws after a matching fault even with a previous checkpoint", async () => {
+    const show = await fixture();
+    acquireLease(show, "review-active-tab");
+    const candidate = activate(show);
+    expect(show.previousCheckpoint).not.toBeNull();
+    rollback(show, {
+      clientId: show.lease!.clientId,
+      epoch: show.lease!.epoch,
+      expectedRevision: show.revision,
+      faultedArtifactHash: candidate.composition!.artifactHash,
+      runtimeFaultReason: "Worker fault",
+      retireAllLaws: true,
+    });
+    expect(show.previousCheckpoint).toBeNull();
+    expect(show.activeCandidateIds).toEqual([]);
+    expect(show.phase).toBe("collecting");
+    expect(() => validateCheckpoint(show.checkpoint, show)).not.toThrow();
+  });
+  it("projects only trusted generation phases and valid verification counts", async () => {
+    const show = await fixture();
+    acquireLease(show, "review-active-tab");
+    activate(show);
+    const at = new Date().toISOString();
+    show.jobs.at(-1)!.phases = [
+      ...[
+        "snapshot-restored",
+        "workspace-ready",
+        "thread-started",
+        "turn-started",
+        "source-returned",
+        "verifier-started",
+      ].map((phase) => ({
+        phase,
+        at,
+        attempt: 1,
+        checksPassed: 2,
+        totalChecks: 2,
+        secret: "private fixture",
+      })),
+      {
+        phase: "verification-complete",
+        at,
+        attempt: 1,
+        checksPassed: 3,
+        totalChecks: 4,
+        secret: "private fixture",
+      },
+      ...[
+        [-1, 4],
+        [5, 4],
+        [1, 0],
+        [1, 33],
+        [1.5, 4],
+      ].map(([checksPassed, totalChecks]) => ({
+        phase: "verification-complete",
+        at,
+        attempt: 1,
+        checksPassed,
+        totalChecks,
+      })),
+      { phase: "untrusted", at, attempt: 1 },
+      { phase: "thread-started", at: "invalid", attempt: 1 },
+      { phase: "thread-started", at, attempt: 4 },
+    ] as (typeof show.jobs)[number]["phases"];
+    const projected = publicView(show).generation!.phases!;
+    expect(projected).toHaveLength(12);
+    expect(projected[6]).toEqual({
+      phase: "verification-complete",
+      at,
+      attempt: 1,
+      checksPassed: 3,
+      totalChecks: 4,
+    });
+    expect(projected[0]).toEqual({
+      phase: "snapshot-restored",
+      at,
+      attempt: 1,
+    });
+    expect(
+      projected
+        .slice(7)
+        .every(
+          (p) => p.checksPassed === undefined && p.totalChecks === undefined,
+        ),
+    ).toBe(true);
+    expect(JSON.stringify(projected)).not.toContain("private fixture");
+    show.jobs.at(-1)!.phases = Array.from({ length: 30 }, () => ({
+      phase: "thread-started",
+      at,
+      attempt: 1,
+    }));
+    expect(publicView(show).generation!.phases).toHaveLength(18);
+  });
+  it("never exposes hidden or rejected generation proposal text", async () => {
+    const show = await fixture();
+    acquireLease(show, "review-active-tab");
+    const candidate = activate(show);
+    const proposal = show.proposals.find((p) => p.id === candidate.proposalId)!;
+    for (const status of ["hidden", "rejected"] as const) {
+      proposal.status = status;
+      expect(publicView(show).generation?.proposal).toBeUndefined();
+    }
+  });
   it("rejects delayed faults after a newer law activates", async () => {
     const show = await fixture();
     acquireLease(show, "review-active-tab");

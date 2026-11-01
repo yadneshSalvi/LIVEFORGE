@@ -152,6 +152,32 @@ async function patchJob(
     show.updatedAt = job.updatedAt;
   });
 }
+function recordPhase(
+  job: GenerationJob,
+  phase: NonNullable<GenerationJob["phases"]>[number]["phase"],
+  attempt: number,
+  report?: VerificationReport,
+) {
+  job.phases ??= [];
+  if (
+    job.phases.length >= 18 ||
+    job.phases.some(
+      (entry) => entry.phase === phase && entry.attempt === attempt,
+    )
+  )
+    return;
+  job.phases.push({
+    phase,
+    at: new Date().toISOString(),
+    attempt,
+    ...(phase === "verification-complete" && report
+      ? {
+          checksPassed: report.checks.filter((check) => check.passed).length,
+          totalChecks: report.checks.length,
+        }
+      : {}),
+  });
+}
 export async function stopGenerationSandbox(
   name: string | undefined,
   authentication?: SandboxCredentials,
@@ -237,6 +263,11 @@ export async function runGeneration(
     await patchJob(showId, jobId, (j) => {
       j.sandboxId = sandbox!.name;
       j.sandboxTimings = prepared.timings;
+      recordPhase(
+        j,
+        prepared.timings.cacheHit ? "snapshot-restored" : "workspace-ready",
+        1,
+      );
       j.message = prepared.timings.cacheHit
         ? "Starting Codex from a clean dependency image."
         : "The isolated pinned SDK workspace is ready.";
@@ -327,18 +358,7 @@ export async function runGeneration(
               j.attempt !== attempt + 1
             )
               return;
-            j.phases ??= [];
-            if (
-              j.phases.length < 9 &&
-              !j.phases.some(
-                (p) => p.attempt === attempt + 1 && p.phase === phase,
-              )
-            )
-              j.phases.push({
-                phase,
-                at: new Date().toISOString(),
-                attempt: attempt + 1,
-              });
+            recordPhase(j, phase, attempt + 1);
             const labels = {
               "thread-started": "Codex started its isolated authoring thread.",
               "turn-started": "Codex is composing the selected idea.",
@@ -428,6 +448,10 @@ export async function runGeneration(
       const source = sourceBuffer.toString("utf8");
       await patchJob(showId, jobId, (j) => {
         j.status = "verifying";
+        // These milestones come from receiving the exact source and entering
+        // the trusted verifier, even if the optional streamed log was delayed.
+        recordPhase(j, "source-returned", attempt + 1);
+        recordPhase(j, "verifier-started", attempt + 1);
         j.threadId = metadata.threadId;
         j.usage = metadata.usage
           ? {
@@ -448,6 +472,9 @@ export async function runGeneration(
       try {
         const program = compileRuleSource(source);
         verification = verifyRuleProgram(program);
+        await patchJob(showId, jobId, (j) => {
+          recordPhase(j, "verification-complete", attempt + 1, verification);
+        });
         if (!verification.passed)
           throw new Error(
             verification.checks

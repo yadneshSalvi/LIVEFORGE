@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { ENGINE_VERSION, type GameCheckpoint } from "@/game/contracts";
-import { GameEngine } from "@/game/core";
+import { GameEngine, retireGeneratedCheckpoint } from "@/game/core";
 import {
   activeIds,
   assertCurrentEngine,
@@ -57,6 +57,7 @@ export interface ShowRecord extends ShowState {
         | "unknown"
         | "disabled";
       code?: string;
+      userKey?: string;
     }
   >;
   engineArchives?: Array<{
@@ -389,15 +390,36 @@ export function publicView(show: ShowRecord): PublicShowState {
           phases: job.phases
             ?.filter(
               (p) =>
-                ["thread-started", "turn-started", "source-returned"].includes(
-                  p.phase,
-                ) &&
+                [
+                  "snapshot-restored",
+                  "workspace-ready",
+                  "thread-started",
+                  "turn-started",
+                  "source-returned",
+                  "verifier-started",
+                  "verification-complete",
+                ].includes(p.phase) &&
                 Number.isInteger(p.attempt) &&
                 p.attempt >= 1 &&
                 p.attempt <= 3 &&
+                typeof p.at === "string" &&
                 Number.isFinite(Date.parse(p.at)),
             )
-            .slice(0, 9),
+            .slice(0, 18)
+            .map((p) => ({
+              phase: p.phase,
+              at: p.at,
+              attempt: p.attempt,
+              ...(p.phase === "verification-complete" &&
+              Number.isInteger(p.checksPassed) &&
+              Number.isInteger(p.totalChecks) &&
+              p.checksPassed! >= 0 &&
+              p.checksPassed! <= p.totalChecks! &&
+              p.totalChecks! >= 1 &&
+              p.totalChecks! <= 32
+                ? { checksPassed: p.checksPassed, totalChecks: p.totalChecks }
+                : {}),
+            })),
           proposal: (() => {
             const p = show.proposals.find((p) => p.id === job.proposalId);
             return p && p.status !== "hidden" && p.status !== "rejected"
@@ -1109,6 +1131,32 @@ export function rollback(show: ShowRecord, input: Record<string, unknown>) {
       { sourceHash: active?.sourceHash },
     );
   }
+  if (
+    runtimeFault &&
+    (input.retireAllLaws === true || !show.previousCheckpoint)
+  ) {
+    const repeated = !show.previousCheckpoint;
+    show.checkpoint = retireGeneratedCheckpoint(
+      show.checkpoint ?? new GameEngine().checkpoint(),
+    );
+    show.previousCheckpoint = null;
+    show.activeCandidateIds = [];
+    show.activeCandidateId = null;
+    show.activeArtifactHash = null;
+    show.previousCandidateIds = [];
+    show.previousCandidateId = null;
+    show.revision++;
+    show.phase = "collecting";
+    show.votingOpen = true;
+    event(
+      show,
+      "world.rollback",
+      repeated
+        ? "All laws retired after repeated runtime faults."
+        : "All laws retired after a runtime fault.",
+    );
+    return;
+  }
   assert(
     show.previousCheckpoint,
     409,
@@ -1223,7 +1271,9 @@ export function ingestTwitch(show: ShowRecord, input: unknown) {
       badges.some(
         (b) =>
           b &&
-          (b.set_id === "moderator" || b.set_id === "broadcaster") &&
+          (b.set_id === "moderator" ||
+            b.set_id === "lead_moderator" ||
+            b.set_id === "broadcaster") &&
           typeof b.id === "string" &&
           b.id.length <= 40 &&
           typeof b.info === "string" &&

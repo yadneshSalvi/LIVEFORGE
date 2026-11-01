@@ -1,3 +1,4 @@
+import { CAPABILITY_HINT } from "@/lib/capabilities";
 import { assert } from "./errors";
 import { hashData, privateActor } from "./security";
 import {
@@ -41,7 +42,7 @@ export function buildChatReply(
   ) {
     if (proposal.ancestry?.kind === "adaptation")
       return `${proposal.id} is a ${alternativeCredit(proposal.ancestry.adaptationSource)} alternative to ${mention(proposal.ancestry.originalAuthor)}'s idea — !back ${proposal.id} to support it.`;
-    return `${mention(proposal.author)} your idea is ${proposal.id} — !back ${proposal.id} to support it. Try light, shadows, motion, materials, or a timed effect.`;
+    return `${mention(proposal.author)} your idea is ${proposal.id} — !back ${proposal.id} to support it. ${CAPABILITY_HINT}`;
   }
   if (item.type === "generation.queued" && proposal)
     return `${proposal.id} is selected. Codex is forging the next law; the current game continues.`;
@@ -74,8 +75,7 @@ export function buildChatReply(
       ? "That idea needs an adaptation. The host can review a supported alternative; the original idea is preserved."
       : "That idea could not become a verified law this time. The current game is preserved.";
   }
-  if (item.type === "private.proposal.refused")
-    return "That idea could not join the board. Try a short game mechanic using light, motion, materials, or timing.";
+
   return null;
 }
 export async function requireChatReplyGrant(
@@ -209,6 +209,21 @@ export async function deliverRecentChatReplies(showId: string) {
         showKey(showId),
         (show) => {
           show.replyDeliveries ??= {};
+          const now = Date.now();
+          for (const [id, receipt] of Object.entries(show.replyDeliveries))
+            if (receipt.at <= now - 600_000) delete show.replyDeliveries[id];
+          const proposal = show.proposals.find((p) => p.id === item.proposalId);
+          const userKey =
+            item.type === "proposal.received" && proposal
+              ? privateActor("reply-recipient:" + proposal.author.toLowerCase())
+              : undefined;
+          if (
+            userKey &&
+            Object.values(show.replyDeliveries).some(
+              (r) => r.userKey === userKey && r.at > now - 60_000,
+            )
+          )
+            return false;
           if (
             show.replyDeliveries[key] ||
             Object.keys(show.replyDeliveries).length >= 600 ||
@@ -217,7 +232,11 @@ export async function deliverRecentChatReplies(showId: string) {
               initial.settings.chatRepliesEnabledAt
           )
             return false;
-          show.replyDeliveries[key] = { at: Date.now(), status: "reserved" };
+          show.replyDeliveries[key] = {
+            at: now,
+            status: "reserved",
+            ...(userKey ? { userKey } : {}),
+          };
           return true;
         },
       );

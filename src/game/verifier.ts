@@ -6,6 +6,7 @@ import {
   type VerificationReport,
 } from "./contracts";
 import { GameEngine, assertWorld } from "./core";
+import { emptyEffects } from "./runtime";
 import {
   validateRuleProgram,
   validateRuntimeRuleProgram,
@@ -36,7 +37,7 @@ function failure(error: unknown): VerificationReport {
     ],
     ticksSimulated: 0,
     summary: "Candidate rejected before simulation.",
-    effects: { surfacesCreated: 0, impulsesApplied: 0, cuesApplied: 0 },
+    effects: emptyEffects(),
   };
 }
 /** Trusted suite runs the complete ordered program, including shared global resource budgets. */
@@ -44,7 +45,13 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
   const checks: VerificationCheck[] = [];
   let ticksSimulated = 0,
     observable = false;
-  const effects = { surfacesCreated: 0, impulsesApplied: 0, cuesApplied: 0 };
+  const effects = emptyEffects();
+  const engines: GameEngine[] = [];
+  const makeEngine = (recordEffects = true) => {
+    const engine = new GameEngine();
+    if (recordEffects) engines.push(engine);
+    return engine;
+  };
   let program: RuleProgram;
   try {
     program = composition
@@ -75,10 +82,37 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
       });
     }
   };
+  const assertDiagnostics = (engine: GameEngine) => {
+    const saturated = Object.entries(engine.diagnostics).filter(
+      ([, count]) => count > 0,
+    );
+    if (saturated.length)
+      throw new Error(
+        `Runtime safety limit reached: ${saturated.map(([key, count]) => `${key}=${count}`).join(", ")}.`,
+      );
+  };
+  const hasPhysics = program.rules.some((r) =>
+    r.actions.some((a) => a.type === "physics"),
+  );
+  const comparisonMembers = (program.composition?.members ?? [program])
+    .map((member) => ({
+      ...member,
+      rules: member.rules
+        .map((rule) => ({
+          ...rule,
+          actions: rule.actions.filter((action) => action.type !== "physics"),
+        }))
+        .filter((rule) => rule.actions.length > 0),
+    }))
+    .filter((member) => member.rules.length > 0);
+  const physicsBaseline = comparisonMembers.length
+    ? composeRulePrograms(comparisonMembers)
+    : null;
+  let physicsNoticeable = false;
   run("Actual effects and protected invariants", () => {
     for (let scenario = 0; scenario < 5; scenario++) {
-      const e = new GameEngine(),
-        baseline = new GameEngine();
+      const e = makeEngine(),
+        baseline = makeEngine(false);
       e.world.entities[0].x = [170, 510, 1080, 1870, 400][scenario];
       baseline.world.entities[0].x = e.world.entities[0].x;
       e.activate(program, "verification-only");
@@ -95,44 +129,115 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
         baseline.step(input);
         ticksSimulated += 2;
         assertWorld(e.world);
+        assertDiagnostics(e);
         if (
           e.world.entities.length !== baseline.world.entities.length ||
-          e.world.surfaces.some((s) => s.generated) ||
-          e.world.entities.some((x, i) => {
-            const b = baseline.world.entities[i];
+          e.world.surfaces.some((surface) => surface.generated) ||
+          e.world.entities.some((entity, i) => {
+            const base = baseline.world.entities[i];
             return (
-              !b ||
-              Boolean(x.cue && x.cue.intensity > 0) ||
+              !base ||
+              Boolean(entity.cue && entity.cue.intensity > 0) ||
               [
-                "x",
-                "y",
-                "vx",
-                "vy",
-                "w",
-                "h",
                 "friction",
                 "bounce",
                 "timer",
-              ].some((k) => x[k as "x"] !== b[k as "x"]) ||
-              JSON.stringify(x.physics) !== JSON.stringify(b.physics)
+                ...(!hasPhysics ? ["x", "y", "vx", "vy", "w", "h"] : []),
+              ].some((key) => entity[key as "x"] !== base[key as "x"])
             );
           })
         )
           observable = true;
       }
-      for (const k of Object.keys(effects) as (keyof typeof effects)[])
-        effects[k] += e.effects[k];
+    }
+  });
+  run("Controlled gameplay comparison including airborne jumps", () => {
+    // Broad authored floors and a bounded run avoid route/death discontinuities
+    // amplifying a negligible physics change into an apparent gameplay effect.
+    for (const start of [170, 400, 510, 1080, 1870]) {
+      for (let scenario = 0; scenario < 6; scenario++) {
+        const e = makeEngine(),
+          baseline = makeEngine(false);
+        e.world.entities[0].x = baseline.world.entities[0].x = start;
+        e.activate(program, "controlled-verification");
+        if (physicsBaseline)
+          baseline.activate(physicsBaseline, "controlled-without-physics");
+        for (let t = 0; t < 150; t++) {
+          const input = {
+            ...EMPTY_INPUT,
+            jump:
+              (scenario === 1 ||
+                scenario === 2 ||
+                scenario === 4 ||
+                scenario === 5) &&
+              (t === (scenario === 4 ? 20 : 0) ||
+                ((scenario === 2 || scenario === 5) && t === 12)),
+            interact: scenario === 3 || scenario === 5,
+            right: scenario === 4 && t < 30,
+          };
+          e.step(input);
+          baseline.step(input);
+          ticksSimulated += 2;
+          assertDiagnostics(e);
+          // Stop scoring as soon as either simulation recovers or leaves its
+          // original authored floor; safety coverage continues in other runs.
+          const onFloor = (engine: GameEngine) => {
+            const player = engine.world.entities[0];
+            return engine.world.surfaces.some(
+              (surface) =>
+                !surface.generated &&
+                player.x >= surface.x &&
+                player.x + player.w <= surface.x + surface.w &&
+                surface.y === 448,
+            );
+          };
+          if (
+            e.world.deaths ||
+            baseline.world.deaths ||
+            !onFloor(e) ||
+            !onFloor(baseline)
+          )
+            break;
+          if (
+            e.world.entities.some((entity) => {
+              const base = baseline.world.entities.find(
+                (x) => x.id === entity.id,
+              );
+              return (
+                base &&
+                ["x", "y", "w", "h"].some(
+                  (key) => Math.abs(entity[key as "x"] - base[key as "x"]) > 4,
+                )
+              );
+            })
+          )
+            physicsNoticeable = true;
+        }
+      }
+    }
+  });
+  run("Held input stress and soft runtime budgets", () => {
+    for (const held of ["jump", "interact", "left", "right"] as const) {
+      const e = makeEngine();
+      e.activate(program, "held-verification");
+      for (let t = 0; t < 600; t++) {
+        e.step({ ...EMPTY_INPUT, [held]: true });
+        ticksSimulated++;
+        assertWorld(e.world);
+        assertDiagnostics(e);
+      }
     }
   });
   run("Observable behavior in trusted scenarios", () => {
-    if (!observable)
-      throw new Error(
-        "No actual effect occurred across idle, traversal, touch, jump and dropped-ember scenarios.",
-      );
+    if (
+      (hasPhysics && !physicsNoticeable) ||
+      (!observable && !physicsNoticeable)
+    )
+      throw new Error("No noticeable effect on play.");
   });
   run("Deterministic input replay", () => {
-    const a = new GameEngine(),
-      b = new GameEngine();
+    const a = makeEngine(),
+      b = makeEngine();
     a.activate(program, "same-version");
     b.activate(program, "same-version");
     for (let t = 0; t < 240; t++) {
@@ -145,18 +250,21 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
       };
       a.step(input);
       b.step(input);
+      assertDiagnostics(a);
+      assertDiagnostics(b);
       ticksSimulated += 2;
     }
     if (JSON.stringify(a.checkpoint()) !== JSON.stringify(b.checkpoint()))
       throw new Error("Replay diverged");
   });
   run("Activation rollback preserves exact world", () => {
-    const e = new GameEngine();
+    const e = makeEngine();
     for (let t = 0; t < 30; t++) e.step({ ...EMPTY_INPUT, right: true });
     const before = e.checkpoint();
     e.activate(program, "rollback-version");
     for (let t = 0; t < 90; t++) {
       e.step();
+      assertDiagnostics(e);
       ticksSimulated++;
     }
     e.rollback();
@@ -164,18 +272,21 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
       throw new Error("Rollback changed protected state");
   });
   run("JSON checkpoint continuation and temporary cleanup", () => {
-    const e = new GameEngine();
+    const e = makeEngine();
     e.activate(program, "roundtrip-version");
     for (let t = 0; t < 40; t++) {
       e.step();
+      assertDiagnostics(e);
       ticksSimulated++;
     }
     const cp = JSON.parse(JSON.stringify(e.checkpoint())),
-      other = new GameEngine();
+      other = makeEngine();
     other.restore(cp);
     for (let t = 0; t < 40; t++) {
       e.step({ ...EMPTY_INPUT, right: true });
       other.step({ ...EMPTY_INPUT, right: true });
+      assertDiagnostics(e);
+      assertDiagnostics(other);
       ticksSimulated += 2;
     }
     if (JSON.stringify(e.checkpoint()) !== JSON.stringify(other.checkpoint()))
@@ -188,6 +299,9 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     )
       throw new Error("Retired program left generated state");
   });
+  for (const engine of engines)
+    for (const key of Object.keys(effects) as (keyof typeof effects)[])
+      effects[key] += engine.effects[key];
   const passed = checks.every((c) => c.passed);
   return {
     passed,

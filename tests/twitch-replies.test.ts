@@ -148,6 +148,81 @@ describe("Twitch moderation and private settings", () => {
       /2–60/,
     );
   });
+  it("accepts a lead moderator badge", async () => {
+    const show = await fixture();
+    ingestTwitch(
+      show,
+      notification("!forge Jumping briefly makes the courier glow."),
+    );
+    expect(
+      ingestTwitch(
+        show,
+        notification("!hide P1", "lead-mod", [
+          { set_id: "lead_moderator", id: "1", info: "" },
+        ]),
+      ),
+    ).toEqual({ moderated: true, proposalId: "P1" });
+    expect(publicView(show).proposals).toEqual([]);
+  });
+  it("suppresses a thousand refusals and prunes expired receipts before a valid reply", async () => {
+    const show = await fixture();
+    updateShowSettings(show, { chatRepliesEnabled: true });
+    for (let i = 0; i < 1000; i++) {
+      expect(
+        ingestTwitch(show, notification("!forge x", "refused-" + i)),
+      ).toEqual({ refused: true });
+      expect(buildChatReply(show, show.events.at(-1)!)).toBeNull();
+    }
+    show.replyDeliveries = Object.fromEntries(
+      Array.from({ length: 600 }, (_, i) => [
+        String(i),
+        { at: Date.now() - 600001, status: "sent" as const },
+      ]),
+    );
+    const p = addProposal(
+      show,
+      "Wind gently pushes the courier.",
+      "RealViewer",
+      "viewer",
+      "twitch",
+    );
+    const reply = buildChatReply(
+      show,
+      show.events.find(
+        (e) => e.type === "proposal.received" && e.proposalId === p.id,
+      )!,
+    );
+    expect(reply).toContain(
+      "gravity, jump strength, air jumps, size, wind, spawned platforms or props, shadows, and timers",
+    );
+    await persist(show);
+    await deliverRecentChatReplies(show.id);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(
+      Object.keys(
+        (await store.get<ShowRecord>(showKey(show.id)))!.replyDeliveries!,
+      ),
+    ).toHaveLength(1);
+  });
+  it("applies a durable per-viewer cooldown without consuming additional receipts", async () => {
+    const show = await fixture();
+    enable(show);
+    addProposal(
+      show,
+      "Wind pushes the courier sideways.",
+      "RealViewer",
+      "viewer",
+      "twitch",
+    );
+    await persist(show);
+    await deliverRecentChatReplies(show.id);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(
+      Object.keys(
+        (await store.get<ShowRecord>(showKey(show.id)))!.replyDeliveries!,
+      ),
+    ).toHaveLength(1);
+  });
   it("accepts hide/reject only from EventSub moderator or broadcaster badges and strips the private explanation", async () => {
     const show = await fixture();
     ingestTwitch(

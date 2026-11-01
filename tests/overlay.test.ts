@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { overlayDuration, overlayView } from "../src/lib/overlay";
 import type { PublicShowState } from "../src/server/contracts";
+import { generationMilestones } from "../src/lib/generation-progress";
 
 function fixture(): PublicShowState {
   return {
@@ -58,6 +59,41 @@ function fixture(): PublicShowState {
 }
 
 describe("broadcast overlay projection", () => {
+  it("uses recorded verifier totals and distinguishes a restored snapshot from a cold workspace", () => {
+    const phases = generationMilestones({
+      createdAt: "2026-11-01T00:00:00Z",
+      phases: [
+        { phase: "snapshot-restored", attempt: 1, at: "2026-11-01T00:00:01Z" },
+        { phase: "verifier-started", attempt: 1, at: "2026-11-01T00:00:20Z" },
+        {
+          phase: "verification-complete",
+          attempt: 1,
+          at: "2026-11-01T00:00:21Z",
+          checksPassed: 7,
+          totalChecks: 8,
+        },
+      ],
+    });
+    expect(phases.map((phase) => phase.label)).toEqual([
+      "Clean dependency snapshot restored",
+      "Independent gameplay checks started",
+      "Independent gameplay checks complete (7/8 passed)",
+    ]);
+    expect(
+      generationMilestones({
+        createdAt: "2026-11-01T00:00:00Z",
+        phases: [
+          {
+            phase: "verification-complete",
+            attempt: 1,
+            at: "2026-11-01T00:00:21Z",
+            checksPassed: 100,
+            totalChecks: 8,
+          },
+        ],
+      })[0].label,
+    ).toBe("Independent gameplay checks complete");
+  });
   it("ranks public ideas and shows true phase/elapsed time without unreviewed reasons", () => {
     const view = overlayView(fixture(), Date.parse("2026-11-01T00:01:05Z"));
     expect(view.ranked.map((proposal) => proposal.id)).toEqual(["P3", "P1"]);
@@ -91,7 +127,7 @@ describe("broadcast overlay projection", () => {
       message: "ignored server message",
     });
     const view = overlayView(show);
-    expect(view.phase).toBe("A community law is live");
+    expect(view.phase).toBe("NEW LAW: Approved — Invented by @Viewer");
     expect(view.moment).toBe("A new possibility is live");
     expect(view.laws[0].description).toBe("The approved description");
   });

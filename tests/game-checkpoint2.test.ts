@@ -48,6 +48,79 @@ describe("engine2 strict checkpoint boundary", () => {
     const cp = JSON.parse(JSON.stringify(e.checkpoint()));
     expect(parseCheckpoint(cp, { program, sourceHash: hash })).toEqual(cp);
   });
+  it("rejects unauthored entities and excessive authorized spawn counts", () => {
+    const e = new GameEngine();
+    e.activate(b, hash);
+    e.step();
+    const expected = { program: b, sourceHash: hash };
+    const extra = e.checkpoint();
+    extra.snapshot.entities.push({
+      ...extra.snapshot.entities[3],
+      id: "ungranted-prop",
+    });
+    expect(() => parseCheckpoint(extra, expected)).toThrow(/authored or/);
+    const excess = e.checkpoint();
+    excess.snapshot.tick = 10;
+    const original = excess.snapshot.entities[8];
+    for (const tick of [2, 3])
+      excess.snapshot.entities.push({
+        ...original,
+        id: `spawn:crates:courier:0:${tick}`,
+        expires: tick + 119,
+      });
+    expect(() => parseCheckpoint(excess, expected)).toThrow(/not authorized/);
+    const global = e.checkpoint();
+    global.snapshot.tick = 20;
+    const spawned = global.snapshot.entities[8];
+    for (let tick = 2; tick <= 13; tick++)
+      global.snapshot.entities.push({
+        ...spawned,
+        id: `spawn:crates:courier:0:${tick}`,
+        expires: tick + 119,
+      });
+    try {
+      parseCheckpoint(global, expected);
+      throw new Error("accepted forged global count");
+    } catch (error) {
+      expect(error).toMatchObject({ code: "checkpoint_grant" });
+    }
+  });
+  it("round-trips granted air jumps and rejects fractional grants at the rule boundary", () => {
+    for (const airJumps of [0, 1, 2]) {
+      const program = structuredClone(a);
+      program.rules[0].actions = [
+        { type: "physics", target: "self", airJumps },
+      ];
+      const e = new GameEngine();
+      e.activate(program, hash);
+      expect(e.world.entities[0].physics.airJumps).toBe(airJumps);
+      expect(() =>
+        parseCheckpoint(e.checkpoint(), { program, sourceHash: hash }),
+      ).not.toThrow();
+    }
+    const invalid = structuredClone(a);
+    invalid.rules[0].actions = [
+      { type: "physics", target: "self", airJumps: 0.5 },
+    ];
+    expect(() => new GameEngine().activate(invalid, hash)).toThrow();
+  });
+  it("accepts legitimate tick expressions after ten thousand ticks", () => {
+    const program = structuredClone(a);
+    program.rules[0].actions = [
+      {
+        type: "physics",
+        target: "self",
+        gravityScale: { mul: [{ field: "tick" }, 0.00005] },
+      },
+    ];
+    const e = new GameEngine();
+    e.world.tick = 20000;
+    e.activate(program, hash);
+    expect(e.world.entities[0].physics.gravityScale).toBe(1);
+    expect(() =>
+      parseCheckpoint(e.checkpoint(), { program, sourceHash: hash }),
+    ).not.toThrow();
+  });
   it("rejects authored identity/order changes, duplicate ember and forged spawned records", () => {
     const e = new GameEngine();
     e.activate(b, hash);

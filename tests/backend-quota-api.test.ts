@@ -9,6 +9,7 @@ import * as stores from "@/server/store";
 import { createShow, showKey, type ShowRecord } from "@/server/show";
 import { encryptToken, sessionCookie } from "@/server/security";
 import * as generation from "@/server/generation";
+import * as quotas from "@/server/generation-quota";
 import { POST as command } from "@/app/api/shows/[showId]/[...action]/route";
 import { GET as status } from "@/app/api/status/route";
 let directory: string;
@@ -150,6 +151,137 @@ describe("public-host generation API quota policy", () => {
     });
     expect(body.generation.quota).not.toHaveProperty("actorId");
     expect(JSON.stringify(body)).not.toContain("fixture-twitch-access");
+  });
+  it("refunds a losing distinct concurrent key but preserves a committed same-key reservation", async () => {
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_USER_PER_DAY", "3");
+    const reserve = quotas.reserveGenerationQuota;
+    let reached = 0;
+    let release!: () => void;
+    const barrier = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    vi.spyOn(quotas, "reserveGenerationQuota").mockImplementation(
+      async (...args) => {
+        const reservation = await reserve(...args);
+        reached++;
+        if (reached === 2) release();
+        await barrier;
+        return reservation;
+      },
+    );
+    const authenticated = await host();
+    const proposalId = await proposal(
+      authenticated.show.id,
+      authenticated.cookie,
+    );
+    const responses = await Promise.all(
+      ["concurrent-request-one", "concurrent-request-two"].map((key) =>
+        post(
+          authenticated.show.id,
+          authenticated.cookie,
+          "generate",
+          { proposalId },
+          key,
+        ),
+      ),
+    );
+    expect(responses.map((r) => r.status).sort()).toEqual([202, 409]);
+    const show = (await store.get<ShowRecord>(showKey(authenticated.show.id)))!;
+    expect(show.jobs).toHaveLength(1);
+    expect(reached).toBe(2);
+    const ledger = (await store.get<{
+      days: Record<string, { total: number }>;
+      reservations: object;
+    }>("generation-quota:v1"))!;
+    expect(Object.values(ledger.days)[0].total).toBe(1);
+    expect(Object.keys(ledger.reservations)).toHaveLength(1);
+    const winningKey =
+      responses[0].status === 202
+        ? "concurrent-request-one"
+        : "concurrent-request-two";
+    const retry = await post(
+      show.id,
+      authenticated.cookie,
+      "generate",
+      { proposalId },
+      winningKey,
+    );
+    expect(retry.status).toBe(202);
+    const collision = await post(
+      show.id,
+      authenticated.cookie,
+      "generate",
+      { proposalId, revision: "A different requested mechanic" },
+      winningKey,
+    );
+    expect(collision.status).toBe(409);
+    const final = (await store.get<typeof ledger>("generation-quota:v1"))!;
+    expect(Object.values(final.days)[0].total).toBe(1);
+    expect(Object.keys(final.reservations)).toHaveLength(1);
+  });
+  it("never refunds a committed job when the response path fails", async () => {
+    const authenticated = await host();
+    const proposalId = await proposal(
+      authenticated.show.id,
+      authenticated.cookie,
+    );
+    vi.mocked(after).mockImplementationOnce(() => {
+      throw new Error("fixture response scheduling failure");
+    });
+    const failed = await post(
+      authenticated.show.id,
+      authenticated.cookie,
+      "generate",
+      { proposalId },
+      "committed-job-request",
+    );
+    expect(failed.status).toBe(503);
+    const ledger = (await store.get<{
+      days: Record<string, { total: number }>;
+      reservations: object;
+    }>("generation-quota:v1"))!;
+    expect(Object.values(ledger.days)[0].total).toBe(1);
+    const repeated = await post(
+      authenticated.show.id,
+      authenticated.cookie,
+      "generate",
+      { proposalId },
+      "committed-job-request",
+    );
+    expect(repeated.status).toBe(202);
+    expect(
+      (await store.get<ShowRecord>(showKey(authenticated.show.id)))!.jobs,
+    ).toHaveLength(1);
+    expect(
+      Object.keys(
+        (await store.get<typeof ledger>("generation-quota:v1"))!.reservations,
+      ),
+    ).toHaveLength(1);
+  });
+  it("shares one debit for actual concurrent same-key POST retries", async () => {
+    const authenticated = await host();
+    const proposalId = await proposal(
+      authenticated.show.id,
+      authenticated.cookie,
+    );
+    const responses = await Promise.all(
+      Array.from({ length: 2 }, () =>
+        post(
+          authenticated.show.id,
+          authenticated.cookie,
+          "generate",
+          { proposalId },
+          "same-concurrent-key",
+        ),
+      ),
+    );
+    expect(responses.map((r) => r.status)).toEqual([202, 202]);
+    const ledger = (await store.get<{
+      days: Record<string, { total: number }>;
+      reservations: object;
+    }>("generation-quota:v1"))!;
+    expect(Object.values(ledger.days)[0].total).toBe(1);
+    expect(Object.keys(ledger.reservations)).toHaveLength(1);
   });
   it("does not let browser body fields choose Sandbox mode or snapshot identity", async () => {
     const authenticated = await host();

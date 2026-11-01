@@ -43,7 +43,7 @@ describe("bounded generated-rule compiler", () => {
     const report = verifyRuleProgram(sample());
     expect(report.passed).toBe(true);
     expect(report.checks.every((c) => c.passed)).toBe(true);
-    expect(report.ticksSimulated).toBe(4890);
+    expect(report.ticksSimulated).toBeGreaterThanOrEqual(4890 + 2400);
     expect(report.effects.surfacesCreated).toBeGreaterThan(0);
   });
   it("rejects bounded syntax that still drives the courier outside protected bounds", () => {
@@ -101,7 +101,7 @@ describe("bounded generated-rule compiler", () => {
         solid: true,
       },
     ];
-    e.world.entities[1].y = -500;
+    e.world.entities[1].y = -3000;
     const altered = e.checkpoint();
     expect(() => e.activate(p, "bad-geometry")).toThrow();
     expect(e.checkpoint()).toEqual(altered);

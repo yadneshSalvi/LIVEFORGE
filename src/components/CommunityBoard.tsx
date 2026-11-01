@@ -3,13 +3,54 @@ import { useEffect, useState } from "react";
 import { Heart, MessageCircle, Radio, Sparkles } from "lucide-react";
 import { Brand } from "./Brand";
 import { api, errorMessage } from "@/lib/api";
+import { CAPABILITY_HINT } from "@/lib/capabilities";
 import {
   adaptationLabel,
   proposalOrigin,
   ruleCredit,
   ruleDescription,
 } from "@/lib/rule-copy";
-import type { PublicShowState } from "@/server/contracts";
+import type { PublicProposal, PublicShowState } from "@/server/contracts";
+
+export function CommunityProposalCard({
+  proposal,
+}: {
+  proposal: PublicProposal;
+}) {
+  if (proposal.status === "hidden") return null;
+  if (proposal.status === "rejected")
+    return (
+      <article className="proposal-card">
+        <div className="proposal-card-head">
+          <span className="proposal-id">{proposal.id}</span>
+          <span className="proposal-origin">Not selected this round</span>
+        </div>
+      </article>
+    );
+  return (
+    <article className="proposal-card">
+      <div className="proposal-card-head">
+        <span className="proposal-id">{proposal.id}</span>
+        <span className="proposal-origin">
+          {proposal.ancestry?.kind === "adaptation"
+            ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
+            : proposalOrigin(proposal.origin)}
+        </span>
+      </div>
+      <p>{proposal.text}</p>
+      <div className="proposal-card-foot">
+        <span className="author-chip">
+          <span className="author-avatar">{proposal.author[0]}</span>
+          {proposal.author}
+        </span>
+        <span className="support-button">
+          <Heart size={13} />
+          {proposal.votes}
+        </span>
+      </div>
+    </article>
+  );
+}
 
 export function CommunityBoard({ showId }: { showId: string }) {
   const [show, setShow] = useState<PublicShowState | null>(null);
@@ -67,6 +108,7 @@ export function CommunityBoard({ showId }: { showId: string }) {
           <span>!forge &lt;your idea&gt;</span>
           <span style={{ fontSize: 14, color: "var(--muted)" }}>!back P1</span>
         </div>
+        <p className="community-notice">{CAPABILITY_HINT}</p>
         {error && (
           <div className="notice notice-error" role="alert">
             {error}
@@ -92,37 +134,14 @@ export function CommunityBoard({ showId }: { showId: string }) {
         {show && show.proposals.length ? (
           <div className="community-grid">
             {show.proposals
+              .filter((proposal) => proposal.status !== "hidden")
               .slice()
               .sort(
                 (a, b) =>
                   b.votes - a.votes || a.createdAt.localeCompare(b.createdAt),
               )
               .map((proposal) => (
-                <article key={proposal.id} className="proposal-card">
-                  <div className="proposal-card-head">
-                    <span className="proposal-id">{proposal.id}</span>
-                    <span className="proposal-origin">
-                      {proposal.status === "rejected"
-                        ? "NOT SELECTED THIS ROUND"
-                        : proposal.ancestry?.kind === "adaptation"
-                          ? `${adaptationLabel(proposal.ancestry.adaptationSource).toUpperCase()} ALTERNATIVE`
-                          : proposalOrigin(proposal.origin)}
-                    </span>
-                  </div>
-                  <p>{proposal.text}</p>
-                  <div className="proposal-card-foot">
-                    <span className="author-chip">
-                      <span className="author-avatar">
-                        {proposal.author[0]}
-                      </span>
-                      {proposal.author}
-                    </span>
-                    <span className="support-button">
-                      <Heart size={13} />
-                      {proposal.votes}
-                    </span>
-                  </div>
-                </article>
+                <CommunityProposalCard key={proposal.id} proposal={proposal} />
               ))}
           </div>
         ) : (

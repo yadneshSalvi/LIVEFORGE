@@ -4,8 +4,28 @@ import { Check, Heart, Radio, Sparkles } from "lucide-react";
 import { ForgeMark } from "./Brand";
 import { overlayDuration, overlayView } from "@/lib/overlay";
 import { adaptationLabel, proposalOrigin, ruleCredit } from "@/lib/rule-copy";
+import { CAPABILITY_HINT } from "@/lib/capabilities";
 import type { PublicShowState } from "@/server/contracts";
 import styles from "./OverlayBoard.module.css";
+
+/** Pure phase content also used by the broadcast render regression cases. */
+export function OverlayPhaseStatus({
+  view,
+}: {
+  view: ReturnType<typeof overlayView>;
+}) {
+  return (
+    <>
+      <h2>{view.phase}</h2>
+      {view.proposalText && (
+        <p className={styles.phaseDetail}>{view.proposalText}</p>
+      )}
+      {view.proposalCredit && (
+        <p className={styles.phaseDetail}>{view.proposalCredit}</p>
+      )}
+    </>
+  );
+}
 
 /** Independent public projection: no host session, game worker or BroadcastChannel. */
 export function OverlayBoard({
@@ -102,6 +122,7 @@ export function OverlayBoard({
             !back <span>P1</span>
           </code>
         </div>
+        <p className={styles.hint}>{CAPABILITY_HINT}</p>
         <p className={styles.hint}>
           {show?.mode === "practice"
             ? "Host-authored practice ideas · live Twitch commands are not connected"
@@ -122,12 +143,15 @@ export function OverlayBoard({
             </span>
             <span>{disconnected ? "UPDATES PAUSED" : "LIVE STATUS"}</span>
           </div>
-          <h2>
-            {view?.phase ||
-              (disconnected
+          {view ? (
+            <OverlayPhaseStatus view={view} />
+          ) : (
+            <h2>
+              {disconnected
                 ? "Waiting to reconnect"
-                : "Opening the community’s world")}
-          </h2>
+                : "Opening the community’s world"}
+            </h2>
+          )}
           {view?.working && view.elapsedSeconds !== null && (
             <p className={styles.elapsed}>
               {overlayDuration(view.elapsedSeconds)}{" "}

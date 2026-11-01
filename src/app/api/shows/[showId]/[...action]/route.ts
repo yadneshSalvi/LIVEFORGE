@@ -12,6 +12,9 @@ import {
 import {
   generationRequest,
   reserveGenerationQuota,
+  releaseGenerationQuota,
+  type GenerationRequest,
+  type GenerationIdentity,
 } from "@/server/generation-quota";
 import { after } from "next/server";
 import { randomUUID } from "node:crypto";
@@ -189,6 +192,14 @@ export async function GET(request: Request, context: Context) {
   }
 }
 export async function POST(request: Request, context: Context) {
+  let debit:
+    | {
+        identity: GenerationIdentity;
+        descriptor: GenerationRequest;
+        key: string;
+        ownerId: string;
+      }
+    | undefined;
   try {
     requireSameOrigin(request);
     const host = session(request);
@@ -315,6 +326,12 @@ export async function POST(request: Request, context: Context) {
           identity,
           requestDescriptor,
         );
+        debit = {
+          identity,
+          descriptor: requestDescriptor,
+          key: idempotency!,
+          ownerId: host.hostId,
+        };
         generationMetadata = {
           jobId: reservation.jobId,
           requestHash: reservation.requestHash,
@@ -580,7 +597,16 @@ export async function POST(request: Request, context: Context) {
         }
         assert(false, 404, "route_not_found", "Endpoint not found.");
       });
-      if (path === "generate") jobToRun = (result as { jobId: string }).jobId;
+      if (path === "generate") {
+        const jobId = (result as { jobId?: string }).jobId;
+        assert(
+          jobId === generationMetadata?.jobId,
+          409,
+          "idempotency_conflict",
+          "This request key belongs to another command or a failed generation. Use a new key.",
+        );
+        jobToRun = jobId;
+      }
       if (path.endsWith("/cancel") || path === "upgrade")
         stopName = (result as { stopName?: string }).stopName;
     }
@@ -631,6 +657,31 @@ export async function POST(request: Request, context: Context) {
       },
     );
   } catch (error) {
+    if (debit) {
+      const { descriptor, identity, key, ownerId } = debit;
+      try {
+        const refund = await getStore().update<ShowRecord, boolean>(
+          showKey(descriptor.showId),
+          (show) => {
+            if (
+              show.ownerId !== ownerId ||
+              show.jobs.some((job) => job.id === descriptor.jobId)
+            )
+              return false;
+            // Fence concurrent same-key attempts before releasing the shared reservation.
+            if (!Object.hasOwn(show.idempotency, key))
+              show.idempotency[key] = {
+                at: Date.now(),
+                result: { generationRejected: true },
+              };
+            return true;
+          },
+        );
+        if (refund) await releaseGenerationQuota(identity, descriptor);
+      } catch {
+        // Preserve the debit when durable compensation cannot be confirmed.
+      }
+    }
     return jsonError(error);
   }
 }

@@ -7,7 +7,11 @@ import {
   type PhysicsState,
 } from "@/game/contracts";
 import { assertWorld, GameEngine, AUTHORED_ENTITIES } from "@/game/core";
-import { PHYSICS_LIMITS, defaultPhysics } from "@/game/runtime";
+import {
+  MAX_SPAWNED_ENTITIES,
+  PHYSICS_LIMITS,
+  defaultPhysics,
+} from "@/game/runtime";
 import { validateRuntimeRuleProgram } from "@/game/rules";
 import { assert } from "./errors";
 import { digest, hashData } from "./security";
@@ -109,7 +113,7 @@ export const checkpointSchema = z
       .object({
         version: z.literal(ENGINE_VERSION),
         tick: finite.int().nonnegative().max(Number.MAX_SAFE_INTEGER),
-        entities: z.array(entity).min(8).max(20),
+        entities: z.array(entity).min(8).max(64),
         surfaces: z.array(surface).min(9).max(58),
         checkpoint: finite.int().min(0).max(2),
         progress: finite.min(0).max(1),
@@ -199,12 +203,34 @@ export function parseCheckpoint(
     "Checkpoint rule identity does not match the verified artifact.",
   );
   const authoredIds = new Set(AUTHORED_ENTITIES.map((e) => e.id));
+  assert(
+    new Set(entities.map((e) => e.id)).size === entities.length &&
+      entities.every((e) =>
+        authoredIds.has(e.id) ? !e.spawnRule : Boolean(e.spawnRule),
+      ) &&
+      entities.filter((e) => e.spawnRule).length <= MAX_SPAWNED_ENTITIES,
+    400,
+    "checkpoint_grant",
+    "Every entity must be authored or an authorized bounded spawn.",
+  );
   for (const spawned of entities.filter((e) => e.spawnRule)) {
     const parts = spawned.id.split(":"),
       rule = cp.program?.rules.find((r) => r.id === spawned.spawnRule),
       action = rule?.actions[Number(parts[3])];
     assert(
-      parts.length === 5 &&
+      spawned.kind === "prop" &&
+        spawned.baseW === 28 &&
+        spawned.baseH === 40 &&
+        entities.filter((e) => e.spawnRule === spawned.spawnRule).length <=
+          // Runtime counts all spawns for a clause together. The largest action
+          // cap is its maximum reachable count; individual creation history is not replayed.
+          Math.max(
+            0,
+            ...(rule?.actions.map((a) =>
+              a.type === "spawnProp" ? a.maxCount : 0,
+            ) ?? []),
+          ) &&
+        parts.length === 5 &&
         parts[0] === "spawn" &&
         parts[1] === spawned.spawnRule &&
         authoredIds.has(parts[2]) &&
@@ -215,7 +241,7 @@ export function parseCheckpoint(
         action?.type === "spawnProp" &&
         spawned.expires === Number(parts[4]) + action.lifetime - 1,
       400,
-      "checkpoint_spawn",
+      "checkpoint_grant",
       "Spawned identity or lifetime is not authorized by the exact active program.",
     );
   }
@@ -431,9 +457,12 @@ export function parseCheckpoint(
           "checkpoint_grant",
           "Granted physics field is missing.",
         );
-        const [lo, hi] = expressionRange(expression),
+        const [lo, hi] = expressionRange(expression, tick),
           limits = PHYSICS_LIMITS[key],
-          clamp = (n: number) => Math.max(limits[0], Math.min(limits[1], n));
+          clamp = (n: number) => {
+            const bounded = Math.max(limits[0], Math.min(limits[1], n));
+            return key === "airJumps" ? Math.floor(bounded) : bounded;
+          };
         assert(
           value >= clamp(lo) - 1e-9 && value <= clamp(hi) + 1e-9,
           400,
@@ -480,7 +509,7 @@ export function parseCheckpoint(
 }
 
 /** Conservative interval of a source expression; historical field samples require replay, not a client assertion. */
-function expressionRange(value: Scalar): [number, number] {
+function expressionRange(value: Scalar, tick: number): [number, number] {
   if (typeof value === "number") return [value, value];
   if ("field" in value) {
     switch (value.field) {
@@ -501,15 +530,16 @@ function expressionRange(value: Scalar): [number, number] {
       case "stationaryTicks":
       case "distanceToPlayer":
       case "distanceToLantern":
-      case "tick":
         return [0, 10000];
+      case "tick":
+        return [0, tick];
       default:
         return [-4000, 4000];
     }
   }
   const cap = (n: number) => Math.max(-10000, Math.min(10000, n));
   if ("clamp" in value) {
-    const [a, b] = expressionRange(value.clamp.value),
+    const [a, b] = expressionRange(value.clamp.value, tick),
       bound = (n: number) =>
         Math.max(value.clamp.min, Math.min(value.clamp.max, n));
     return [bound(a), bound(b)];
@@ -522,7 +552,7 @@ function expressionRange(value: Scalar): [number, number] {
           : "min" in value
             ? value.min
             : value.max,
-    ranges = items.map(expressionRange);
+    ranges = items.map((item) => expressionRange(item, tick));
   if ("add" in value)
     return [
       cap(ranges.reduce((a, b) => a + b[0], 0)),
