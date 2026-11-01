@@ -4781,7 +4781,8 @@ body {
   font-size: 14px;
 }
 .archive-card h2,
-.archive-empty h2 {
+.archive-empty h2,
+.archive-main .modal-header h2 {
   font-size: 24px;
 }
 .archive-card .author-chip,
