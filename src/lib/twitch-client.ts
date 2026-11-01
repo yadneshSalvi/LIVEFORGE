@@ -160,8 +160,13 @@ export class TwitchConnector {
         data.metadata?.subscription_type === "channel.chat.message"
       ) {
         if (socket === this.active) this.touchHeartbeat(socket);
-        const text = data.payload?.event?.message?.text || "";
-        if (!/^!(forge|back)(?:\s|$)/i.test(text)) return;
+        const text = data.payload?.event?.message?.text;
+        if (typeof text !== "string") return;
+        const supportedCommand =
+          /^!(forge|back)(?:\s|$)/i.test(text) ||
+          /^!(hide|reject)\s+P\d{1,3}\s*$/i.test(text.trim());
+        if (!supportedCommand) return;
+        // Keep moderation badges unchanged; the server decides who may moderate.
         // Preserve arrival order. Unrelated chat is never forwarded or retained.
         this.queue = this.queue.then(async () => {
           if (this.stopped) return;

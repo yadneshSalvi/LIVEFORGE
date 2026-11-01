@@ -22,11 +22,15 @@ const welcome = (id = "session-1") => ({
   metadata: { message_type: "session_welcome" },
   payload: { session: { id, keepalive_timeout_seconds: 30 } },
 });
-const notification = (text: string) => ({
+const notification = (
+  text: string,
+  badges: Array<{ set_id: string; id: string; info: string }> = [],
+  id = "1",
+) => ({
   metadata: {
     message_type: "notification",
     subscription_type: "channel.chat.message",
-    message_id: "delivery-1",
+    message_id: "delivery-" + id,
     message_timestamp: new Date().toISOString(),
   },
   payload: {
@@ -39,8 +43,9 @@ const notification = (text: string) => ({
       broadcaster_user_id: "channel",
       chatter_user_id: "viewer",
       chatter_user_name: "Viewer",
-      message_id: "message-1",
+      message_id: "message-" + id,
       message: { text },
+      badges,
     },
   },
 });
@@ -112,6 +117,61 @@ describe("the actual Twitch browser protocol adapter", () => {
         .message.text,
     ).toBe("!back P1");
     expect(event).toHaveBeenCalledTimes(3);
+  });
+  it("relays bounded moderation commands in order with their original badges for server authorization", async () => {
+    const { socket, event } = connect();
+    socket.emit(welcome());
+    await flush();
+    const messages = [
+      notification("!forge props glow when still", [], "forge"),
+      notification(
+        "!hide P1",
+        [{ set_id: "moderator", id: "1", info: "" }],
+        "moderator-hide",
+      ),
+      notification(
+        "!reject P123",
+        [{ set_id: "broadcaster", id: "1", info: "" }],
+        "broadcaster-reject",
+      ),
+      notification("  !HiDe p999 \t", [], "ordinary-viewer-hide"),
+      notification("!back P1", [], "back"),
+    ];
+    for (const message of messages) socket.emit(message);
+    await flush();
+    const commands = calls.filter((call) => call.path.endsWith("/events"));
+    expect(commands.map((call) => call.body)).toEqual(messages);
+    expect(event).toHaveBeenCalledTimes(messages.length + 1);
+  });
+  it("does not relay malformed moderation commands, extra text or unrelated chat", async () => {
+    const { socket, event } = connect();
+    socket.emit(welcome());
+    await flush();
+    for (const text of [
+      "hello everyone",
+      "!hide",
+      "!reject P",
+      "!hide P1000",
+      "!reject P1 private explanation",
+      "!hides P1",
+      "!hideP1",
+      "!reject P1\n!back P2",
+      "please !hide P1",
+      "!reject P1.5",
+      "!hide P-1",
+    ])
+      socket.emit(notification(text));
+    const malformed = notification("unused");
+    socket.emit({
+      ...malformed,
+      payload: {
+        ...malformed.payload,
+        event: { ...malformed.payload.event, message: { text: 42 } },
+      },
+    });
+    await flush();
+    expect(calls.filter((call) => call.path.endsWith("/events"))).toEqual([]);
+    expect(event).toHaveBeenCalledTimes(1);
   });
   it("preserves the old socket until planned reconnect welcome", async () => {
     const { socket } = connect();
