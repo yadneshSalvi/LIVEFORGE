@@ -1,0 +1,40 @@
+{
+  "schema": "liveforge-motion-generated-law-replay/v1",
+  "checkedAt": "2026-11-02T08:26:29.169Z",
+  "runtimeCommit": "b1e26e2d905290a769dde5de7281c434400513c9",
+  "showId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "proposal": {
+    "id": "P1",
+    "text": "A floating wedge glides back and forth over the gap, never touching either side",
+    "author": "yadneshsalvi96",
+    "origin": "twitch",
+    "createdAt": "2026-11-02T08:07:45.645Z"
+  },
+  "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+  "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+  "sourceMatchesExactExport": true,
+  "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+  "verificationHash": "caddbc515e06eb9ac64dd9ed8eaf52c845e680d3443b69ba91d167ada107b5ea",
+  "verificationMatchesExport": true,
+  "passed": true,
+  "checks": 10,
+  "ticksSimulated": 10987,
+  "threadId": "01a19b52-d42c-7ec2-84db-0129259f05c2",
+  "model": "gpt-6.1-sol",
+  "generationCreatedAt": "2026-11-02T08:14:16.954Z",
+  "verifiedAt": "2026-11-02T08:14:48.703Z",
+  "queuedToVerifiedMs": 31749,
+  "copiedEvidence": [
+    {
+      "source": "../videos/liveforge/evidence/revision-005/verified-before-approval.json",
+      "destination": "verified-before-approval.json",
+      "sha256": "c0d58316098288f6d6fdde5087c98dba8f23a68b4ae466e4f11e877b7e9eae1d"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/live-landing.png",
+      "destination": "live-landing.png",
+      "sha256": "9ec658b6e82176bee2516bb5aa61ce8f97fc708ed4f1584bbc9ac687534f5ab4"
+    }
+  ],
+  "scope": "Local offline compilation and verifier replay of the exact real generated literal; no generation request, source edits or live state mutation."
+}

@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-11-02T08:02:53.234165+00:00",
+  "deploymentId": "dpl_6CYJR3N8ViUKCpGPu2ouU9iwg9Zn",
+  "kind": "fresh cookie-free HTTP session; no Twitch credentials; browser playback checked separately",
+  "statusHTTP": 200,
+  "freshGenerationAllowed": false,
+  "authorization": "Connect Twitch to forge",
+  "createHTTP": 201,
+  "sampleHTTP": 200,
+  "showId": "443d8a73-bc80-46a7-b3b0-e7e4b29a806a",
+  "sampleSourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+  "verificationPassed": true,
+  "generationReused": true,
+  "newModelCall": false
+}

@@ -1,0 +1,359 @@
+{
+  "format": "liveforge.evidence/2",
+  "exportedAt": "2026-11-02T08:15:17.203Z",
+  "extraction": "Read-only exact-show database query; fields aligned with the app evidence export",
+  "showId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "mode": "twitch",
+  "proposal": {
+    "id": "P1",
+    "text": "A floating wedge glides back and forth over the gap, never touching either side",
+    "author": "yadneshsalvi96",
+    "origin": "twitch",
+    "createdAt": "2026-11-02T08:07:45.645Z"
+  },
+  "generation": {
+    "id": "12b8deaa-8094-7fd5-2022-99e39003e8e9",
+    "model": "gpt-6.1-sol",
+    "threadId": "01a19b52-d42c-7ec2-84db-0129259f05c2",
+    "createdAt": "2026-11-02T08:14:16.954Z",
+    "updatedAt": "2026-11-02T08:14:48.703Z",
+    "attempt": 1,
+    "usage": {
+      "input_tokens": 10918,
+      "output_tokens": 485,
+      "cached_input_tokens": 0
+    },
+    "phases": [
+      {
+        "at": "2026-11-02T08:14:18.262Z",
+        "phase": "snapshot-restored",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:24.316Z",
+        "phase": "thread-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:29.362Z",
+        "phase": "turn-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:38.557Z",
+        "phase": "source-returned",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:39.173Z",
+        "phase": "verifier-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:42.955Z",
+        "phase": "verification-complete",
+        "attempt": 1,
+        "totalChecks": 10,
+        "checksPassed": 10
+      }
+    ],
+    "sandboxTimings": {
+      "mode": "snapshot",
+      "setupMs": 1260,
+      "cacheHit": true,
+      "createMs": 880,
+      "fallback": false,
+      "installMs": 0,
+      "snapshotMs": 0
+    }
+  },
+  "candidate": {
+    "id": "6c748156-b34e-447f-821f-3db92e550bf3",
+    "engineVersion": "last-light/2.0.0",
+    "source": "export default {\n  version: 1,\n  name: \"Gliding gap wedge\",\n  description: \"A floating brass wedge with a flat, solid top glides back and forth across the gap at ledge height. It is 100 units wide, travels 140 units at 72 units per second, and always stays at least 50 units from both ledges. Jump aboard to ride across.\",\n  rules: [\n    {\n      id: \"gliding-gap-wedge\",\n      each: \"lantern\",\n      on: \"tick\",\n      when: {\n        compare: { left: { field: \"x\" }, op: \"eq\", right: 1030 }\n      },\n      actions: [\n        {\n          type: \"createSurface\",\n          offsetX: -230,\n          offsetY: 0,\n          width: 100,\n          lifetime: 1,\n          solid: true,\n          maxCount: 1,\n          motion: { travel: -140, speed: 1.2 }\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+    "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+    "program": {
+      "name": "Gliding gap wedge",
+      "rules": [
+        {
+          "id": "gliding-gap-wedge",
+          "on": "tick",
+          "each": "lantern",
+          "when": {
+            "compare": {
+              "op": "eq",
+              "left": {
+                "field": "x"
+              },
+              "right": 1030
+            }
+          },
+          "actions": [
+            {
+              "type": "createSurface",
+              "solid": true,
+              "width": 100,
+              "motion": {
+                "speed": 1.2,
+                "travel": -140
+              },
+              "offsetX": -230,
+              "offsetY": 0,
+              "lifetime": 1,
+              "maxCount": 1
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "description": "A floating brass wedge with a flat, solid top glides back and forth across the gap at ledge height. It is 100 units wide, travels 140 units at 72 units per second, and always stays at least 50 units from both ledges. Jump aboard to ride across."
+    },
+    "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+    "verification": {
+      "checks": [
+        {
+          "name": "Bounded capability schema",
+          "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+          "passed": true
+        },
+        {
+          "name": "Actual effects and protected invariants",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Controlled gameplay comparison including airborne jumps",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Held input stress and soft runtime budgets",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Observable behavior in trusted scenarios",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Deterministic input replay",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Activation rollback preserves exact world",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "JSON checkpoint continuation and temporary cleanup",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Bounded horizontal motion and mid-sweep continuation",
+          "detail": "Trusted engine assertions passed.",
+          "passed": true
+        },
+        {
+          "name": "Grounded riders follow horizontal motion",
+          "detail": "Verified 234 neutral supported ticks with surface displacement and carry history.",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "effects": {
+        "cuesApplied": 0,
+        "entitiesSpawned": 0,
+        "impulsesApplied": 0,
+        "surfacesCreated": 8902,
+        "modifiersApplied": 0
+      },
+      "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+      "engineVersion": "last-light/2.0.0",
+      "ticksSimulated": 10987
+    },
+    "provenance": {
+      "kind": "runtime-generation",
+      "model": "gpt-6.1-sol",
+      "threadId": "01a19b52-d42c-7ec2-84db-0129259f05c2",
+      "generatedAt": "2026-11-02T08:14:42.974Z"
+    },
+    "composition": {
+      "mode": "append",
+      "members": [
+        {
+          "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+          "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+          "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325"
+        }
+      ],
+      "program": {
+        "name": "Gliding gap wedge",
+        "rules": [
+          {
+            "id": "gliding-gap-wedge",
+            "on": "tick",
+            "each": "lantern",
+            "when": {
+              "compare": {
+                "op": "eq",
+                "left": {
+                  "field": "x"
+                },
+                "right": 1030
+              }
+            },
+            "actions": [
+              {
+                "type": "createSurface",
+                "solid": true,
+                "width": 100,
+                "motion": {
+                  "speed": 1.2,
+                  "travel": -140
+                },
+                "offsetX": -230,
+                "offsetY": 0,
+                "lifetime": 1,
+                "maxCount": 1
+              }
+            ]
+          }
+        ],
+        "version": 1,
+        "description": "A floating brass wedge with a flat, solid top glides back and forth across the gap at ledge height. It is 100 units wide, travels 140 units at 72 units per second, and always stays at least 50 units from both ledges. Jump aboard to ride across."
+      },
+      "baseMembers": [],
+      "contextHash": "c74411609d9fa43a25dbddd8546334e8cb56f11dd6a9404d6043474b8c8de0bf",
+      "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+      "artifactHash": "dbfba8fa927af8848c6180b6381949b1871bd7488d2cc9a85f89e5eba2f6bb27",
+      "baseRevision": 0,
+      "verification": {
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked.",
+            "passed": true
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Deterministic input replay",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Bounded horizontal motion and mid-sweep continuation",
+            "detail": "Trusted engine assertions passed.",
+            "passed": true
+          },
+          {
+            "name": "Grounded riders follow horizontal motion",
+            "detail": "Verified 234 neutral supported ticks with surface displacement and carry history.",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "effects": {
+          "cuesApplied": 0,
+          "entitiesSpawned": 0,
+          "impulsesApplied": 0,
+          "surfacesCreated": 8902,
+          "modifiersApplied": 0
+        },
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "engineVersion": "last-light/2.0.0",
+        "ticksSimulated": 10987
+      },
+      "engineVersion": "last-light/2.0.0",
+      "compositionHash": "9260895e19a1e0bc17566a769a44988cb15045ea969c644bcc7f3eecbc68af53"
+    }
+  },
+  "events": [
+    {
+      "at": "2026-11-02T08:07:45.645Z",
+      "id": "7c3b4aa1-f703-4c19-9c01-042d6793cae9",
+      "type": "proposal.received",
+      "message": "Idea received",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-11-02T08:08:43.094Z",
+      "id": "7507b83e-a9ec-4ce2-9e80-6634ece38b54",
+      "type": "generation.queued",
+      "message": "Selected — forging now",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-11-02T08:08:59.694Z",
+      "id": "ddfa8545-7d24-486c-969d-350f1aa5620d",
+      "type": "generation.failed",
+      "message": "The available surface actions cannot create wedge-shaped geometry; they support only horizontal platforms.",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-11-02T08:12:43.306Z",
+      "id": "5481dc69-a8a8-4751-ac1f-9730a25381b1",
+      "type": "generation.queued",
+      "message": "Selected — forging now",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-11-02T08:13:13.796Z",
+      "id": "c1d3a48e-59de-4e84-a3aa-0956680b9224",
+      "type": "candidate.verified",
+      "message": "Generated source passed the trusted game verifier.",
+      "proposalId": "P1",
+      "sourceHash": "ce814e014da55dcc9dc4b1df418bec1341d2384c2ac356fe8ae277be7aeeac00",
+      "candidateId": "b2594b56-565e-401c-9345-2ff81eea83dc",
+      "programHash": "4745408735bd7a601e40540566f2c5017e5ff26e75d289bad0eb29f6e703aa7b"
+    },
+    {
+      "at": "2026-11-02T08:14:16.954Z",
+      "id": "88d98ac7-c483-4947-a03e-90e4650f97f4",
+      "type": "generation.queued",
+      "message": "Selected — forging now",
+      "proposalId": "P1"
+    },
+    {
+      "at": "2026-11-02T08:14:48.703Z",
+      "id": "e2935998-6732-40f1-9a75-cb6f436e9a71",
+      "type": "candidate.verified",
+      "message": "Generated source passed the trusted game verifier.",
+      "proposalId": "P1",
+      "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+      "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+      "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325"
+    }
+  ]
+}

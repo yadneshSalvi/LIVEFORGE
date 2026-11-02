@@ -1,0 +1,53 @@
+{
+  "schema": "liveforge-motion-control-confirmation/v1",
+  "checkedAt": "2026-11-02T08:30:09.530Z",
+  "showId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+  "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+  "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+  "previewHash": "3480ead81d087cddea4a680de1b3452baa72ca52fbca5609379aea1a615910fd",
+  "compositionArtifactHash": "dbfba8fa927af8848c6180b6381949b1871bd7488d2cc9a85f89e5eba2f6bb27",
+  "sourceBytesIdenticalBeforeAndAfter": true,
+  "approvedAt": "2026-11-02T08:20:31.821Z",
+  "activatedAt": "2026-11-02T08:21:16.322Z",
+  "restoredAt": "2026-11-02T08:25:11.053Z",
+  "finalStateObservedAt": "2026-11-02T08:27:14.508Z",
+  "finalState": {
+    "activeCandidateIds": [],
+    "activeArtifactHash": null,
+    "intakeOpen": false,
+    "world": {
+      "tick": 48509,
+      "activeHash": null,
+      "ruleName": null,
+      "generatedSurfaceCount": 0,
+      "player": {
+        "kind": "player",
+        "x": 556.3902834650113,
+        "y": 400,
+        "vx": 0,
+        "vy": 0,
+        "grounded": true
+      },
+      "checkpoint": 0
+    }
+  },
+  "copies": [
+    {
+      "source": "../videos/liveforge/evidence/revision-005/activated-and-restored.json",
+      "destination": "activated-and-restored.json",
+      "sha256": "67fa2e9ee1ce014330ec0d082c10aca753c782292a2b3e5468f28f6593581a9e"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/post-restore-receipt.json",
+      "destination": "post-restore-receipt.json",
+      "sha256": "8fe64bec1d5f2604ac3f7887aaee7c45f4ff0e3d58b65f2ccd2654afccd29441"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/restored-baseline.png",
+      "destination": "restored-baseline.png",
+      "sha256": "44830b8bc20210d944301f6ae579cdfaad07bcbdd9cb2d5921e72358e8589d56"
+    }
+  ],
+  "scope": "Read-only cross-check of exact exported identities and post-restore application state. The screenshot shows the restored empty stack before final intake cleanup; the later receipt records intake closed."
+}

@@ -4,9 +4,9 @@
 
 **[Open the live app](https://liveforge-iota.vercel.app)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
 
-![The polished Studio with an active sample shadow bridge](docs/evidence/ui-pass-2026-11-01/after-studio.png)
+![The production Studio with Gliding gap wedge after the courier lands across the gap](docs/evidence/surface-motion-2026-11-02/generation/live-landing.png)
 
-_Signed-out production Practice, 1 November 2026: a stored Codex-generated sample was previewed, approved and activated. This UI check made no fresh model call. Earlier real two-account generation remains in the round-2 evidence._
+_Production play, 2 November 2026: Gliding gap wedge came from a real Twitch proposal and a host-requested revision. [Exact source and run history](docs/evidence/surface-motion-2026-11-02/generation/README.md) retain the generation lineage. The signed-out walkthrough below uses the unchanged stored shadow sample._
 
 ## Try it in 60 seconds
 
@@ -20,6 +20,12 @@ No Twitch sign-in or API key is needed for this path.
 
 The complete lower route, Counterweight Hall and Beacon Guardian work without generated laws. Carry the ember to finish the beacon.
 
+## The moving-surface demo
+
+The real Twitch proposal was: `!forge A floating wedge glides back and forth over the gap, never touching either side`. Codex's final **Gliding gap wedge** law leaves a 50-unit gap to each ledge. The courier waits for a sweep, jumps aboard, rides with movement input released, and jumps off at the far side. The same mechanic runs in Preview and live play.
+
+The host used **Revise** to ask for wider clearances and ledge-height placement after reviewing the first verified candidate. The source remained entirely Codex-generated. After play, **Restore previous law** returned the courier to the saved activation checkpoint and removed the surface. The [run record](docs/evidence/surface-motion-2026-11-02/generation/README.md) preserves the earlier unsupported response, the superseded candidate, final source hash, verification and exact approval/activation/restore events. The existing **Load sample law** instructions above continue to load the original shadow sample.
+
 ## Let real chat invent the next law
 
 Create a **New Twitch show**, **Connect Twitch**, then **Listen to chat**. A viewer sends `!forge <idea>`; others send `!back P1`. One current support choice per account resets each round. The creator chooses what to forge, plays the proposed combination of laws, approves it, then activates it.
@@ -30,7 +36,7 @@ Fresh generation requires an independently authorized Twitch account and availab
 
 Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, horizontally moving platforms, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Publish alternative** saves a separate, credited proposal; **Forge selected idea** starts its fresh generation only when you choose. Suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
 
-Moving surfaces carry the courier, props and a dropped ember. The courier can jump aboard, ride without input, then jump off. Their flat mint top and tapered brass underside share the same rendering in Preview and live play. The source chooses placement, travel and timing through generic bounded capabilities; the existing signed-out shadow sample remains unchanged. The [surface motion evidence](docs/evidence/surface-motion-2026-11-02/README.md) separates engine regressions from real chat generation and recorded play.
+Moving surfaces carry the courier, props and a dropped ember. Their flat mint top and tapered brass underside share the same rendering in Preview and live play. The source chooses placement, travel and timing through generic bounded capabilities. The [surface motion evidence](docs/evidence/surface-motion-2026-11-02/README.md) separates engine regressions from real chat generation and recorded play.
 
 ## One world, up to three laws
 

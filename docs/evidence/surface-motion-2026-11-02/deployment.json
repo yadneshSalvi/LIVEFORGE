@@ -1,0 +1,15 @@
+{
+  "id": "dpl_6CYJR3N8ViUKCpGPu2ouU9iwg9Zn",
+  "name": "liveforge",
+  "url": "liveforge-j5tognjj0-yadneshsalvis-projects.vercel.app",
+  "target": "production",
+  "readyState": "READY",
+  "createdAt": 1793606362649,
+  "aliases": [
+    "liveforge-iota.vercel.app",
+    "liveforge-yadneshsalvis-projects.vercel.app"
+  ],
+  "sourceCommit": "834edd0ea0271d81590356690b24481c5e467064",
+  "checkedAt": "2026-11-02T08:00:45.127152+00:00",
+  "previousDeployment": "dpl_7AVArbg26pKfTgCGDHzJ3qQnY8xV"
+}

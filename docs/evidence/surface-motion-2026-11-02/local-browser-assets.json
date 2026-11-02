@@ -1,0 +1,35 @@
+{
+  "schema": "liveforge-local-browser-evidence-assets/v1",
+  "copiedAt": "2026-11-02T08:02:21.464Z",
+  "copiedWithoutModification": true,
+  "records": [
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-local-app/unchanged-sample-crossing.png",
+      "destination": "local-studio-sample-crossing.png",
+      "scope": "Actual local Studio sample preview before the final camera adjustment.",
+      "bytes": 54829,
+      "sha256": "651752c254a243feb5f99efcc3454da99b82af4741a7d09e4990bb492dc9d073"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-local-app/camera40-far-landing.png",
+      "destination": "local-studio-camera40.png",
+      "scope": "Actual local Studio sample preview after the final generic camera adjustment.",
+      "bytes": 57125,
+      "sha256": "2faa7aeb72ffaa18918499bac67eefd85326570cf96a98e0988dd0c5f2152038"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-local-motion-take1/landed.png",
+      "destination": "synthetic-motion-landed.png",
+      "scope": "Explicitly labeled synthetic local engine harness; final paused state includes a short walk after the continuous take.",
+      "bytes": 78019,
+      "sha256": "2649b123eeb8eea52fea476fe88620a1788ec58f9b31e2ce51ff84283981fe74"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-local-motion-take1/OBSERVATION.md",
+      "destination": "synthetic-motion-observation.md",
+      "scope": "Unedited capture-owner observations for the synthetic fixture; excluded from submission footage.",
+      "bytes": 1790,
+      "sha256": "936b3728a6437c63d9a30ff740c2054b11a3869812cae431cd7048164703f291"
+    }
+  ]
+}

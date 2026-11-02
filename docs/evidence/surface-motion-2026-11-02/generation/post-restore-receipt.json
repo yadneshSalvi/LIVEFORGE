@@ -1,0 +1,48 @@
+{
+  "observedAt": "2026-11-02T08:27:14.508Z",
+  "extraction": "Read-only exact-show application state; credentials, lease, private account and authorization data omitted",
+  "showId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "phase": "collecting",
+  "activeCandidateIds": [],
+  "activeArtifactHash": null,
+  "intakeOpen": false,
+  "world": {
+    "tick": 48509,
+    "activeHash": null,
+    "ruleName": null,
+    "generatedSurfaceCount": 0,
+    "player": {
+      "kind": "player",
+      "x": 556.3902834650113,
+      "y": 400,
+      "vx": 0,
+      "vy": 0,
+      "grounded": true
+    },
+    "checkpoint": 0
+  },
+  "events": [
+    {
+      "at": "2026-11-02T08:20:31.821Z",
+      "type": "candidate.approved",
+      "message": "The host approved the exact source, retained combination, and preview.",
+      "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+      "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+      "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+      "previewHash": "3480ead81d087cddea4a680de1b3452baa72ca52fbca5609379aea1a615910fd"
+    },
+    {
+      "at": "2026-11-02T08:21:16.322Z",
+      "type": "candidate.activated",
+      "message": "Gliding gap wedge entered the approved law stack at a saved checkpoint.",
+      "candidateId": "6c748156-b34e-447f-821f-3db92e550bf3",
+      "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+      "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325"
+    },
+    {
+      "at": "2026-11-02T08:25:11.053Z",
+      "type": "world.rollback",
+      "message": "The previous activation checkpoint was restored. Progress after that checkpoint is reset."
+    }
+  ]
+}
