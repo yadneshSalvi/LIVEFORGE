@@ -1,0 +1,52 @@
+{
+  "status": "Independent original-frame review passes; root accepted both intervals. Not uninterrupted human playback.",
+  "takes": [
+    {
+      "name": "11-preview-performance-take3",
+      "sourceStart": 0.3,
+      "duration": 16,
+      "rate": 1,
+      "capture": "../videos/liveforge/assets/captures/revision-005/11-preview-performance-take3/capture.json",
+      "captureSHA256": "4e4354855df99061d2feacee91f7293d6bd5a16513dfa7653e020078a88a31ad",
+      "originalCapture": "../videos/liveforge/assets/captures/revision-005/11-preview-performance-take3/capture.json",
+      "originalCaptureSHA256": "4e4354855df99061d2feacee91f7293d6bd5a16513dfa7653e020078a88a31ad",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/11-preview-performance-take3.normalization.json",
+      "normalizationSHA256": "6637fa78f3d0931046c3f994b66600b21aa6db4a1264b0df2fa537c4e37fb6f8",
+      "normalizedSHA256": "f3f7e1e3dd9808ffefdd7922a760db18503cf9702542c36c3b44f85ba68fa1b9",
+      "observations": "Full out-and-back sweep, jump-on, neutral-input ride, jump-off and far-ledge landing; both endpoint gaps visible.",
+      "rideSecondsApproximate": 1.7,
+      "contact": "videos/liveforge/assets/qa/revision-005-prep/11-preview-performance-take3-action-contact.jpg",
+      "sourceOrderCorrection": []
+    },
+    {
+      "name": "15-live-performance-take1",
+      "sourceStart": 3,
+      "duration": 16,
+      "rate": 1,
+      "capture": "../videos/liveforge/assets/qa/revision-005-prep/live-performance-take1-chronological/capture-chronological.json",
+      "captureSHA256": "4a6c02b3fd599eb2da7e66a202cb96df7dae6e9bfcb7db967fd723cf9d7fd44a",
+      "originalCapture": "../videos/liveforge/assets/captures/revision-005/15-live-performance-take1/capture.json",
+      "originalCaptureSHA256": "2c7b5a4e1550ebe67fc9d7567f750a5d255e2ff0368a50fb6d68b5b9ce127dc4",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/15-live-performance-take1.normalization.json",
+      "normalizationSHA256": "a25f1eec5e2437126e55f9c0da6d4513d76577b48eb803f6235ca9f852b81792",
+      "normalizedSHA256": "bb98f9bad2fd427559b42449e197014a3647a9ceadb89b44b7edf940d84e2dac",
+      "observations": "Full out-and-back sweep, jump-on, neutral-input ride, jump-off and far-ledge landing; both endpoint gaps visible.",
+      "rideSecondsApproximate": 1.8,
+      "contact": "videos/liveforge/assets/qa/revision-005-prep/15-live-performance-take1-action-contact.jpg",
+      "sourceOrderCorrection": [
+        {
+          "derivedIndex": 345,
+          "originalIndex": 346,
+          "file": "000346.jpg",
+          "ts": 1793607766.796567
+        },
+        {
+          "derivedIndex": 346,
+          "originalIndex": 345,
+          "file": "000345.jpg",
+          "ts": 1793607766.813241
+        }
+      ]
+    }
+  ]
+}

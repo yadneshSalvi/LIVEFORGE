@@ -69,4 +69,4 @@ Native capture `18-confirm-restore` briefly displays **“Progress not saving”
 
 ## Film status
 
-Implementation, deployment, real generation, review, activation, live traversal and restore are evidenced above. The revision 005 film's selected continuous takes, final encode, duration, captions, playback review and publication are still pending. Synthetic engine footage remains excluded, and no optional moving-law sample was added to the signed-out flow.
+Implementation, deployment, real generation, review, activation, live traversal and restore are evidenced above. The [completed revision 005 film](../film/README.md) is 175.5 seconds, SHA-256 `5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771`. Preview and live each retain a continuous 16-second take at 1×, including the sweep, jump-on, carried ride, jump-off and far landing. Its new cover, captions, full decode, full browser playback and separate audiovisual checks are bound to that exact file. The film is [published publicly on YouTube](https://youtu.be/ySAEy9HPHHw). Synthetic engine footage remains excluded, and no optional moving-law sample was added to the signed-out flow.

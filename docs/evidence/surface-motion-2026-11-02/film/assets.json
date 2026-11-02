@@ -1,0 +1,184 @@
+{
+  "schema": "liveforge-film-evidence-copies/v1",
+  "sourceVideoSHA256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771",
+  "records": [
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-browser/candidate002-full-playback.json",
+      "destination": "browser-playback.json",
+      "sourceSHA256": "c3430c6faece805e42993e7e363473594cb530aee71680441d04e66de29e2a76",
+      "savedSHA256": "40b908ae7dae56581a0ba81fd2a91756fe3cebbeb99d712198fa6ac9f2637482",
+      "bytes": 528,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-independent/ENCODED-002-QA.md",
+      "destination": "independent-encoded-qa.md",
+      "sourceSHA256": "d50e0038b72deed8eec01185a859f4a63830e94f1c53b486dfccbf4059597542",
+      "savedSHA256": "d50e0038b72deed8eec01185a859f4a63830e94f1c53b486dfccbf4059597542",
+      "bytes": 2103,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-independent/ENCODED-001-QA.md",
+      "destination": "independent-prior-candidate-qa.md",
+      "sourceSHA256": "4298cf6464251e527b12f544fb12a3b312957131b425b0ba195fb1720c7695ca",
+      "savedSHA256": "4298cf6464251e527b12f544fb12a3b312957131b425b0ba195fb1720c7695ca",
+      "bytes": 2477,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-independent/SOURCE-QA.md",
+      "destination": "independent-source-qa.md",
+      "sourceSHA256": "8b5ca41fb946394f7a4983dfa56c5843fbb370ad1dc204ee5bb8287560684c75",
+      "savedSHA256": "8b5ca41fb946394f7a4983dfa56c5843fbb370ad1dc204ee5bb8287560684c75",
+      "bytes": 4094,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-final-002-av/ai-av-review.json",
+      "destination": "ai-av-review.json",
+      "sourceSHA256": "525b0173c4de2d2bb4efe10f7bafa4ef834e5478bd2a5668f4baaf32036392dd",
+      "savedSHA256": "4d94e1019e715fc1b06899c46c2af6c8b2cb677251584e8859d4dabb02e4c914",
+      "bytes": 13309,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-final-002-av/proxy-lineage.json",
+      "destination": "av-proxy-lineage.json",
+      "sourceSHA256": "d941670d5ddd256cf4ac2d078f8fed24912fc9f0b0df4f33869cd1b726b6ff2b",
+      "savedSHA256": "da293c0b330dbbe103cc68111ef7f6ac9e702bad0476364591a9fb6f632c1ea0",
+      "bytes": 3422,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-final-002-av/adjudication.json",
+      "destination": "av-adjudication.json",
+      "sourceSHA256": "52a31a005c18d65a2a5380ed5ccacd659573ab9150a52f19eb097f1643afd6e8",
+      "savedSHA256": "52a31a005c18d65a2a5380ed5ccacd659573ab9150a52f19eb097f1643afd6e8",
+      "bytes": 704,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.verification.json",
+      "destination": "technical-verification.json",
+      "sourceSHA256": "e737714f06ed668128659da8f7f96e4e908cd47bf4a051bdd370dcac74a963f3",
+      "savedSHA256": "48edd5395615371f39cd8d32a4141a6c6a10b3d63f6048fdcb66575eb421db1f",
+      "bytes": 2591,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-encoded-002/COVER-PROVENANCE.json",
+      "destination": "cover-provenance.json",
+      "sourceSHA256": "0ae18c5f6cee26f6f3bffc3e65fe2ed6c39d0113feb6b52fdbe07837c3d1977b",
+      "savedSHA256": "7a92354d5382e8e9d3724e44d7cc7919be02c01a4b6d312dc65d4a259b6db43d",
+      "bytes": 506,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-encoded-002/AUDIO-IDENTITY.json",
+      "destination": "audio-identity.json",
+      "sourceSHA256": "9c32a0df7eaf9dcb76af5a701949c541fe478048166a27e5303d7570f122f98f",
+      "savedSHA256": "33973eb8bcbfcbbdbe93bd872b9a3538d3a4bafcde52a486840d7445ea1d24dd",
+      "bytes": 370,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-edit-audit-002.json",
+      "destination": "edit-audit.json",
+      "sourceSHA256": "b3becd5134cc78b027fb57d694bd42e1910c6b2b4b43e390c9e1a7e4d6d7a62b",
+      "savedSHA256": "89f8c15943c5803f8d7fec7be20f1a6c1ce9c6e46c2228f12b753fd28f31f1d8",
+      "bytes": 24593,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/assets/qa/revision-005-prep/ACCEPTED-PERFORMANCE-AUDIT.json",
+      "destination": "performance-audit.json",
+      "sourceSHA256": "80d9e82f899aea2c1e9f31aa8658c76cff1c6a7e86002f8771509632dd84a384",
+      "savedSHA256": "fcfc1a4e2e671f953ddcf4bf26d8d361c5af6309da001fd662f39454c1178eb0",
+      "bytes": 2814,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002-cover.png",
+      "destination": "cover.png",
+      "sourceSHA256": "447f88dbf7efc51b2a3e40d8e03e40b080e40ff44b753edb9137c2a66e11badc",
+      "savedSHA256": "447f88dbf7efc51b2a3e40d8e03e40b080e40ff44b753edb9137c2a66e11badc",
+      "bytes": 898066,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.srt",
+      "destination": "captions.srt",
+      "sourceSHA256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905",
+      "savedSHA256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905",
+      "bytes": 3985,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.vtt",
+      "destination": "captions.vtt",
+      "sourceSHA256": "b443117f8f2cc083afc8d6662a704f0bb5192776e68789942bdc9153d9ec79bb",
+      "savedSHA256": "b443117f8f2cc083afc8d6662a704f0bb5192776e68789942bdc9153d9ec79bb",
+      "bytes": 3831,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/youtube-publication.json",
+      "destination": "youtube-publication.json",
+      "sourceSHA256": "6f17ec84663a9f3f47d5b0e981637d511ac63ad5f5b16f861a9fa5dbab9704e5",
+      "savedSHA256": "7df6044f50480054e814b42ebcb9035313abfcf3cd76a3029df47667889ef9c4",
+      "bytes": 2834,
+      "transformation": "JSON formatting and workspace-relative path normalization; source proof references qualified to their original folder; publication facts unchanged"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+      "destination": "youtube-thumbnail.png",
+      "sourceSHA256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86",
+      "savedSHA256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86",
+      "bytes": 372664,
+      "transformation": "none"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+      "destination": "youtube-published-confirmation.png",
+      "sourceSHA256": "d6f0bb2e401ef9eba751d9002430e07a2fd0c2efc1c647a8636de8db2d98d56d",
+      "savedSHA256": "199887740b837d5f34a359324a5f2c8cccf1a98c81560379cc9f9883b6b49698",
+      "bytes": 147875,
+      "transformation": "Crop of the native publication confirmation; unrelated surrounding channel dashboard omitted",
+      "cropBoxPixels": [836, 438, 1350, 1024]
+    },
+    {
+      "source": "../videos/liveforge/REVISION-005-INDEX.json",
+      "destination": "revision-index.json",
+      "sourceSHA256": "8b393f13dd0408cdd455d74678d8f0e00a72433b1677819eb97d89a3a42543a0",
+      "savedSHA256": "2367bf769afeef23fdab32b49a6f9b7b8d2addb38e29d804b3921d445d302076",
+      "bytes": 5239,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/CAPTURE-PROVENANCE.json",
+      "destination": "capture-provenance.json",
+      "sourceSHA256": "c274d48ccc6e42427329597b5d5d4bcae6b5c2f2d03a7e271a7aef7b47cd2e2d",
+      "savedSHA256": "f66b92a3cd9ea6285b65aa6d16377273e89c32b9594a7e37f92bd915d68e725f",
+      "bytes": 41382,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/LIVEFORGE-delivery.json",
+      "destination": "canonical-delivery.json",
+      "sourceSHA256": "a42a857e29486ac51fde48938899d3217525a61475b032818eeb5a95cce0ea0b",
+      "savedSHA256": "93f2efea09cc7079daa74e7d7879920c51c2618d5d345c3eee73ac4653fec229",
+      "bytes": 28040,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    },
+    {
+      "source": "../videos/liveforge/evidence/revision-005/youtube-public-playback.json",
+      "destination": "youtube-public-playback.json",
+      "sourceSHA256": "7839a5c6c0f1b4112ef6f02e66421fb4041319bc9bae6e1281c320ec7aa09b78",
+      "savedSHA256": "3b7ebe8c84231728225329927483fe1db655bc2e52a35fdb71fad0dc1f7847f1",
+      "bytes": 321,
+      "transformation": "JSON formatting and workspace path normalization only; other values preserved"
+    }
+  ],
+  "scope": "Copies of completed exact-file QA and final companion files. Original video and capture assets remain in the separate video workspace; no MP4 is added to the app repository."
+}

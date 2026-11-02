@@ -1,0 +1,34 @@
+{
+  "status": "Published publicly",
+  "observedUTC": "2026-11-02T09:04:12.095250+00:00",
+  "videoId": "ySAEy9HPHHw",
+  "url": "https://youtu.be/ySAEy9HPHHw",
+  "watchURL": "https://www.youtube.com/watch?v=ySAEy9HPHHw",
+  "channel": {
+    "displayName": "Yadnesh Salvi",
+    "handle": "@YadneshSalvi-k8q",
+    "channelId": "UCcnzM3CV0BpoFiUL2C4ZIfg"
+  },
+  "title": "LIVEFORGE — Twitch chat writes the rules | Codex x TwitchCon",
+  "visibility": "public",
+  "sourceMP4SHA256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771",
+  "sourceDurationSeconds": 175.5,
+  "thumbnail": {
+    "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+    "sha256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86"
+  },
+  "captions": {
+    "language": "English",
+    "status": "Published",
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.srt",
+    "sha256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905"
+  },
+  "description": "Twitch chat invents the next rule. You decide whether it enters the game.\n\nLIVEFORGE turns a viewer’s idea into a playable mechanic with the Codex SDK. In this real production demo, chat proposes a floating wedge that never touches either ledge. The host refines and previews the generated rule, approves that exact version, then jumps on, rides across, and leaps to safety. One click restores the saved world.\n\nTry LIVEFORGE: https://liveforge-iota.vercel.app\nSource and run instructions: https://github.com/yadneshSalvi/LIVEFORGE\n\n00:00 Chat changes the rules\n00:10 Real Twitch proposal and support\n00:28 Codex forges and refines the law\n00:57 Preview the moving wedge\n01:29 Approve, activate, jump and ride\n01:51 Restore the saved world\n02:13 Building LIVEFORGE with Codex\n02:33 Try the studio\n\nReal Twitch chat and real Codex generation are shown. Generation, activation and restoration waits are shortened. The preview and live crossings are continuous takes at normal speed. Generated source is validated as bounded literal data before exact-version approval.\n\nSubmission demo for the Codex x TwitchCon Hackathon.",
+  "checks": "YouTube copyright checks complete: No issues found",
+  "videoQuality": "Studio: Standard Definition complete and High Definition complete; public player offers1080p HD",
+  "publicationProof": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+  "captionsProof": "../videos/liveforge/evidence/revision-005/youtube-captions-published.png",
+  "devpost": "No existing project found during preflight; no older video link to replace and no submission created",
+  "scope": "LIVEFORGE only; PORTAL STAGE not uploaded or modified",
+  "authorization": "User explicitly approved public upload, thumbnail and description in this chat."
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "liveforge-revision-index/v5",
+  "revision": "005",
+  "status": "Public; user-approved final delivery",
+  "publication": {
+    "status": "public",
+    "url": "https://youtu.be/ySAEy9HPHHw",
+    "title": "LIVEFORGE — Twitch chat writes the rules | Codex x TwitchCon",
+    "confirmation": "Root verified Public, HD processing complete and English captions Published.",
+    "receipt": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-publication.json",
+      "bytes": 2856,
+      "sha256": "6f17ec84663a9f3f47d5b0e981637d511ac63ad5f5b16f861a9fa5dbab9704e5"
+    },
+    "screenshot": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+      "bytes": 106149,
+      "sha256": "d6f0bb2e401ef9eba751d9002430e07a2fd0c2efc1c647a8636de8db2d98d56d"
+    },
+    "youtubeThumbnail": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+      "bytes": 372664,
+      "sha256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86"
+    }
+  },
+  "video": {
+    "path": "../videos/liveforge/LIVEFORGE-submission.mp4",
+    "bytes": 36030471,
+    "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771"
+  },
+  "deliverables": {
+    "LIVEFORGE-submission.mp4": {
+      "path": "../videos/liveforge/LIVEFORGE-submission.mp4",
+      "bytes": 36030471,
+      "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771"
+    },
+    "LIVEFORGE-captions.srt": {
+      "path": "../videos/liveforge/LIVEFORGE-captions.srt",
+      "bytes": 3985,
+      "sha256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905"
+    },
+    "LIVEFORGE-captions.vtt": {
+      "path": "../videos/liveforge/LIVEFORGE-captions.vtt",
+      "bytes": 3831,
+      "sha256": "b443117f8f2cc083afc8d6662a704f0bb5192776e68789942bdc9153d9ec79bb"
+    },
+    "LIVEFORGE-cover.png": {
+      "path": "../videos/liveforge/LIVEFORGE-cover.png",
+      "bytes": 898066,
+      "sha256": "447f88dbf7efc51b2a3e40d8e03e40b080e40ff44b753edb9137c2a66e11badc"
+    }
+  },
+  "deliveryManifest": {
+    "path": "../videos/liveforge/composition-revision-005/DELIVERY-005.json",
+    "bytes": 34440,
+    "sha256": "a42a857e29486ac51fde48938899d3217525a61475b032818eeb5a95cce0ea0b"
+  },
+  "friendlyDeliveryAtPublication": {
+    "path": "../videos/liveforge/LIVEFORGE-delivery.json",
+    "bytes": 34440,
+    "sha256": "a42a857e29486ac51fde48938899d3217525a61475b032818eeb5a95cce0ea0b"
+  },
+  "captureProvenance": {
+    "path": "../videos/liveforge/CAPTURE-PROVENANCE.json",
+    "bytes": 45289,
+    "sha256": "c274d48ccc6e42427329597b5d5d4bcae6b5c2f2d03a7e271a7aef7b47cd2e2d"
+  },
+  "canonicalScript": {
+    "path": "../videos/liveforge/SCRIPT.json",
+    "bytes": 8427,
+    "sha256": "90c21538f84a96d058df9afd502405cb9fe6cb69597e1ed7a9a76e0cc86ab6d3"
+  },
+  "narrationBinding": {
+    "path": "../videos/liveforge/assets/qa/revision-005-narration-binding.json",
+    "bytes": 2464,
+    "sha256": "28a94f770d78c1512afd01c0820c6ed44553f0acb392753d11eec3468f874b61"
+  },
+  "timeline": {
+    "path": "../videos/liveforge/scripts/edit-map-final-005-candidate-002.json",
+    "bytes": 44371,
+    "sha256": "10c0b54973b98382b3177d815f8e318dd9f50815641f4d1025704fe321872c2f"
+  },
+  "technicalVerification": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.verification.json",
+    "bytes": 2751,
+    "sha256": "e737714f06ed668128659da8f7f96e4e908cd47bf4a051bdd370dcac74a963f3"
+  },
+  "automatedAVReview": {
+    "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/ai-av-review.json",
+    "bytes": 13488,
+    "sha256": "525b0173c4de2d2bb4efe10f7bafa4ef834e5478bd2a5668f4baaf32036392dd"
+  },
+  "independentEncodedQA": {
+    "path": "../videos/liveforge/assets/qa/revision-005-independent/ENCODED-002-QA.md",
+    "bytes": 2103,
+    "sha256": "d50e0038b72deed8eec01185a859f4a63830e94f1c53b486dfccbf4059597542"
+  },
+  "browserPlayback": {
+    "path": "../videos/liveforge/assets/qa/revision-005-browser/candidate002-full-playback.json",
+    "bytes": 527,
+    "sha256": "c3430c6faece805e42993e7e363473594cb530aee71680441d04e66de29e2a76"
+  },
+  "sourceShowId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "sourceLawName": "Gliding gap wedge",
+  "sourceLawSHA256": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+  "programSHA256": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+  "durationSeconds": 175.5,
+  "frames": 5265,
+  "captionWords": 355,
+  "audioPreservation": {
+    "retainedSegments": ["02", "07", "08"],
+    "newSegments": ["01", "03", "04", "05", "06"],
+    "timeCompression": false
+  },
+  "previousMediaArchive": "../videos/liveforge/revision-archive/revision-004-delivery",
+  "previousDocumentArchive": "../videos/liveforge/revision-archive/revision-004-source-metadata",
+  "limitations": [
+    "Automated AV review samples video at2fps. Independent visual checkpoints are sampled; full codec decoding and actual browser playback are separate checks.",
+    "No human listening is claimed.",
+    "Original source cadence, valid-prefix exceptions and chronology correction remain documented in source provenance."
+  ],
+  "updatedUTC": "2026-11-02T09:05:06.047362+00:00"
+}

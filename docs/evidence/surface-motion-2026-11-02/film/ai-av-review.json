@@ -1,0 +1,208 @@
+{
+  "review_kind": "AI full-film audiovisual review, not human playback",
+  "status": "complete",
+  "created_utc": "2026-11-02T08:53:53.179403+00:00",
+  "model": "gemini-3.1-pro-preview",
+  "source": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.mp4",
+    "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "5265"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "8228"
+        }
+      ],
+      "format": {
+        "duration": "175.500000",
+        "size": "36030471"
+      }
+    }
+  },
+  "proxy": {
+    "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/full-film-review-proxy.mp4",
+    "sha256": "8685faf3226b50c9f10dee990c9d8582e08c06a9b4f01256dde423fec5005c21",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "5265"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "8228"
+        }
+      ],
+      "format": {
+        "duration": "175.500000",
+        "size": "12546749"
+      }
+    }
+  },
+  "lineage": "../videos/liveforge/assets/qa/revision-005-final-002-av/proxy-lineage.json",
+  "full_range_seconds": [0, 175.5],
+  "video_sampling_fps": 2,
+  "limitations": [
+    "A whole synchronized AV input is supplied, but static model video sampling is 2 fps.",
+    "Short frame-level defects can be missed; encoded frame checks and actual playback remain separate.",
+    "This is AI review, never evidence of human watching or listening."
+  ],
+  "official_docs_verified": [
+    "https://ai.google.dev/gemini-api/docs/video-understanding",
+    "https://ai.google.dev/api/generate-content#VideoMetadata",
+    "https://ai.google.dev/api/files",
+    "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview"
+  ],
+  "prompt": "Review the entire supplied LIVEFORGE audiovisual film, from its first frame\nthrough its complete ending. This is an AI quality review, not human playback,\nnot certification, and not proof of facts outside the media. Judge the supplied\nfilm rather than assuming the intended story below is correct.\n\nIntended story: one owned Twitch account sends a real proposal and support command\nbeside simultaneously captured Studio receipts. The streamer selects it. Actual\ngeneration processing is followed by clearly shown gameplay-refinement feedback\nand a real Forge revision action. Later genuine lineage/source/checks identify\nthe revised law. A separate Preview precedes exact-version approval and checkpoint\nactivation. A brass wedge moves horizontally across the gap while remaining short\nof both ledges. The courier waits for a full out-and-back sweep, jumps on, is\ncarried, jumps off and lands across the gap. Preview and live performances each\nuse a continuous normal-speed take. The native app camera can follow the courier;\nthe complete game canvas and arrival edge should remain visible. Restore removes\nthe law and returns the checkpoint. Its omitted processing wait is labeled.\nThe restored checkpoint genuinely reopens intake; do not assume the earlier\nclose-intake action must persist after checkpoint restoration. A separate labeled\nhistorical Codex quotation/source/test passage demonstrates a prior development\nrepair. The closing public overlay is explicitly a recorded live-state overlay\nfrom before restore, followed by a clearly labeled stored Sample and a live recap.\n\nCheck:\n1. Photographic camera images, unintended private UI, credentials or sensitive\ninformation. Distinguish illustrated game characters from photographic people.\nDo not identify people or transcribe possible credentials. Public owned username,\nrepository URLs and product URL are expected. Do not infer multiple independent\npeople or organic community participation from one account in a controlled demo.\n2. Spoken action versus visible action: native dark Twitch input/receipt, Studio\nP1 and support count, selection, real refinement, source and verifier evidence,\nPreview/live boundaries, approval, activation, waiting, jump-on, carried ride,\nexit jump, grounded far landing and restore. State if the full sweep and visible\ngaps at both ends can actually be observed. Do not quantify game units from video.\n3. Human approval and exact-version context; iteration must not imply the first\nraw generation was immediately accepted. Historical code pages show actual source\nand regression-test text, not a newly executed test run. Check attribution and\nreadability. Do not identify the recorded closing overlay as the post-restore state.\n4. All caption phrasing, spelling, timing, orphan fragments, clipped text, semantic\nreadability and overlap with the courier, wedge, native title, controls or evidence.\n5. Partial compositor paints, tearing, black/blank frames, unnatural freezes,\napparent speed changes, repeated actions presented as new, and distracting crops.\nSome high-resolution receipt/loading UI was captured at a lower native cadence;\ndo not mistake honest held source frames for invented UI. Evaluate visible quality.\n6. Full audio: natural consistent narration, clear LIVEFORGE and Codex SDK names,\nmusic masking, artifacts/clicks, abrupt joins, clipping, awkward gaps or cutoffs.\nDo not invent numerical loudness; it is measured separately. Check the entire\nclosing sentence, resolved music fade and readable final site address.\n\nThe complete film is about 175.5 seconds. Sampling is requested at 2 fps, so short\nglitches may be missed; never claim every 30 fps frame was inspected. Give exact\ntimestamps only when supported, and distinguish observed defects from uncertain\nconcerns. State the last visual and audio moment actually observed. Do not invent\nproblems to populate a checklist or give generic praise.\n\nReturn JSON with:\nreview_kind: \"AI full-film audiovisual review, not human playback\";\ncoverage: {start_seconds,end_seconds,last_observed_visual,last_observed_audio,\nsampling_limitations};\nverdict: \"no_material_issue_seen\" | \"review_needed\" | \"unable_to_assess\";\nprivacy: {camera_image_seen,concerns};\nclaim_context: {controlled_demo_context_clear,preview_live_boundary_clear,\nhuman_approval_context_clear,historical_codex_attributed,notes};\nperformance: {preview_full_sweep_seen,preview_ride_seen,live_full_sweep_seen,\nlive_ride_seen,far_landing_seen,both_ledge_gaps_visible,notes};\nfindings: [{start_seconds,end_seconds,timestamp,category,\nseverity: \"blocker\" | \"revise\" | \"note\",observation,evidence,\ncertainty: \"observed\" | \"uncertain\",suggested_fix}];\nwhole_film_observations: [{start_seconds,end_seconds,visual,audio}];\nending: {complete,address_readable,notes}; limitations.\n",
+  "prompt_sha256": "d0c2b1a2d557cbbace6752a5be93dbef90377f36eec9bfe29befde2df79192e5",
+  "remote_file_cleanup": {
+    "attempted": true,
+    "http_status": 200,
+    "confirmed_by_api": true
+  },
+  "model_metadata": {
+    "name": "models/gemini-3.1-pro-preview",
+    "version": "3.1-pro-preview-01-2026",
+    "displayName": "Gemini 3.1 Pro Preview",
+    "inputTokenLimit": 1048576,
+    "outputTokenLimit": 65536,
+    "supportedGenerationMethods": [
+      "generateContent",
+      "countTokens",
+      "createCachedContent",
+      "batchGenerateContent"
+    ]
+  },
+  "remote_file_name": "files/qkpfm2k83xqp",
+  "file_processing_states": [
+    {
+      "utc": "2026-11-02T08:53:58.898779+00:00",
+      "state": "PROCESSING"
+    },
+    {
+      "utc": "2026-11-02T08:54:02.390430+00:00",
+      "state": "PROCESSING"
+    },
+    {
+      "utc": "2026-11-02T08:54:05.867840+00:00",
+      "state": "PROCESSING"
+    },
+    {
+      "utc": "2026-11-02T08:54:09.342952+00:00",
+      "state": "ACTIVE"
+    }
+  ],
+  "generation_config": {
+    "maxOutputTokens": 16384,
+    "mediaResolution": "MEDIA_RESOLUTION_HIGH",
+    "responseMimeType": "application/json"
+  },
+  "request_sha256": "848f167fcb5ca0372e8ce64d5349a767dc7d7fbe7611bb1fe1592d0a04cf85c7",
+  "resolved_model": "gemini-3.1-pro-preview",
+  "usage_metadata": {
+    "promptTokenCount": 98106,
+    "candidatesTokenCount": 515,
+    "totalTokenCount": 99932,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 97052
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 1054
+      }
+    ],
+    "thoughtsTokenCount": 1311,
+    "serviceTier": "standard"
+  },
+  "finish_reasons": ["STOP"],
+  "answer": "{\n  \"review_kind\": \"AI full-film audiovisual review, not human playback\",\n  \"coverage\": {\n    \"start_seconds\": 0.0,\n    \"end_seconds\": 175.5,\n    \"last_observed_visual\": 175.5,\n    \"last_observed_audio\": 175.5,\n    \"sampling_limitations\": \"Evaluated at 2 fps; transient events under 0.5s may not be detected. Assesses provided media, not external facts.\"\n  },\n  \"verdict\": \"no_material_issue_seen\",\n  \"privacy\": {\n    \"camera_image_seen\": false,\n    \"concerns\": \"None. Only expected username and URLs present.\"\n  },\n  \"claim_context\": {\n    \"controlled_demo_context_clear\": true,\n    \"preview_live_boundary_clear\": true,\n    \"human_approval_context_clear\": true,\n    \"historical_codex_attributed\": true,\n    \"notes\": \"Context and boundaries are clearly labeled and communicated.\"\n  },\n  \"performance\": {\n    \"preview_full_sweep_seen\": true,\n    \"preview_ride_seen\": true,\n    \"live_full_sweep_seen\": true,\n    \"live_ride_seen\": true,\n    \"far_landing_seen\": true,\n    \"both_ledge_gaps_visible\": true,\n    \"notes\": \"Mechanic performs as requested in both Preview and Live modes.\"\n  },\n  \"findings\": [],\n  \"whole_film_observations\": [\n    {\n      \"start_seconds\": 0.0,\n      \"end_seconds\": 175.5,\n      \"visual\": \"UI flow and game capture are stable. Labeled shortened waits are present. Narrative actions are visible.\",\n      \"audio\": \"Narration is consistent. Voice and music are balanced. No clipping or abrupt edits detected.\"\n    }\n  ],\n  \"ending\": {\n    \"complete\": true,\n    \"address_readable\": true,\n    \"notes\": \"Resolves naturally with legible URL and complete audio fade.\"\n  },\n  \"limitations\": \"Automated review; subjective aesthetic judgments are approximated.\"\n}",
+  "structured_review": {
+    "review_kind": "AI full-film audiovisual review, not human playback",
+    "coverage": {
+      "start_seconds": 0.0,
+      "end_seconds": 175.5,
+      "last_observed_visual": 175.5,
+      "last_observed_audio": 175.5,
+      "sampling_limitations": "Evaluated at 2 fps; transient events under 0.5s may not be detected. Assesses provided media, not external facts."
+    },
+    "verdict": "no_material_issue_seen",
+    "privacy": {
+      "camera_image_seen": false,
+      "concerns": "None. Only expected username and URLs present."
+    },
+    "claim_context": {
+      "controlled_demo_context_clear": true,
+      "preview_live_boundary_clear": true,
+      "human_approval_context_clear": true,
+      "historical_codex_attributed": true,
+      "notes": "Context and boundaries are clearly labeled and communicated."
+    },
+    "performance": {
+      "preview_full_sweep_seen": true,
+      "preview_ride_seen": true,
+      "live_full_sweep_seen": true,
+      "live_ride_seen": true,
+      "far_landing_seen": true,
+      "both_ledge_gaps_visible": true,
+      "notes": "Mechanic performs as requested in both Preview and Live modes."
+    },
+    "findings": [],
+    "whole_film_observations": [
+      {
+        "start_seconds": 0.0,
+        "end_seconds": 175.5,
+        "visual": "UI flow and game capture are stable. Labeled shortened waits are present. Narrative actions are visible.",
+        "audio": "Narration is consistent. Voice and music are balanced. No clipping or abrupt edits detected."
+      }
+    ],
+    "ending": {
+      "complete": true,
+      "address_readable": true,
+      "notes": "Resolves naturally with legible URL and complete audio fade."
+    },
+    "limitations": "Automated review; subjective aesthetic judgments are approximated."
+  },
+  "completed_utc": "2026-11-02T08:54:49.824219+00:00",
+  "source_hash_still_matches": true,
+  "proxy_hash_still_matches": true
+}

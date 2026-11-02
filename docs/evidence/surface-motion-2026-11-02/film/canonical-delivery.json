@@ -1,0 +1,639 @@
+{
+  "schema": "liveforge-delivery/v5",
+  "revision": "005",
+  "status": "Public revision005 delivery; exact-byte technical, source, automated audiovisual and full browser playback checks passed.",
+  "publication": {
+    "status": "public",
+    "url": "https://youtu.be/ySAEy9HPHHw",
+    "title": "LIVEFORGE — Twitch chat writes the rules | Codex x TwitchCon",
+    "confirmation": "Root verified Public, HD processing complete and English captions Published.",
+    "receipt": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-publication.json",
+      "bytes": 2856,
+      "sha256": "6f17ec84663a9f3f47d5b0e981637d511ac63ad5f5b16f861a9fa5dbab9704e5"
+    },
+    "screenshot": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+      "bytes": 106149,
+      "sha256": "d6f0bb2e401ef9eba751d9002430e07a2fd0c2efc1c647a8636de8db2d98d56d"
+    },
+    "youtubeThumbnail": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+      "bytes": 372664,
+      "sha256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86"
+    }
+  },
+  "video": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.mp4",
+    "bytes": 36030471,
+    "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771"
+  },
+  "durationSeconds": 175.5,
+  "frames": 5265,
+  "fps": 30,
+  "technicalPass": true,
+  "maximumPTSErrorSeconds": 3.333333467026023e-7,
+  "audio": {
+    "integratedLUFS": -14.0,
+    "loudnessRangeLU": 4.2,
+    "truePeakDBFS": -1.7,
+    "log": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.audio-qa.log"
+  },
+  "timeline": {
+    "path": "../videos/liveforge/scripts/edit-map-final-005-candidate-002.json",
+    "bytes": 44371,
+    "sha256": "10c0b54973b98382b3177d815f8e318dd9f50815641f4d1025704fe321872c2f"
+  },
+  "soundtrack": {
+    "path": "../videos/liveforge/assets/audio/video-revision-005/mix-001/soundtrack-master.wav",
+    "bytes": 50544102,
+    "sha256": "b00b17018beaa8a472147a7c0e734b695903fcd21c2d216c87bf6024c8736add"
+  },
+  "captionsSRT": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.srt",
+    "bytes": 3985,
+    "sha256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905"
+  },
+  "captionsVTT": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.vtt",
+    "bytes": 3831,
+    "sha256": "b443117f8f2cc083afc8d6662a704f0bb5192776e68789942bdc9153d9ec79bb"
+  },
+  "cover": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002-cover.png",
+    "bytes": 898066,
+    "sha256": "447f88dbf7efc51b2a3e40d8e03e40b080e40ff44b753edb9137c2a66e11badc"
+  },
+  "captionGroups": 57,
+  "captionWords": 355,
+  "sourceShowId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "sourceLawName": "Gliding gap wedge",
+  "sourceLawSHA256": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+  "programSHA256": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+  "normalSpeed": true,
+  "voiceStarts": [0.6, 17.3, 37.5, 57.8, 89.13, 111.1, 133, 153.5],
+  "soundEffectPlacement": {
+    "activation": 90.6645,
+    "successfulCrossing": 101.5,
+    "restoreConfirmation": 123.677
+  },
+  "fullAudiovisualReview": {
+    "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/ai-av-review.json",
+    "status": "complete",
+    "verdict": "no_material_issue_seen"
+  },
+  "manifestBindings": [
+    {
+      "path": "../videos/liveforge/CAPTURE-PROVENANCE.json",
+      "bytes": 45289,
+      "sha256": "c274d48ccc6e42427329597b5d5d4bcae6b5c2f2d03a7e271a7aef7b47cd2e2d"
+    },
+    {
+      "path": "../videos/liveforge/SCRIPT.json",
+      "bytes": 8427,
+      "sha256": "90c21538f84a96d058df9afd502405cb9fe6cb69597e1ed7a9a76e0cc86ab6d3"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/mix-001/MIX-PROVENANCE.json",
+      "bytes": 11839,
+      "sha256": "e82f18013ef2cc641f4067eac4bdd79bc100a9e83e65fd1163cc435c84a1b0d2"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/mix-001/approved-picture-map.json",
+      "bytes": 42561,
+      "sha256": "43bcf6bfa2b2bf02a0ac8b8bf2593a28af1fdf9a562324fbfec8ea17723984da"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/mix-001/effect-cues.json",
+      "bytes": 2295,
+      "sha256": "3d2ec2697511be251feb31a8d509ee4c6b6920055b2465e3a0bfc3da36318b90"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/mix-001/mix-map.json",
+      "bytes": 3808,
+      "sha256": "7941fc82989c33e90710f073948b95371b6830fe157f3fb48b84f6c7878737c2"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/mix-map-001.json",
+      "bytes": 3808,
+      "sha256": "7941fc82989c33e90710f073948b95371b6830fe157f3fb48b84f6c7878737c2"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/qa/01-representative-audition.json",
+      "bytes": 2468,
+      "sha256": "1182411ac8d4470aec989ac83a652d88eac00e1854aa815b4064958ef0d01521"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/qa/VOICE-QA.json",
+      "bytes": 901,
+      "sha256": "6a438dc8ae6df54b82b96bf1fe89e7c381af1270216447b2ef181c366539b583"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/qa/changed-five-full-audition.json",
+      "bytes": 5783,
+      "sha256": "94cbf4b9a98e27d68e699a10b925d8fd23b896899183f4ab50d227cbbfbf8300"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/qa/full-master-audition-001.json",
+      "bytes": 3075,
+      "sha256": "e0f548f812f780366fb9f9a8cf39c7e7f11b5ac4670ec9e12f10f48b26d66504"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/score-001/AUDIO-PROVENANCE.json",
+      "bytes": 7896,
+      "sha256": "fa19f7618c62700fc15b1ed2ef17d1fc895fff4fc51a4edfee1f923f15146a33"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-edited/01-e312cc5696b3.json",
+      "bytes": 1166,
+      "sha256": "c29cdc8004e4dc277bdec37543ceeeaf77e2fb69181d468b625e4f6daea2711a"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-edited/03-fd116d3674c6.json",
+      "bytes": 1166,
+      "sha256": "73e29c3df6bb03f3c00a092590e9cc0ffb18dddbbb131b96fe7e1ca62293f2e8"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-edited/04-f78f9ae33e9c.json",
+      "bytes": 1153,
+      "sha256": "7a6cb78eca8646034d004940b34cab1536055eb7e4a9097b93f16a088d0947ea"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-edited/05-ef7cbdfe157c.json",
+      "bytes": 1169,
+      "sha256": "f5577810da80d1de5a2f8766c0aebcb5232e2a329409f953f881a9f34eff5e37"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-edited/06-c57727d66dc5.json",
+      "bytes": 1243,
+      "sha256": "f755bac211c8558619d6a5a0972d2068eeaf430b421330b4f570249ee9366489"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-manifest-01.json",
+      "bytes": 1347,
+      "sha256": "6b42f61c01d57eb870eb5c4e5f911c06130dfa5bb754b41f98dc0145a0b145cb"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-manifest-03-04-05-06.json",
+      "bytes": 4639,
+      "sha256": "bc44ff7711feb6746a8ba5658ead4d4e4a319f841af865256d242ca581d33f0e"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-manifest-changed.json",
+      "bytes": 5679,
+      "sha256": "8024862eb68472b2bb9d0b1df4d277aeff23742e7c4c09efa1606df8e5f437e5"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production-manifest-final-001.json",
+      "bytes": 13233,
+      "sha256": "c94bb66a329baf0afdd197abb2095a5d97778ce54ce7af4cebd3885a71847a2f"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production-manifest.json",
+      "bytes": 8598,
+      "sha256": "2c4feaddd0dd30af44c9cb585189b8e375365e6caec480d3e7df4defb73ff43f"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production-word-timings-final-001.json",
+      "bytes": 215195,
+      "sha256": "b010c1020b18f55344c4aa953de76dbc044866f1f96ac779938f45feb18617ab"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production-word-timings.json",
+      "bytes": 138596,
+      "sha256": "54d85496213f2b225eb90df846e8d22453b2a3f94d68daaadd7754f40ec85fae"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production/01-16c8af570910-leveled.json",
+      "bytes": 1293,
+      "sha256": "6e939a4d5a605b6a5eda01d0c07b210749ec42015e7f52af3b7345a537f0b592"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production/03-ebc67328abe2-leveled.json",
+      "bytes": 1293,
+      "sha256": "1b8184a85541f788d98dc9dbc668e6c56beb887b01d7173af44d8bbd1c46245a"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production/04-308902641248-leveled.json",
+      "bytes": 1293,
+      "sha256": "c58970504b940d3cb9e7a58dc95707cb6eeed1ccbb374b954169a62ba5d471b3"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production/05-0c9f21337a60-leveled.json",
+      "bytes": 1295,
+      "sha256": "163231a3611c3105897b4eda95e9f4033583a88fceec5825fe011da084b87bd0"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-production/06-8f87908a841a-leveled.json",
+      "bytes": 1293,
+      "sha256": "708d717d20287e69e6b8d0c7865ceb041b250e10fcf78ae5131f6eacf35bc243"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/01-e312cc5696b3/provenance.json",
+      "bytes": 1476,
+      "sha256": "5c05eec7aa1599e2b73d018d78bd81d427129e31c4777e6410749db6ba6c3115"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/01-e312cc5696b3/request.json",
+      "bytes": 1745,
+      "sha256": "aa30d2bfa85bd888de2a1b301926cfa61cdb9d0826cf3bdae6f1ca46c5d6287c"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/01-e312cc5696b3/response-info.json",
+      "bytes": 510,
+      "sha256": "3e0680c0313cfc016da26142c2a2d539f7aef1d9e58fb86827cfd1706c2eefb0"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/03-fd116d3674c6/provenance.json",
+      "bytes": 1474,
+      "sha256": "9eb832f34634c29ffda167a28e94b52d0533e43b56500aecb2c05bcead49b7c6"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/03-fd116d3674c6/request.json",
+      "bytes": 1743,
+      "sha256": "d14ced745f4ce53a5e036e84c2715b044748d0fca6b734d8699f0d3d72adf38c"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/03-fd116d3674c6/response-info.json",
+      "bytes": 510,
+      "sha256": "0720008bc65195ee43bc5df6585fb2403b49acf5e6d5eb9a53901462210b168d"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/04-f78f9ae33e9c/provenance.json",
+      "bytes": 1582,
+      "sha256": "30f443eeffa314c1848e492d8cf7b967463b9d88b2fdbc08cc7913d1444c910c"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/04-f78f9ae33e9c/request.json",
+      "bytes": 1851,
+      "sha256": "a68db51737ff1b90b8ff3d765b54fe1b8190d08f712320e0738b37337775a66d"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/04-f78f9ae33e9c/response-info.json",
+      "bytes": 509,
+      "sha256": "cad29aafa1d324607001f223f4931f18f0823a7db360ec225c4ae28e49086133"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/05-ef7cbdfe157c/provenance.json",
+      "bytes": 1476,
+      "sha256": "df967fa45d2843cbb6fadeb5d54d9200d0051147728e487c19d3edf9ce1ce410"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/05-ef7cbdfe157c/request.json",
+      "bytes": 1745,
+      "sha256": "a2f6dbabfdfd401c38ce7855c09c85c97fcd4bc18321b05492088bb191a6e961"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/05-ef7cbdfe157c/response-info.json",
+      "bytes": 510,
+      "sha256": "7898adb950ad5812b4e52cfb30643dfbead27c01c4450c005d298b08c515380c"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/06-c57727d66dc5/provenance.json",
+      "bytes": 1468,
+      "sha256": "ff4c9b21549f7e5fba709df5c40cca99a6a1e1dd8916387c67f079db8da99c97"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/06-c57727d66dc5/request.json",
+      "bytes": 1737,
+      "sha256": "0e1413eafd4986cf414b4a6db5e44e6647b555a00dff911f283ef1917481d72f"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/voice-raw/06-c57727d66dc5/response-info.json",
+      "bytes": 510,
+      "sha256": "6f26465a042da251ff7385fdd834fb5caf395c81296fc8d312d7e2fba2f88a17"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/01-16c8af570910/deepgram-response.json",
+      "bytes": 18955,
+      "sha256": "513739de6e745a7d502e25a4a817b66f3fd3f77cee22ce3c84015aa28c19dc85"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/01-16c8af570910/words.json",
+      "bytes": 19932,
+      "sha256": "03f7462326c7304c7892c850c639f2418c7173aee8c31d24c3b43ec3fdaf902f"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/03-ebc67328abe2/deepgram-response.json",
+      "bytes": 20505,
+      "sha256": "b172dbb2f6bdd09df561cdc874e64ce66682f84edee8815ba9fadcde4fcd2acf"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/03-ebc67328abe2/words.json",
+      "bytes": 21366,
+      "sha256": "deaef103647a9299bd6042ff5451e7f8e4f2e508ac00e32c2cc574a97cdb1cb1"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/04-308902641248/deepgram-response.json",
+      "bytes": 28798,
+      "sha256": "8d3279290813389896dc08e3b4d6385c54bb559a8845355c6ab32c8f1f7e0651"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/04-308902641248/words.json",
+      "bytes": 31646,
+      "sha256": "390f8df4affcc8942254128cc4d883c06196b57d6939cc760e5e3b62cc3fbad2"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/05-0c9f21337a60/deepgram-response.json",
+      "bytes": 23125,
+      "sha256": "e9632e23fc471c3674cdbf054f2f0e197738a4a6ee136365d71d8215d2dd6882"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/05-0c9f21337a60/words.json",
+      "bytes": 24647,
+      "sha256": "5a391013f50a692539adb0c502be466f251afcaff94fa29cd30b7b4319355e3b"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/06-8f87908a841a/deepgram-response.json",
+      "bytes": 20256,
+      "sha256": "d4ea426926fc375cca8669c3b2b0c2ef7eb2daff64dbe20edf4e6b022fea52a9"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/06-8f87908a841a/words.json",
+      "bytes": 20875,
+      "sha256": "0b0a638cba599373ce921bd96cb6bd6b93832949c1f5b4ded583fbc6c6b27b94"
+    },
+    {
+      "path": "../videos/liveforge/assets/audio/video-revision-005/word-timings/timing-manifest-voice-manifest-changed.json",
+      "bytes": 3380,
+      "sha256": "1009087d367e78340fb91ce3dbde592cf722532453a30876b4a624e6e25bf141"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-browser/candidate001-full-playback.json",
+      "bytes": 499,
+      "sha256": "4f2c62c2b809f761e91bf27e4bb058c48fc0bc20dc05df6988e2640811d3b107"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-browser/candidate002-complete.png",
+      "bytes": 146475,
+      "sha256": "a56fbb5910e282d1461f0541570efca5b882bc79674145ce4682a1f10904df93"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-browser/candidate002-full-playback.json",
+      "bytes": 527,
+      "sha256": "c3430c6faece805e42993e7e363473594cb530aee71680441d04e66de29e2a76"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-browser/representative-playback.json",
+      "bytes": 493,
+      "sha256": "3e26ac2c120afd311b6e2493beba2dc97c1858335614cb60df67d92a40210755"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-edit-audit-002.json",
+      "bytes": 26688,
+      "sha256": "b3becd5134cc78b027fb57d694bd42e1910c6b2b4b43e390c9e1a7e4d6d7a62b"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-edit-audit.json",
+      "bytes": 26516,
+      "sha256": "57faea53537c079188c80d07b3da3a35a4aa22e96dd18ae84d0163755c44e51b"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-encoded-002/AUDIO-IDENTITY.json",
+      "bytes": 476,
+      "sha256": "9c32a0df7eaf9dcb76af5a701949c541fe478048166a27e5303d7570f122f98f"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-encoded-002/COVER-PROVENANCE.json",
+      "bytes": 612,
+      "sha256": "0ae18c5f6cee26f6f3bffc3e65fe2ed6c39d0113feb6b52fdbe07837c3d1977b"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-encoded/COVER-PROVENANCE.json",
+      "bytes": 600,
+      "sha256": "7d5e594ae089c60530bf6072c4bdf03dda623d9f1175e8031eedb6325af5010f"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/adjudication.json",
+      "bytes": 704,
+      "sha256": "52a31a005c18d65a2a5380ed5ccacd659573ab9150a52f19eb097f1643afd6e8"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/ai-av-review.json",
+      "bytes": 13488,
+      "sha256": "525b0173c4de2d2bb4efe10f7bafa4ef834e5478bd2a5668f4baaf32036392dd"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/proxy-lineage.json",
+      "bytes": 3752,
+      "sha256": "d941670d5ddd256cf4ac2d078f8fed24912fc9f0b0df4f33869cd1b726b6ff2b"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-independent/ENCODED-001-QA.md",
+      "bytes": 2477,
+      "sha256": "4298cf6464251e527b12f544fb12a3b312957131b425b0ba195fb1720c7695ca"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-independent/ENCODED-002-QA.md",
+      "bytes": 2103,
+      "sha256": "d50e0038b72deed8eec01185a859f4a63830e94f1c53b486dfccbf4059597542"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-independent/LAYOUT-QA.md",
+      "bytes": 1839,
+      "sha256": "0302c3c9601b6d323b484cd21a4a8287b17d2dbd0e701773eb3e1ff4a5571ab1"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-independent/SOURCE-QA.md",
+      "bytes": 4094,
+      "sha256": "8b5ca41fb946394f7a4983dfa56c5843fbb370ad1dc204ee5bb8287560684c75"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-local-motion-take1/capture.json",
+      "bytes": 100545,
+      "sha256": "54101f80d2f75ade04f9aeb24d7497a3d90fd97caf1a2c541df791d4a6d08e2e"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-narration-binding.json",
+      "bytes": 2464,
+      "sha256": "28a94f770d78c1512afd01c0820c6ed44553f0acb392753d11eec3468f874b61"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/ACCEPTED-PERFORMANCE-AUDIT.json",
+      "bytes": 3132,
+      "sha256": "80d9e82f899aea2c1e9f31aa8658c76cff1c6a7e86002f8771509632dd84a384"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/PREVIEW-TAKE2-AUDIT.json",
+      "bytes": 174818,
+      "sha256": "2e27d4778a20d9895983622970ea4784f799954b5a0fbff3f28f59b05ff790c2"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/SOURCE-PREP.json",
+      "bytes": 947324,
+      "sha256": "1fa1b9cb2e3b09da3cbc56f7bedb86b4a53016581d8107a51cc173274c0178bd"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/activation-valid-prefix/VALID-PREFIX-PROVENANCE.json",
+      "bytes": 8207,
+      "sha256": "2b76e699d951a57cd2f9a9cbb8a8f942db80b19424924f36293befaf79d47eb2"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/activation-valid-prefix/capture-valid-prefix.json",
+      "bytes": 18133,
+      "sha256": "bfaa9fecc0e2174ccf82a5ed23e0bbdc3970bd525a84041ebe80e6543a73439c"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/controls-valid-prefix/VALID-PREFIX-PROVENANCE.json",
+      "bytes": 8090,
+      "sha256": "3c01945fd38fc780c8a5a576338633a285610dd83941945c8acec2569288d293"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/controls-valid-prefix/capture-valid-prefix.json",
+      "bytes": 17964,
+      "sha256": "75369c875ec661b29bbde5927fd3fb7c61aaeb2f0b12d93355db1167807d478b"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/live-performance-take1-chronological/capture-chronological.json",
+      "bytes": 574969,
+      "sha256": "4a6c02b3fd599eb2da7e66a202cb96df7dae6e9bfcb7db967fd723cf9d7fd44a"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/observed-boundaries.json",
+      "bytes": 5203,
+      "sha256": "4a3bd813ccb578b3c9bc2d2968cfcb5db6c07bb2ff2e50553bea5c0bc944bc67"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/proposal-candidate-source-window.json",
+      "bytes": 1356,
+      "sha256": "d908b1be4c33b61acca1d1ae28920ce5fa5c03b1f292da253431562d23e27eb2"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/proposal-pair.json",
+      "bytes": 47912,
+      "sha256": "01d188ee771169b314bae4b557af2991cf85377556d20e4f725ff580d48b27e1"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/support-candidate-source-window.json",
+      "bytes": 1309,
+      "sha256": "c57e0d376fa387bb13dca49043d0fe91098c2986abf901799326eb4970afd1f8"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/support-pair.json",
+      "bytes": 25550,
+      "sha256": "ead027bbf6d528d83b3cfe3e7ad4bb7bc094cbd21b334d8d2df473cd312dc9b9"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-preview-take1-contact.jpg",
+      "bytes": 378844,
+      "sha256": "3a41a98ecfa73005d635609010e2b80a784648388dd2229f04c8da37c7f2c7f0"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-representative-001/REPRESENTATIVE-CLEARANCE.json",
+      "bytes": 1207,
+      "sha256": "4ade014c9dba3bdfb6e86d878430b31e50a029f3aedda5c711f90ab87cef5cf4"
+    },
+    {
+      "path": "../videos/liveforge/composition-revision-005/build-receipt.json",
+      "bytes": 11514,
+      "sha256": "d7db62a68ce7c9209cdfd13d522feedce8467d8a8ebb553dec6fc6f551be2156"
+    },
+    {
+      "path": "../videos/liveforge/composition-revision-005/check-final-003.json",
+      "bytes": 2117,
+      "sha256": "331b709ee87f13615cdbbb850fc8c661aba44e4333696d152c0c1a4049aa4a45"
+    },
+    {
+      "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.verification.json",
+      "bytes": 2751,
+      "sha256": "e737714f06ed668128659da8f7f96e4e908cd47bf4a051bdd370dcac74a963f3"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/generated-gliding-gap-wedge.ts",
+      "bytes": 796,
+      "sha256": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/verified-before-approval.json",
+      "bytes": 12894,
+      "sha256": "c0d58316098288f6d6fdde5087c98dba8f23a68b4ae466e4f11e877b7e9eae1d"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-publication.json",
+      "bytes": 2856,
+      "sha256": "6f17ec84663a9f3f47d5b0e981637d511ac63ad5f5b16f861a9fa5dbab9704e5"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+      "bytes": 106149,
+      "sha256": "d6f0bb2e401ef9eba751d9002430e07a2fd0c2efc1c647a8636de8db2d98d56d"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail-provenance.json",
+      "bytes": 1421,
+      "sha256": "2befc1f3fbed016e1fe6d964142c51dc0877ded23d32dd4c73be0e5a87cd3a2e"
+    },
+    {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+      "bytes": 372664,
+      "sha256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86"
+    },
+    {
+      "path": "../videos/liveforge/scripts/edit-map-final-005-candidate-002.json",
+      "bytes": 44371,
+      "sha256": "10c0b54973b98382b3177d815f8e318dd9f50815641f4d1025704fe321872c2f"
+    },
+    {
+      "path": "../videos/liveforge/scripts/edit-map-picture-approved-005.json",
+      "bytes": 42561,
+      "sha256": "43bcf6bfa2b2bf02a0ac8b8bf2593a28af1fdf9a562324fbfec8ea17723984da"
+    },
+    {
+      "path": "../videos/liveforge/scripts/narration-revision005.json",
+      "bytes": 5340,
+      "sha256": "d66d339e727f646b56795b0957f1782399cdae1b82dbc8d72fd0924231803d86"
+    }
+  ],
+  "limitations": [
+    "AI model audition and AV review are supporting machine reviews, not human listening or watching.",
+    "Full-model video sampling is 2 fps and can miss short defects. Local decoded sampled checkpoints and browser playback are separate evidence.",
+    "Browser receipts establish actual playback duration/rate/ended/error state and sampled visual checkpoints, not human listening.",
+    "CFR30 preserves measured native source cadence and screenshot holds. No generated UI or interpolated gameplay frames.",
+    "Valid-prefix capture errors and the two-frame arrival-order correction are disclosed in retained original/derived ledgers.",
+    "The closing law overlay and live recap are recorded pre-restore states; the stored Sample is separately labeled."
+  ],
+  "friendlyPromotion": "complete",
+  "updatedUTC": "2026-11-02T08:57:56.862688+00:00",
+  "promotionApproval": "Root final local clearance: exact candidate002 full browser playback175.5s at1x unmuted ended=true/error=null; independent encoded/source/layout QA, technical decode and full combined AV review passed with2fps model limits disclosed. Local promotion only; publication remains root-owned.",
+  "userFacingDeliverables": [
+    {
+      "path": "../videos/liveforge/LIVEFORGE-submission.mp4",
+      "bytes": 36030471,
+      "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771"
+    },
+    {
+      "path": "../videos/liveforge/LIVEFORGE-captions.srt",
+      "bytes": 3985,
+      "sha256": "e274ffbd0924a6077287f1906fdd82ab028f3529acb457a40a003e7f1b50d905"
+    },
+    {
+      "path": "../videos/liveforge/LIVEFORGE-captions.vtt",
+      "bytes": 3831,
+      "sha256": "b443117f8f2cc083afc8d6662a704f0bb5192776e68789942bdc9153d9ec79bb"
+    },
+    {
+      "path": "../videos/liveforge/LIVEFORGE-cover.png",
+      "bytes": 898066,
+      "sha256": "447f88dbf7efc51b2a3e40d8e03e40b080e40ff44b753edb9137c2a66e11badc"
+    }
+  ],
+  "priorDeliveryArchive": "../videos/liveforge/revision-archive/revision-004-delivery",
+  "renderVersion": "002",
+  "script": {
+    "path": "../videos/liveforge/SCRIPT.json",
+    "bytes": 8427,
+    "sha256": "90c21538f84a96d058df9afd502405cb9fe6cb69597e1ed7a9a76e0cc86ab6d3"
+  },
+  "captureProvenance": {
+    "path": "../videos/liveforge/CAPTURE-PROVENANCE.json",
+    "bytes": 45289,
+    "sha256": "c274d48ccc6e42427329597b5d5d4bcae6b5c2f2d03a7e271a7aef7b47cd2e2d"
+  },
+  "narrationBinding": {
+    "path": "../videos/liveforge/assets/qa/revision-005-narration-binding.json",
+    "bytes": 2464,
+    "sha256": "28a94f770d78c1512afd01c0820c6ed44553f0acb392753d11eec3468f874b61"
+  },
+  "revisionIndex": "../videos/liveforge/REVISION-005-INDEX.json",
+  "userReadme": "/Users/yadneshsalvi/code/hackathons/twitchcon_hackathon/videos/README.md"
+}

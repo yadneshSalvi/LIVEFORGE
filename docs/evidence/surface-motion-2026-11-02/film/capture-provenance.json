@@ -1,0 +1,966 @@
+{
+  "schema": "liveforge-film-capture-provenance/v3",
+  "revision": "005",
+  "film": "LIVEFORGE — Chat moves the world",
+  "recordedAtUTC": "2026-11-02",
+  "deployment": "https://liveforge-iota.vercel.app",
+  "deploymentId": "dpl_CLV6kA53DX1Gw4DbwCM4T13ecuE2",
+  "runtimeCommit": "b1e26e2d905290a769dde5de7281c434400513c9",
+  "showId": "98c743b9-20e7-48d1-a596-3530e2364bbb",
+  "operator": "yadneshsalvi96",
+  "audienceClaim": "Controlled real Twitch demonstration using one owned account for proposal and support; no organic community or independently operated audience is claimed.",
+  "commands": [
+    "!forge A floating wedge glides back and forth over the gap, never touching either side",
+    "!back P1"
+  ],
+  "generation": {
+    "id": "12b8deaa-8094-7fd5-2022-99e39003e8e9",
+    "model": "gpt-6.1-sol",
+    "threadId": "01a19b52-d42c-7ec2-84db-0129259f05c2",
+    "createdAt": "2026-11-02T08:14:16.954Z",
+    "updatedAt": "2026-11-02T08:14:48.703Z",
+    "attempt": 1,
+    "usage": {
+      "input_tokens": 10918,
+      "output_tokens": 485,
+      "cached_input_tokens": 0
+    },
+    "phases": [
+      {
+        "at": "2026-11-02T08:14:18.262Z",
+        "phase": "snapshot-restored",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:24.316Z",
+        "phase": "thread-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:29.362Z",
+        "phase": "turn-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:38.557Z",
+        "phase": "source-returned",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:39.173Z",
+        "phase": "verifier-started",
+        "attempt": 1
+      },
+      {
+        "at": "2026-11-02T08:14:42.955Z",
+        "phase": "verification-complete",
+        "attempt": 1,
+        "totalChecks": 10,
+        "checksPassed": 10
+      }
+    ],
+    "sandboxTimings": {
+      "mode": "snapshot",
+      "setupMs": 1260,
+      "cacheHit": true,
+      "createMs": 880,
+      "fallback": false,
+      "installMs": 0,
+      "snapshotMs": 0
+    }
+  },
+  "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+  "programHash": "1f5f109fb4c336962b6d10fe6e23083ac504427c05a9f813352c6e29f4803325",
+  "checksPassed": 10,
+  "ticksSimulated": 10987,
+  "exactEvidence": {
+    "path": "../videos/liveforge/evidence/revision-005/verified-before-approval.json",
+    "sha256": "c0d58316098288f6d6fdde5087c98dba8f23a68b4ae466e4f11e877b7e9eae1d"
+  },
+  "sourceManifest": {
+    "path": "../videos/liveforge/assets/qa/revision-005-prep/SOURCE-PREP.json",
+    "sha256": "1fa1b9cb2e3b09da3cbc56f7bedb86b4a53016581d8107a51cc173274c0178bd"
+  },
+  "approvedSources": [
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/01-fresh-studio-take2/capture.json",
+      "captureSHA256": "3c0702b42fbcf2384373c1c2c1424981fad9bec9f31a46e15930df6e1d54b67b",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793606788.753,
+      "recordedEndTs": 1793606803.946,
+      "sourceDuration": 15.193000078201294,
+      "frameCount": 25,
+      "achievedFPS": 1.6133911504466196,
+      "medianGap": 0.6217501163482666,
+      "maximumGap": 0.6410000324249268,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.32850003242492676,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/01-fresh-studio-take2.normalization.json",
+      "normalizationSHA256": "70e57260b1856ae8e6292d37e0b0532dc0617fa6a95a6c35675f06dcc3b8ff1b",
+      "output": "../videos/liveforge/assets/footage/revision-005/01-fresh-studio-take2.mp4",
+      "outputSHA256": "34ad339d850e807454a4c7d5a52b4f9d1ca1fce203b84067d86daf33a49510ab",
+      "decodedQA": {
+        "expectedFrames": 456,
+        "decodedFrames": 456,
+        "firstPTS": 0.0,
+        "lastPTS": 15.166667,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 15.2,
+        "roundingHoldSeconds": 0.006999921798705344,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/02-proposal-chat-take3/capture.json",
+      "captureSHA256": "918a59325acd4d095ae9c97ff517c432c35d0cb9d72f5eec66c4ab7aed8172dc",
+      "pairId": "liveforge-005-proposal-98c743b9-take3",
+      "nativeGeometry": [800, 1200],
+      "sourceFirstTs": 1793606855.1069999,
+      "recordedEndTs": 1793606879.137,
+      "sourceDuration": 24.03000020980835,
+      "frameCount": 206,
+      "achievedFPS": 8.550395157002743,
+      "medianGap": 0.10850000381469727,
+      "maximumGap": 0.18450021743774414,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.10099995136260986,
+      "actions": [
+        {
+          "wallTime": 1793606857.03,
+          "label": "Begin real proposal input",
+          "relativeToFirstFrame": 1.9230000972747803
+        },
+        {
+          "wallTime": 1793606865.062,
+          "label": "Send real !forge proposal",
+          "relativeToFirstFrame": 9.955000162124634
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/02-proposal-chat-take3.normalization.json",
+      "normalizationSHA256": "6613313bebab2ed532c25e7637d7002a6e10ee3a9085eaf2820062b2d0cbea61",
+      "output": "../videos/liveforge/assets/footage/revision-005/02-proposal-chat-take3.mp4",
+      "outputSHA256": "651258abd24955d5ebd1d3d89219279a4fe14a7dc2690c61d6299db7c26e64fc",
+      "decodedQA": {
+        "expectedFrames": 721,
+        "decodedFrames": 721,
+        "firstPTS": 0.0,
+        "lastPTS": 24.0,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 24.033333333333335,
+        "roundingHoldSeconds": 0.003333123524985382,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/02-proposal-studio-take3/capture.json",
+      "captureSHA256": "f959ba269236e999041fc885773e44be019ad31026becaaa8cbb2f90ec66e82c",
+      "pairId": "liveforge-005-proposal-98c743b9-take3",
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793606855.3330002,
+      "recordedEndTs": 1793606879.593,
+      "sourceDuration": 24.259999752044678,
+      "frameCount": 41,
+      "achievedFPS": 1.6681263039619285,
+      "medianGap": 0.6050000190734863,
+      "maximumGap": 0.6440000534057617,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.3385000228881836,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/02-proposal-studio-take3.normalization.json",
+      "normalizationSHA256": "fca9e85cb72d5452b12329a729a660de26dd234fa3ce3fb80a83a33ba7117dd9",
+      "output": "../videos/liveforge/assets/footage/revision-005/02-proposal-studio-take3.mp4",
+      "outputSHA256": "fe2698d5311bfd069b7c778036b1f84249b15276fe9654efcd4080003bbbc454",
+      "decodedQA": {
+        "expectedFrames": 728,
+        "decodedFrames": 728,
+        "firstPTS": 0.0,
+        "lastPTS": 24.233333,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 24.266666666666666,
+        "roundingHoldSeconds": 0.006666914621987985,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/03-support-chat/capture.json",
+      "captureSHA256": "72eedd006e8c6762ab1494bc719f8a9c0979b0b5d19fcb4dda34b103456f8d57",
+      "pairId": "liveforge-005-support",
+      "nativeGeometry": [800, 1200],
+      "sourceFirstTs": 1793606883.742,
+      "recordedEndTs": 1793606894.9,
+      "sourceDuration": 11.157999992370605,
+      "frameCount": 99,
+      "achievedFPS": 8.863965463463646,
+      "medianGap": 0.10449981689453125,
+      "maximumGap": 0.2049999237060547,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.10350000858306885,
+      "actions": [
+        {
+          "wallTime": 1793606885.88,
+          "label": "Begin support input",
+          "relativeToFirstFrame": 2.138000011444092
+        },
+        {
+          "wallTime": 1793606887.324,
+          "label": "Send real !back P1",
+          "relativeToFirstFrame": 3.5819997787475586
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/03-support-chat.normalization.json",
+      "normalizationSHA256": "556fe6942c45d6f0d3dacdaea1e43edf3cb07e18bd6cf7be91bc8269dd7bbbf4",
+      "output": "../videos/liveforge/assets/footage/revision-005/03-support-chat.mp4",
+      "outputSHA256": "6e3f5b93bb75ceb5895e9cb8bd7dd820db980a246dc70492b0ffe73dc67f6bdb",
+      "decodedQA": {
+        "expectedFrames": 335,
+        "decodedFrames": 335,
+        "firstPTS": 0.0,
+        "lastPTS": 11.133333,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 11.166666666666666,
+        "roundingHoldSeconds": 0.008666674296060606,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/03-support-studio/capture.json",
+      "captureSHA256": "6b6bef9c6cb76f198362fe500fa112f280483d77f43ce70baf6c6525eeb1a445",
+      "pairId": "liveforge-005-support",
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793606884.0105,
+      "recordedEndTs": 1793606895.399,
+      "sourceDuration": 11.388499975204468,
+      "frameCount": 20,
+      "achievedFPS": 1.7154207333455012,
+      "medianGap": 0.5910000801086426,
+      "maximumGap": 0.622499942779541,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.3315000534057617,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/03-support-studio.normalization.json",
+      "normalizationSHA256": "e07a68ba2248f446067b3f08e10feef77a0955884df4a285f9c396a7ba953236",
+      "output": "../videos/liveforge/assets/footage/revision-005/03-support-studio.mp4",
+      "outputSHA256": "fbce158baca3adeb8aa1579839c8f4e50f71d120c6fd7d53c756f02dedd402c3",
+      "decodedQA": {
+        "expectedFrames": 342,
+        "decodedFrames": 342,
+        "firstPTS": 0.0,
+        "lastPTS": 11.366667,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 11.4,
+        "roundingHoldSeconds": 0.011500024795532582,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/04-select-proposal-take2/capture.json",
+      "captureSHA256": "20fb40fd565afabe2909f5df1a18a1a46a544310285644c142055b4907971bd9",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793606912.881,
+      "recordedEndTs": 1793606917.586,
+      "sourceDuration": 4.704999923706055,
+      "frameCount": 8,
+      "achievedFPS": 1.5945330781077753,
+      "medianGap": 0.6190001964569092,
+      "maximumGap": 0.6490001678466797,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.32450008392333984,
+      "actions": [
+        {
+          "wallTime": 1793606913.976,
+          "label": "Select real P1",
+          "relativeToFirstFrame": 1.0950000286102295
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/04-select-proposal-take2.normalization.json",
+      "normalizationSHA256": "667906508f8a6721e561c1cb4fe472aa86cfa5acd817c07cb1b13f2c91a9a230",
+      "output": "../videos/liveforge/assets/footage/revision-005/04-select-proposal-take2.mp4",
+      "outputSHA256": "5c748b9c2b950844e37e8d31d3dd6cca5f4cac496fe13e5de731cbe2a87bbd73",
+      "decodedQA": {
+        "expectedFrames": 142,
+        "decodedFrames": 142,
+        "firstPTS": 0.0,
+        "lastPTS": 4.7,
+        "maximumPTSError": 3.33333333379926e-7,
+        "expectedDuration": 4.733333333333333,
+        "roundingHoldSeconds": 0.028333409627278705,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/05-forge-contract-retry/capture.json",
+      "captureSHA256": "b81169d3bb23c7141ca9e1ab0ccce657eecd5925226ae0eca9926db3e6310d09",
+      "pairId": null,
+      "nativeGeometry": [3840, 4000],
+      "sourceFirstTs": 1793607161.396,
+      "recordedEndTs": 1793607198.032,
+      "sourceDuration": 36.63600015640259,
+      "frameCount": 108,
+      "achievedFPS": 2.935769745702156,
+      "medianGap": 0.33500003814697266,
+      "maximumGap": 0.4160001277923584,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.2359999418258667,
+      "actions": [
+        {
+          "wallTime": 1793607162.962,
+          "label": "Regenerate original real P1 after generic renderer documentation correction",
+          "relativeToFirstFrame": 1.565999984741211
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/05-forge-contract-retry.normalization.json",
+      "normalizationSHA256": "70d1adaf1e036102e9e24453167fc22fcfa37833b1b18ac9263ac991b8b23cec",
+      "output": "../videos/liveforge/assets/footage/revision-005/05-forge-contract-retry.mp4",
+      "outputSHA256": "9a5b832b35adddf5bc0afb42c20c92f7c0e1538ef12fbb00f65b6d7f7f228481",
+      "decodedQA": {
+        "expectedFrames": 1100,
+        "decodedFrames": 1100,
+        "firstPTS": 0.0,
+        "lastPTS": 36.633333,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 36.666666666666664,
+        "roundingHoldSeconds": 0.030666510264076408,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/07-forge-gameplay-revision/capture.json",
+      "captureSHA256": "85617d6c3cf970ac61c7ff40107745a16f3f8273484e979c6f58adb30babc81d",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607252.2665,
+      "recordedEndTs": 1793607291.659,
+      "sourceDuration": 39.392499923706055,
+      "frameCount": 154,
+      "achievedFPS": 3.8996291597386556,
+      "medianGap": 0.2630000114440918,
+      "maximumGap": 0.32850003242492676,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.1679999828338623,
+      "actions": [
+        {
+          "wallTime": 1793607256.623,
+          "label": "Forge genuine gameplay revision",
+          "feedback": "Keep the flat top at ledge height y=448, width about 100, travel about 140 at 1.2 units/tick. Always leave at least 50 units between the wedge and both ledges (edges x=610 and x=950). Use an immovable lantern anchor and refresh while active.",
+          "relativeToFirstFrame": 4.356499910354614
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/07-forge-gameplay-revision.normalization.json",
+      "normalizationSHA256": "a0f34ffab7fbd85a5139cba868e376f97ec909a945dee7f97f978ce16dc1edb4",
+      "output": "../videos/liveforge/assets/footage/revision-005/07-forge-gameplay-revision.mp4",
+      "outputSHA256": "503c75434571b9705e3d3b64cb437ce36dcc4d217486e38affa19df6146b0f7c",
+      "decodedQA": {
+        "expectedFrames": 1182,
+        "decodedFrames": 1182,
+        "firstPTS": 0.0,
+        "lastPTS": 39.366667,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 39.4,
+        "roundingHoldSeconds": 0.007500076293943891,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/08-final-generated-source/capture.json",
+      "captureSHA256": "4ad12d50e20ee5b22e1238e1ebaf97b6f18441533217d2675639440116ca1e1b",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607299.7725,
+      "recordedEndTs": 1793607310.906,
+      "sourceDuration": 11.13349986076355,
+      "frameCount": 43,
+      "achievedFPS": 3.820439435368579,
+      "medianGap": 0.2585000991821289,
+      "maximumGap": 0.30949997901916504,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.15249991416931152,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/08-final-generated-source.normalization.json",
+      "normalizationSHA256": "4792c0c176a60c70b4e849660015b1db9c52bb112220028fc1171c5f44f436f9",
+      "output": "../videos/liveforge/assets/footage/revision-005/08-final-generated-source.mp4",
+      "outputSHA256": "4c565046888997b71e69c109fcf29ee7dc1622fd3f251670adffce84c2520626",
+      "decodedQA": {
+        "expectedFrames": 335,
+        "decodedFrames": 335,
+        "firstPTS": 0.0,
+        "lastPTS": 11.133333,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 11.166666666666666,
+        "roundingHoldSeconds": 0.03316680590311627,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/09-final-generated-lineage/capture.json",
+      "captureSHA256": "52867f8d139cbaebe4f1a9906b133f1ea7ef9478fccde95236dc3ca95c30b1cc",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607318.9955,
+      "recordedEndTs": 1793607330.024,
+      "sourceDuration": 11.028499841690063,
+      "frameCount": 43,
+      "achievedFPS": 3.85639526162822,
+      "medianGap": 0.25749993324279785,
+      "maximumGap": 0.3039999008178711,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.1510000228881836,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/09-final-generated-lineage.normalization.json",
+      "normalizationSHA256": "c46c0407bcf12c4e72fbb5ca7ab9f94cee170dde2bb65a28f8c5c188e3000792",
+      "output": "../videos/liveforge/assets/footage/revision-005/09-final-generated-lineage.mp4",
+      "outputSHA256": "69ac214909f15bcfe48edef33f74255892684bfddc2e6c819b8f6d65b010e057",
+      "decodedQA": {
+        "expectedFrames": 331,
+        "decodedFrames": 331,
+        "firstPTS": 0.0,
+        "lastPTS": 11.0,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 11.033333333333333,
+        "roundingHoldSeconds": 0.004833491643269738,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/10-final-verification-take2/capture.json",
+      "captureSHA256": "1624ecfa80c8e9bbaf34fe274a439588f4d5a7cd6e3ad1439b4058d08b3f278f",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607594.4205,
+      "recordedEndTs": 1793607608.401,
+      "sourceDuration": 13.980499982833862,
+      "frameCount": 52,
+      "achievedFPS": 3.6903039252065386,
+      "medianGap": 0.2610001564025879,
+      "maximumGap": 0.32450008392333984,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.17149996757507324,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/10-final-verification-take2.normalization.json",
+      "normalizationSHA256": "cc484200e557b961adc04b1d329ba940100d8d313ea456442a3ad75e4020eecb",
+      "output": "../videos/liveforge/assets/footage/revision-005/10-final-verification-take2.mp4",
+      "outputSHA256": "ea4b37c8d85c96e50a22866328a84f7257526b77b03d1cf72249dcddb14fff5b",
+      "decodedQA": {
+        "expectedFrames": 420,
+        "decodedFrames": 420,
+        "firstPTS": 0.0,
+        "lastPTS": 13.966667,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 14.0,
+        "roundingHoldSeconds": 0.019500017166137695,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/11-preview-performance-take3/capture.json",
+      "captureSHA256": "4e4354855df99061d2feacee91f7293d6bd5a16513dfa7653e020078a88a31ad",
+      "pairId": null,
+      "nativeGeometry": [1280, 720],
+      "sourceFirstTs": 1793607525.518741,
+      "recordedEndTs": 1793607549.563,
+      "sourceDuration": 24.044259071350098,
+      "frameCount": 1152,
+      "achievedFPS": 48.03529561144213,
+      "medianGap": 0.016681909561157227,
+      "maximumGap": 0.10015583038330078,
+      "sourceTimestampMethod": "CUA CDP Page.startScreencast native compositor frames",
+      "maximumTimestampUncertainty": null,
+      "actions": [
+        {
+          "wallTime": 1793607525.523,
+          "label": "Reset preview to candidate snapshot",
+          "relativeToFirstFrame": 0.0042591094970703125
+        },
+        {
+          "wallTime": 1793607525.829,
+          "label": "Begin full sweep hold",
+          "relativeToFirstFrame": 0.3102591037750244
+        },
+        {
+          "wallTime": 1793607530.21,
+          "label": "Jump onto wedge",
+          "keys": "d+space",
+          "durationMs": 500,
+          "relativeToFirstFrame": 4.691259145736694
+        },
+        {
+          "wallTime": 1793607530.722,
+          "label": "Release all inputs; ride",
+          "relativeToFirstFrame": 5.203258991241455
+        },
+        {
+          "wallTime": 1793607533.022,
+          "label": "Jump toward foundry",
+          "keys": "d+space",
+          "durationMs": 500,
+          "relativeToFirstFrame": 7.503259181976318
+        },
+        {
+          "wallTime": 1793607533.533,
+          "label": "Release inputs; landing hold",
+          "relativeToFirstFrame": 8.014259099960327
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/11-preview-performance-take3.normalization.json",
+      "normalizationSHA256": "6637fa78f3d0931046c3f994b66600b21aa6db4a1264b0df2fa537c4e37fb6f8",
+      "output": "../videos/liveforge/assets/footage/revision-005/11-preview-performance-take3.mp4",
+      "outputSHA256": "f3f7e1e3dd9808ffefdd7922a760db18503cf9702542c36c3b44f85ba68fa1b9",
+      "decodedQA": {
+        "expectedFrames": 722,
+        "decodedFrames": 722,
+        "firstPTS": 0.0,
+        "lastPTS": 24.033333,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 24.066666666666666,
+        "roundingHoldSeconds": 0.022407595316568774,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/12-open-preview/capture.json",
+      "captureSHA256": "e34b2318d46f039c42dd2d2231f1a612edd3b010b40875f9fe337c0a2086424e",
+      "pairId": null,
+      "nativeGeometry": [1280, 720],
+      "sourceFirstTs": 1793607608.540693,
+      "recordedEndTs": 1793607615.845,
+      "sourceDuration": 7.304306983947754,
+      "frameCount": 339,
+      "achievedFPS": 46.49472501604403,
+      "medianGap": 0.016679048538208008,
+      "maximumGap": 0.2505960464477539,
+      "sourceTimestampMethod": "CUA CDP Page.startScreencast native compositor frames",
+      "maximumTimestampUncertainty": null,
+      "actions": [
+        {
+          "wallTime": 1793607610.323,
+          "label": "Open final preview",
+          "relativeToFirstFrame": 1.7823069095611572
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/12-open-preview.normalization.json",
+      "normalizationSHA256": "303767f48732eac5cab72c7181ea0d31e21aa929be6bfbac4d04820aae0da734",
+      "output": "../videos/liveforge/assets/footage/revision-005/12-open-preview.mp4",
+      "outputSHA256": "8cbad9e71ef35548a45e901ab86ef56cc1d0609efc96fdc49b7dcdb11e24e9d0",
+      "decodedQA": {
+        "expectedFrames": 220,
+        "decodedFrames": 220,
+        "firstPTS": 0.0,
+        "lastPTS": 7.3,
+        "maximumPTSError": 3.33333333379926e-7,
+        "expectedDuration": 7.333333333333333,
+        "roundingHoldSeconds": 0.02902634938557913,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/13-approve-exact-law/capture.json",
+      "captureSHA256": "eedfa11af00e14071a1beac63a6962a1b003842c5d2d020eb0d8a2146b0218e3",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607625.117,
+      "recordedEndTs": 1793607634.731,
+      "sourceDuration": 9.613999843597412,
+      "frameCount": 37,
+      "achievedFPS": 3.7986705616670915,
+      "medianGap": 0.26399993896484375,
+      "maximumGap": 0.2885003089904785,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.1625000238418579,
+      "actions": [
+        {
+          "wallTime": 1793607627.999,
+          "label": "Approve tested exact generated source",
+          "sourceHash": "531134801715dafd49771a5297f352b354534009cb99e54fab03e6236ae8a414",
+          "relativeToFirstFrame": 2.881999969482422
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/13-approve-exact-law.normalization.json",
+      "normalizationSHA256": "8182bbfe5bebd5c221a6f19454c1295e8cb6e7b0bdf8fe9143abf5b1cf86f5ff",
+      "output": "../videos/liveforge/assets/footage/revision-005/13-approve-exact-law.mp4",
+      "outputSHA256": "3099cf493990e6be933244389e0157ac1808b1be53aaf0283176e8e661c9cf6b",
+      "decodedQA": {
+        "expectedFrames": 289,
+        "decodedFrames": 289,
+        "firstPTS": 0.0,
+        "lastPTS": 9.6,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 9.633333333333333,
+        "roundingHoldSeconds": 0.01933348973592075,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/qa/revision-005-prep/live-performance-take1-chronological/capture-chronological.json",
+      "captureSHA256": "4a6c02b3fd599eb2da7e66a202cb96df7dae6e9bfcb7db967fd723cf9d7fd44a",
+      "pairId": null,
+      "nativeGeometry": [1280, 720],
+      "sourceFirstTs": 1793607759.143061,
+      "recordedEndTs": 1793607785.163,
+      "sourceDuration": 26.019939184188843,
+      "frameCount": 1195,
+      "achievedFPS": 45.960950529551845,
+      "medianGap": 0.016685962677001953,
+      "maximumGap": 0.0833590030670166,
+      "sourceTimestampMethod": "CUA CDP Page.startScreencast native compositor frames",
+      "maximumTimestampUncertainty": null,
+      "actions": [
+        {
+          "wallTime": 1793607759.119,
+          "label": "Begin full live sweep hold",
+          "relativeToFirstFrame": -0.024060964584350586
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607764.233,
+          "left": 468,
+          "right": 546,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 5.089939117431641
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607764.448,
+          "left": 481,
+          "right": 559,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 5.304939031600952
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607764.665,
+          "left": 493,
+          "right": 571,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 5.521939039230347
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607764.884,
+          "left": 506,
+          "right": 584,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 5.740939140319824
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607765.099,
+          "left": 518,
+          "right": 596,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 5.955939054489136
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607765.317,
+          "left": 531,
+          "right": 609,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 6.173938989639282
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607765.535,
+          "left": 542,
+          "right": 620,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 6.391939163208008
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607765.749,
+          "left": 556,
+          "right": 634,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 6.605939149856567
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607765.965,
+          "left": 559,
+          "right": 638,
+          "count": 80,
+          "row": 457,
+          "relativeToFirstFrame": 6.821938991546631
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607766.182,
+          "left": 546,
+          "right": 624,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 7.038938999176025
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607766.398,
+          "left": 533,
+          "right": 611,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 7.254939079284668
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607766.615,
+          "left": 521,
+          "right": 599,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 7.4719390869140625
+        },
+        {
+          "label": "Screenshot-only wedge observation",
+          "wallTime": 1793607766.832,
+          "left": 508,
+          "right": 586,
+          "count": 79,
+          "row": 457,
+          "relativeToFirstFrame": 7.688939094543457
+        },
+        {
+          "wallTime": 1793607766.832,
+          "label": "Jump onto visibly returning wedge",
+          "keys": "d+space",
+          "durationMs": 500,
+          "relativeToFirstFrame": 7.688939094543457
+        },
+        {
+          "wallTime": 1793607767.344,
+          "label": "Release all inputs; ride",
+          "relativeToFirstFrame": 8.200939178466797
+        },
+        {
+          "wallTime": 1793607769.645,
+          "label": "Jump toward foundry",
+          "keys": "d+space",
+          "durationMs": 500,
+          "relativeToFirstFrame": 10.501939058303833
+        },
+        {
+          "wallTime": 1793607770.154,
+          "label": "Release inputs; settled landing hold",
+          "relativeToFirstFrame": 11.010939121246338
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "originalCapture": "../videos/liveforge/assets/captures/revision-005/15-live-performance-take1/capture.json",
+      "originalCaptureSHA256": "2c7b5a4e1550ebe67fc9d7567f750a5d255e2ff0368a50fb6d68b5b9ce127dc4",
+      "sourceOrderCorrection": [
+        {
+          "derivedIndex": 345,
+          "originalIndex": 346,
+          "file": "000346.jpg",
+          "ts": 1793607766.796567
+        },
+        {
+          "derivedIndex": 346,
+          "originalIndex": 345,
+          "file": "000345.jpg",
+          "ts": 1793607766.813241
+        }
+      ],
+      "chronologyDerivation": "Order by supplied UTC timestamps, independently confirmed by CDP monotonicTimestamp. All original JPEGs and timestamps retained; no interpolation or time modification.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/15-live-performance-take1.normalization.json",
+      "normalizationSHA256": "a25f1eec5e2437126e55f9c0da6d4513d76577b48eb803f6235ca9f852b81792",
+      "output": "../videos/liveforge/assets/footage/revision-005/15-live-performance-take1.mp4",
+      "outputSHA256": "bb98f9bad2fd427559b42449e197014a3647a9ceadb89b44b7edf940d84e2dac",
+      "decodedQA": {
+        "expectedFrames": 781,
+        "decodedFrames": 781,
+        "firstPTS": 0.0,
+        "lastPTS": 26.0,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 26.033333333333335,
+        "roundingHoldSeconds": 0.013394149144492218,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/16-live-author-overlay/capture.json",
+      "captureSHA256": "faebecd9037d6d9369f586abe375fd941f117f692e2ac23c1f6028ec54a13164",
+      "pairId": null,
+      "nativeGeometry": [3840, 2160],
+      "sourceFirstTs": 1793607844.844,
+      "recordedEndTs": 1793607858.89,
+      "sourceDuration": 14.046000003814697,
+      "frameCount": 65,
+      "achievedFPS": 4.592916867943825,
+      "medianGap": 0.2157500982284546,
+      "maximumGap": 0.2605001926422119,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.1390000581741333,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/16-live-author-overlay.normalization.json",
+      "normalizationSHA256": "d8f7d66945747d5df7ed325bfc2565a6e6f0f072a41b4aa66278f208a862fca3",
+      "output": "../videos/liveforge/assets/footage/revision-005/16-live-author-overlay.mp4",
+      "outputSHA256": "2977ec38cd838f4738b1290c68f3da09d6245d801664546a3af84e73134659de",
+      "decodedQA": {
+        "expectedFrames": 422,
+        "decodedFrames": 422,
+        "firstPTS": 0.0,
+        "lastPTS": 14.033333,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 14.066666666666666,
+        "roundingHoldSeconds": 0.020666662851969164,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/18-confirm-restore/capture.json",
+      "captureSHA256": "d091b317c585efe43bb67332e2258354a9a0e85c8ccaf197a19de1074d7e96f8",
+      "pairId": null,
+      "nativeGeometry": [3840, 2360],
+      "sourceFirstTs": 1793607907.9959998,
+      "recordedEndTs": 1793607928.009,
+      "sourceDuration": 20.01300024986267,
+      "frameCount": 75,
+      "achievedFPS": 3.7223339825962114,
+      "medianGap": 0.2642500400543213,
+      "maximumGap": 0.37349987030029297,
+      "sourceTimestampMethod": "CUA CDP Page.captureScreenshot; measured request-midpoint timestamps",
+      "maximumTimestampUncertainty": 0.18600010871887207,
+      "actions": [
+        {
+          "wallTime": 1793607910.873,
+          "label": "Confirm restore to exact pre-activation law and checkpoint",
+          "relativeToFirstFrame": 2.877000093460083
+        }
+      ],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/18-confirm-restore.normalization.json",
+      "normalizationSHA256": "08a9fc8c6317f24e0645c698d1b09604f898255a5fd1578c14ca6b85a2f3d9b4",
+      "output": "../videos/liveforge/assets/footage/revision-005/18-confirm-restore.mp4",
+      "outputSHA256": "bd489d309325c7645450d687f293fbe7308591f40b7e5cdd1e8cd84f01702fd1",
+      "decodedQA": {
+        "expectedFrames": 601,
+        "decodedFrames": 601,
+        "firstPTS": 0.0,
+        "lastPTS": 20.0,
+        "maximumPTSError": 3.3333333604446125e-7,
+        "expectedDuration": 20.033333333333335,
+        "roundingHoldSeconds": 0.020333083470664093,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    },
+    {
+      "capture": "../videos/liveforge/assets/captures/revision-005/19-restored-baseline/capture.json",
+      "captureSHA256": "8435a39ddff4d17e81ee2ad998ce44aed64cf9ff7c05806f7d1441d709d498c7",
+      "pairId": null,
+      "nativeGeometry": [1280, 720],
+      "sourceFirstTs": 1793607935.57499,
+      "recordedEndTs": 1793607948.559,
+      "sourceDuration": 12.984009981155396,
+      "frameCount": 597,
+      "achievedFPS": 45.948980855813524,
+      "medianGap": 0.01669895648956299,
+      "maximumGap": 0.10003995895385742,
+      "sourceTimestampMethod": "CUA CDP Page.startScreencast native compositor frames",
+      "maximumTimestampUncertainty": null,
+      "actions": [],
+      "cursor": "No coordinates recorded; no cursor overlay permitted.",
+      "normalization": "../videos/liveforge/assets/footage/revision-005/19-restored-baseline.normalization.json",
+      "normalizationSHA256": "6179ed16501805cc3361c1832f09ce29180d685ffe2ce8f67b77654712d5ea0d",
+      "output": "../videos/liveforge/assets/footage/revision-005/19-restored-baseline.mp4",
+      "outputSHA256": "85ca3d7ce08ddf24ce943f5cb7b74ca87b5dbd7696aa3824e5e22f2ca9d9166b",
+      "decodedQA": {
+        "expectedFrames": 390,
+        "decodedFrames": 390,
+        "firstPTS": 0.0,
+        "lastPTS": 12.966667,
+        "maximumPTSError": 3.333333342681044e-7,
+        "expectedDuration": 13.0,
+        "roundingHoldSeconds": 0.015990018844604492,
+        "allPTSMonotonic": true,
+        "passed": true
+      }
+    }
+  ],
+  "exceptions": [
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/activation-valid-prefix/VALID-PREFIX-PROVENANCE.json",
+      "sha256": "2b76e699d951a57cd2f9a9cbb8a8f942db80b19424924f36293befaf79d47eb2"
+    },
+    {
+      "path": "../videos/liveforge/assets/qa/revision-005-prep/controls-valid-prefix/VALID-PREFIX-PROVENANCE.json",
+      "sha256": "3c01945fd38fc780c8a5a576338633a285610dd83941945c8acec2569288d293"
+    }
+  ],
+  "recordingMethod": "Genuine CUA CDP screenshot sequences and native compositor screencasts. Paired panes use one UTC interval with retained request-midpoint uncertainty. Native cadence and original action clocks are preserved; no synthetic UI or interpolated motion.",
+  "chronologyCorrection": "Two live frames are ordered by agreeing recorded UTC/CDP timestamps; all original bytes and arrival order remain retained.",
+  "performance": "Preview source0.30–16.30 and live source3–19 each preserve a complete sweep, jump-on, neutral-input ride, exit jump and far landing at native speed, with both endpoint gaps visible.",
+  "restore": "Real confirm and stable processing end before partial paints. At film123.9 a labeled wait-shortened cut reaches clean source19. Intake-open is the actual restored checkpoint; later closed cleanup is separate.",
+  "historicalExceptions": "Attributed quotation, genuine historical source19/test20 and explicitly approved unchanged signed-out Sample22. Closing overlay/live recap are recorded states from the new run.",
+  "finalVideo": {
+    "path": "../videos/liveforge/LIVEFORGE-submission.mp4",
+    "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771"
+  },
+  "timeline": {
+    "path": "../videos/liveforge/scripts/edit-map-final-005-candidate-002.json",
+    "sha256": "10c0b54973b98382b3177d815f8e318dd9f50815641f4d1025704fe321872c2f"
+  },
+  "publication": {
+    "status": "public",
+    "url": "https://youtu.be/ySAEy9HPHHw",
+    "title": "LIVEFORGE — Twitch chat writes the rules | Codex x TwitchCon",
+    "confirmation": "Root verified Public, HD processing complete and English captions Published.",
+    "receipt": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-publication.json",
+      "bytes": 2856,
+      "sha256": "6f17ec84663a9f3f47d5b0e981637d511ac63ad5f5b16f861a9fa5dbab9704e5"
+    },
+    "screenshot": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-published.png",
+      "bytes": 106149,
+      "sha256": "d6f0bb2e401ef9eba751d9002430e07a2fd0c2efc1c647a8636de8db2d98d56d"
+    },
+    "youtubeThumbnail": {
+      "path": "../videos/liveforge/evidence/revision-005/youtube-thumbnail.png",
+      "bytes": 372664,
+      "sha256": "974a4a10ee69207b8093d32fdb6b94043b6ac1a29fd9859966d978bb50530f86"
+    }
+  },
+  "previousRevisionArchive": "../videos/liveforge/revision-archive/revision-004-source-metadata"
+}

@@ -2,7 +2,7 @@
 
 **You play. Chat changes the rules.** Twitch viewers invent a mechanic, Codex writes a bounded rule, and the creator plays and approves its exact version before it enters an original airborne-foundry adventure.
 
-**[Open the live app](https://liveforge-iota.vercel.app)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
+**[Open the live app](https://liveforge-iota.vercel.app)** · **[Watch the demo](https://youtu.be/ySAEy9HPHHw)** · [Field guide](https://liveforge-iota.vercel.app/guide) · [Evidence](docs/evidence/README.md) · [Current review status](docs/review-progress.md)
 
 ![The production Studio with Gliding gap wedge after the courier lands across the gap](docs/evidence/surface-motion-2026-11-02/generation/live-landing.png)
 
@@ -25,6 +25,8 @@ The complete lower route, Counterweight Hall and Beacon Guardian work without ge
 The real Twitch proposal was: `!forge A floating wedge glides back and forth over the gap, never touching either side`. Codex's final **Gliding gap wedge** law leaves a 50-unit gap to each ledge. The courier waits for a sweep, jumps aboard, rides with movement input released, and jumps off at the far side. The same mechanic runs in Preview and live play.
 
 The host used **Revise** to ask for wider clearances and ledge-height placement after reviewing the first verified candidate. The source remained entirely Codex-generated. After play, **Restore previous law** returned the courier to the saved activation checkpoint and removed the surface. The [run record](docs/evidence/surface-motion-2026-11-02/generation/README.md) preserves the earlier unsupported response, the superseded candidate, final source hash, verification and exact approval/activation/restore events. The existing **Load sample law** instructions above continue to load the original shadow sample.
+
+**[Watch the finished 2:55.5 demo on YouTube](https://youtu.be/ySAEy9HPHHw).** Its [delivery record](docs/evidence/surface-motion-2026-11-02/film/README.md) includes the exact revision 005 file hash, cover, captions and completed playback checks. The public upload has a branded thumbnail, description chapters and published English captions.
 
 ## Let real chat invent the next law
 
@@ -106,4 +108,4 @@ The [review ledger](docs/review-progress.md) separates implementation, determini
 
 [MIT license](LICENSE) · [Original art, fonts and icon rights](docs/rights.md) · [Release manifest](docs/release-manifest.md)
 
-Private plans, credentials and local state are ignored. Canonical production origin: **https://liveforge-iota.vercel.app**. The [source repository](https://github.com/yadneshSalvi/LIVEFORGE) is public. Actual OBS capture and submission-video publication remain separate acceptance tasks; current deployment and browser evidence are identified in the release manifest.
+Private plans, credentials and local state are ignored. Canonical production origin: **https://liveforge-iota.vercel.app**. The [source repository](https://github.com/yadneshSalvi/LIVEFORGE) is public. The release manifest records current deployment, browser checks and completed revision 005 film delivery. Publication status is tracked separately; actual OBS capture remains a separate acceptance task.

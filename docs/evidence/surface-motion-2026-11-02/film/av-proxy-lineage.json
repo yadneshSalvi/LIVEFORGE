@@ -1,0 +1,120 @@
+{
+  "created_utc": "2026-11-02T08:53:53.171017+00:00",
+  "helper": {
+    "path": "../videos/liveforge/scripts/review_encoded_av.py",
+    "sha256": "3b20bdc66eb8b9cc3405167f343b192bdd27fe2ce6f67ee573e5c45d176b9c8b"
+  },
+  "purpose": "AI full-film audiovisual QA, not a submission or new edit",
+  "source": {
+    "path": "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.mp4",
+    "sha256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "5265"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "8228"
+        }
+      ],
+      "format": {
+        "duration": "175.500000",
+        "size": "36030471"
+      }
+    }
+  },
+  "proxy": {
+    "path": "../videos/liveforge/assets/qa/revision-005-final-002-av/full-film-review-proxy.mp4",
+    "sha256": "8685faf3226b50c9f10dee990c9d8582e08c06a9b4f01256dde423fec5005c21",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "5265"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "start_time": "0.000000",
+          "duration": "175.500000",
+          "nb_frames": "8228"
+        }
+      ],
+      "format": {
+        "duration": "175.500000",
+        "size": "12546749"
+      }
+    }
+  },
+  "derivation": "Same resolution, frame count and duration; no crop or editorial change; AAC packets copied unchanged.",
+  "ffmpeg_command": [
+    "ffmpeg",
+    "-hide_banner",
+    "-loglevel",
+    "error",
+    "-n",
+    "-i",
+    "../videos/liveforge/composition-revision-005/renders/liveforge-demo-final-005-002.mp4",
+    "-map",
+    "0:v:0",
+    "-map",
+    "0:a:0",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "medium",
+    "-crf",
+    "24",
+    "-pix_fmt",
+    "yuv420p",
+    "-fps_mode",
+    "passthrough",
+    "-c:a",
+    "copy",
+    "-map_metadata",
+    "-1",
+    "-movflags",
+    "+faststart",
+    "../videos/liveforge/assets/qa/revision-005-final-002-av/full-film-review-proxy.mp4"
+  ],
+  "audio_packet_sha256": "b276794b3585b308f24df53eedda9be15317c010f2e92980ab5127483b91bd40",
+  "audio_packet_identity": true,
+  "whole_film_range_seconds": [0, 175.5],
+  "edit_map": {
+    "path": "../videos/liveforge/scripts/edit-map-final-005-candidate-002.json",
+    "sha256": "10c0b54973b98382b3177d815f8e318dd9f50815641f4d1025704fe321872c2f"
+  }
+}

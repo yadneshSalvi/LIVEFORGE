@@ -1,0 +1,227 @@
+1
+00:00:00,600 --> 00:00:04,200
+What if chat could change the rules while you play?
+
+2
+00:00:04,833 --> 00:00:06,833
+This is LIVEFORGE.
+
+3
+00:00:06,833 --> 00:00:09,400
+I'm carrying an ember through The Last Light.
+
+4
+00:00:09,567 --> 00:00:11,633
+There's a broken crossing ahead.
+
+5
+00:00:11,967 --> 00:00:14,600
+Let's add a floating wedge that glides back
+
+6
+00:00:14,600 --> 00:00:15,800
+and forth over the gap.
+
+7
+00:00:17,300 --> 00:00:20,433
+Here, I send that idea in Twitch with
+
+8
+00:00:20,433 --> 00:00:22,333
+exclamation mark forge.
+
+9
+00:00:22,500 --> 00:00:25,067
+It arrives in the studio with my name,
+
+10
+00:00:25,133 --> 00:00:27,367
+and another chat command adds support.
+
+11
+00:00:28,067 --> 00:00:29,767
+I choose the proposal.
+
+12
+00:00:29,900 --> 00:00:32,400
+The audience suggests what happens next;
+
+13
+00:00:32,633 --> 00:00:34,467
+I decide what reaches the game.
+
+14
+00:00:37,500 --> 00:00:40,533
+Forge sends the idea to the Codex SDK
+
+15
+00:00:40,533 --> 00:00:42,700
+in an isolated sandbox.
+
+16
+00:00:42,867 --> 00:00:45,433
+It writes a new rule from the world's
+
+17
+00:00:45,433 --> 00:00:47,733
+physics, platforms, and motion.
+
+18
+00:00:48,233 --> 00:00:50,800
+The game stays playable while that runs.
+
+19
+00:00:51,133 --> 00:00:53,300
+We keep the actual source,
+
+20
+00:00:53,300 --> 00:00:56,100
+generation record, and verification results.
+
+21
+00:00:57,800 --> 00:01:01,400
+Now I open the preview. Watch this:
+
+22
+00:01:01,633 --> 00:01:04,533
+the wedge slides across the gap,
+
+23
+00:01:04,600 --> 00:01:06,833
+never quite reaching either side,
+
+24
+00:01:06,933 --> 00:01:09,000
+so I have to time my jumps.
+
+25
+00:01:09,400 --> 00:01:13,167
+I can test the change before approving this exact version.
+
+26
+00:01:13,833 --> 00:01:16,467
+The verifier checks bounded behavior and
+
+27
+00:01:16,467 --> 00:01:20,400
+recovery, while I decide whether the mechanic feels right.
+
+28
+00:01:20,867 --> 00:01:22,867
+The live world pauses here,
+
+29
+00:01:22,867 --> 00:01:24,400
+so I can take my time.
+
+30
+00:01:29,133 --> 00:01:30,500
+I approve it,
+
+31
+00:01:30,500 --> 00:01:32,400
+then activate it at a checkpoint.
+
+32
+00:01:32,900 --> 00:01:36,000
+The same wedge appears in the live world.
+
+33
+00:01:36,400 --> 00:01:37,700
+I wait for it,
+
+34
+00:01:37,700 --> 00:01:40,000
+jump on, ride it across,
+
+35
+00:01:40,000 --> 00:01:41,433
+then leap to the far side.
+
+36
+00:01:42,233 --> 00:01:45,200
+Chat's idea has become part of this run.
+
+37
+00:01:45,533 --> 00:01:48,333
+The author's name stays attached to the law.
+
+38
+00:01:51,100 --> 00:01:53,967
+The streamer keeps control throughout.
+
+39
+00:01:54,233 --> 00:01:55,967
+I can close intake,
+
+40
+00:01:56,133 --> 00:01:58,300
+hide an unsuitable idea,
+
+41
+00:01:58,467 --> 00:02:01,667
+or restore the previous law and checkpoint.
+
+42
+00:02:02,067 --> 00:02:03,333
+Here I restore.
+
+43
+00:02:04,100 --> 00:02:05,567
+The wedge is gone,
+
+44
+00:02:05,567 --> 00:02:09,167
+and we're back at the saved moment before activation.
+
+45
+00:02:09,700 --> 00:02:11,467
+Nothing gets approved automatically.
+
+46
+00:02:13,067 --> 00:02:16,033
+We built LIVEFORGE with Codex too.
+
+47
+00:02:16,367 --> 00:02:18,933
+This is the actual build conversation,
+
+48
+00:02:19,000 --> 00:02:21,333
+including a repair made during testing.
+
+49
+00:02:22,033 --> 00:02:25,400
+A short keypress once disappeared between game ticks.
+
+50
+00:02:25,633 --> 00:02:28,267
+The fix keeps that input until the next
+
+51
+00:02:28,267 --> 00:02:31,800
+tick, with a regression test showing the crank opens once.
+
+52
+00:02:33,500 --> 00:02:36,533
+The public overlay keeps the current idea and
+
+53
+00:02:36,533 --> 00:02:39,033
+its author visible for the audience.
+
+54
+00:02:39,433 --> 00:02:42,533
+Creators can also try a clearly labeled sample
+
+55
+00:02:42,533 --> 00:02:43,667
+without signing in.
+
+56
+00:02:44,767 --> 00:02:48,200
+LIVEFORGE gives chat a creative role inside the
+
+57
+00:02:48,200 --> 00:02:51,500
+adventure, with the streamer still directing the show.

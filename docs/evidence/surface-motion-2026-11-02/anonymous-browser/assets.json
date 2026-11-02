@@ -1,0 +1,53 @@
+{
+  "schema": "liveforge-anonymous-browser-evidence-assets/v1",
+  "observedAt": "2026-11-02T08:53:40.452Z",
+  "showId": "1c999578-bc2a-450f-8028-efa16d240b41",
+  "records": [
+    {
+      "source": ".local/anonymous005/receipt.json",
+      "destination": "receipt.json",
+      "sourceSHA256": "bf4b4b96d7ae9ca57914a668168b1b6ec231a469667280f7ba0074e4bab234ad",
+      "savedSHA256": "21d41aa385228b2653e3c8708b0566a13385e1550803baa8c6cba959b8ab8d78",
+      "bytes": 688,
+      "copiedWithoutModification": false,
+      "transformation": "JSON whitespace only; all values identical"
+    },
+    {
+      "source": ".local/anonymous005/anonymous-studio.txt",
+      "destination": "anonymous-studio.txt",
+      "sourceSHA256": "de90c1ceb2c59dac05eddd4f67f0d2fa06e817db5ad8d63f8845b68849df142f",
+      "savedSHA256": "de90c1ceb2c59dac05eddd4f67f0d2fa06e817db5ad8d63f8845b68849df142f",
+      "bytes": 252,
+      "copiedWithoutModification": true,
+      "transformation": "none"
+    },
+    {
+      "source": ".local/anonymous005/anonymous-studio.png",
+      "destination": "anonymous-studio.png",
+      "sourceSHA256": "96db993e13fa54d86bd0a8242642c5d08b9f29b0de77d7b8bbf51de0600fadc1",
+      "savedSHA256": "96db993e13fa54d86bd0a8242642c5d08b9f29b0de77d7b8bbf51de0600fadc1",
+      "bytes": 58704,
+      "copiedWithoutModification": true,
+      "transformation": "none"
+    },
+    {
+      "source": ".local/anonymous005/anonymous-sample-bridge.png",
+      "destination": "anonymous-sample-bridge.png",
+      "sourceSHA256": "542adf2cf45bfd0bd63e4606810282245a447775cdbf52dbce4d29e51c5a82f4",
+      "savedSHA256": "542adf2cf45bfd0bd63e4606810282245a447775cdbf52dbce4d29e51c5a82f4",
+      "bytes": 63650,
+      "copiedWithoutModification": true,
+      "transformation": "none"
+    },
+    {
+      "source": ".local/anonymous005/anonymous-sample-landing.png",
+      "destination": "anonymous-sample-landing.png",
+      "sourceSHA256": "e4a4cadc868c37e3fbb14c29bdf0cf62710e5186020f6d214edcecacfa7ecd40",
+      "savedSHA256": "e4a4cadc868c37e3fbb14c29bdf0cf62710e5186020f6d214edcecacfa7ecd40",
+      "bytes": 61551,
+      "copiedWithoutModification": true,
+      "transformation": "none"
+    }
+  ],
+  "scope": "Sanitized production anonymous-browser evidence. No authentication cookie or token values are present. The small text snapshot is browser context, not a full accessibility tree."
+}

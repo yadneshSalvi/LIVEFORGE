@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "reviewKind": "Adjudication of supporting AI review plus exact technical and independent local frame checks; not human listening.",
+  "sourceSHA256": "5181e181f145091fcdfa6fe908ccddad42b88ade5205039989f308fe46ab1771",
+  "modelVerdict": "no_material_issue_seen",
+  "materialFindings": [],
+  "overrides": [],
+  "fullRangeSeconds": 175.5,
+  "samplingFPS": 2,
+  "temporaryReviewFileDeleted": true,
+  "limits": [
+    "Model video sampling is 2 fps, not every 30 fps frame.",
+    "Full codec decode and local sampled frame inspection are separate from semantic model review.",
+    "Browser playback and public production smoke are owned by root; no human listening is claimed."
+  ]
+}

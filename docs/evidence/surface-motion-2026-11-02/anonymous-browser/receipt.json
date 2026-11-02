@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-11-02T08:53:40.452Z",
+  "deployment": "dpl_CLV6kA53DX1Gw4DbwCM4T13ecuE2",
+  "showId": "1c999578-bc2a-450f-8028-efa16d240b41",
+  "url": "https://liveforge-iota.vercel.app/studio",
+  "session": "Fresh anonymous host cookie, no Twitch grant; original host cookie restored in memory after test.",
+  "observed": [
+    "Connect Twitch gate before load",
+    "Sample-labelled Settled Prop Shadow Bridge loaded",
+    "Actual Preview bridge traversal",
+    "Native D+Space jump and grounded far-side landing",
+    "Intake closed and world paused at cleanup"
+  ],
+  "browserErrors": [],
+  "originalAppSessionRestored": true,
+  "freshModelCalls": 0,
+  "publicChatPosts": 0
+}

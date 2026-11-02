@@ -1,0 +1,3 @@
+Browser tab: 92, Title: "The studio · LIVEFORGE", URL: "https://liveforge-iota.vercel.app/studio".
+There has been no change in the accessibility tree.
+The focused UI element is 1 AXWebArea The studio · LIVEFORGE, URL: liveforge-iota.vercel.app/studio
