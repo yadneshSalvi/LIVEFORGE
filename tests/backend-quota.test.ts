@@ -6,6 +6,7 @@ import { LocalFileStore } from "@/server/store";
 import {
   generationQuota,
   generationRequest,
+  releaseGenerationQuota,
   reserveGenerationQuota,
   type GenerationIdentity,
 } from "@/server/generation-quota";
@@ -21,6 +22,7 @@ beforeEach(async () => {
   store = new LocalFileStore(directory);
   vi.stubEnv("LIVEFORGE_GENERATIONS_PER_USER_PER_DAY", "");
   vi.stubEnv("LIVEFORGE_GENERATIONS_GLOBAL_PER_DAY", "");
+  vi.stubEnv("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", "");
 });
 afterEach(async () => {
   vi.unstubAllEnvs();
@@ -261,6 +263,79 @@ describe("durable generation quotas", () => {
     expect((await generationQuota(actor, store, timestamp)).exhausted).toBe(
       true,
     );
+  });
+  it("gives allowlisted hosts their own daily allowance outside the public pool", async () => {
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_USER_PER_DAY", "5");
+    vi.stubEnv("LIVEFORGE_GENERATIONS_GLOBAL_PER_DAY", "40");
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", "10");
+    const host = { actorId: "hashed-owner", exempt: false, host: true };
+    expect(await generationQuota(host, store, timestamp)).toMatchObject({
+      exempt: false,
+      perUserLimit: 10,
+      userRemaining: 10,
+      globalRemaining: null,
+    });
+    for (let i = 0; i < 10; i++)
+      await reserveGenerationQuota(
+        host,
+        request("host-run-" + i, "show-" + i),
+        store,
+        timestamp,
+      );
+    expect(await generationQuota(host, store, timestamp)).toMatchObject({
+      userRemaining: 0,
+      exhausted: true,
+    });
+    await expect(
+      reserveGenerationQuota(host, request("host-run-11"), store, timestamp),
+    ).rejects.toMatchObject({ code: "generation_quota" });
+    expect(await generationQuota(actor, store, timestamp)).toMatchObject({
+      perUserLimit: 5,
+      userRemaining: 5,
+      globalRemaining: 40,
+    });
+    for (let i = 0; i < 5; i++)
+      await reserveGenerationQuota(
+        actor,
+        request("public-run-" + i, "public-show-" + i),
+        store,
+        timestamp,
+      );
+    await expect(
+      reserveGenerationQuota(actor, request("public-run-6"), store, timestamp),
+    ).rejects.toMatchObject({ code: "generation_quota" });
+    expect(
+      (await generationQuota(actor, store, timestamp)).globalRemaining,
+    ).toBe(35);
+  });
+  it("refunds a host debit without touching the public pool", async () => {
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", "10");
+    const host = { actorId: "hashed-owner", exempt: false, host: true };
+    await reserveGenerationQuota(
+      actor,
+      request("public-run"),
+      store,
+      timestamp,
+    );
+    const hostRequest = request("host-refund", "show-two");
+    await reserveGenerationQuota(host, hostRequest, store, timestamp);
+    await releaseGenerationQuota(host, hostRequest, store);
+    expect((await generationQuota(host, store, timestamp)).userRemaining).toBe(
+      10,
+    );
+    expect(
+      (await generationQuota(actor, store, timestamp)).globalRemaining,
+    ).toBe(39);
+  });
+  it("fails closed on an invalid host allowance", async () => {
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", "lots");
+    await expect(
+      generationQuota(
+        { actorId: "hashed-owner", exempt: false, host: true },
+        store,
+        timestamp,
+      ),
+    ).rejects.toMatchObject({ code: "quota_configuration" });
   });
   it("fails closed on invalid quota configuration", async () => {
     vi.stubEnv("LIVEFORGE_GENERATIONS_GLOBAL_PER_DAY", "unlimited");

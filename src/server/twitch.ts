@@ -15,6 +15,7 @@ export { validateTwitchToken } from "./twitch-grants";
 export type { ValidatedTwitchToken } from "./twitch-grants";
 import {
   generationQuota,
+  hostDailyLimit,
   type GenerationIdentity,
   type GenerationQuotaView,
 } from "./generation-quota";
@@ -352,11 +353,17 @@ async function generationIdentity(
     "generation_host_required",
     "Twitch host identity changed. Authorize your Twitch account again.",
   );
-  const exempt = (process.env.LIVEFORGE_GENERATION_HOST_IDS || "")
+  const host = (process.env.LIVEFORGE_GENERATION_HOST_IDS || "")
     .split(",")
     .map((id) => id.trim())
     .includes(grant.userId);
-  return { actorId: privateActor("generation:" + grant.userId), exempt };
+  // Allowlisted hosts are unlimited unless a host allowance is configured.
+  const exempt = host && hostDailyLimit() === null;
+  return {
+    actorId: privateActor("generation:" + grant.userId),
+    exempt,
+    host,
+  };
 }
 export async function requireGenerationHost(ownerId: string) {
   return generationIdentity(ownerId, true);

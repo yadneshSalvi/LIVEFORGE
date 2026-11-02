@@ -314,9 +314,13 @@ describe("OAuth exact redirect, single-use state, encrypted server grants", () =
     await expect(requireGenerationHost("host")).resolves.toEqual(
       expect.objectContaining({ exempt: true }),
     );
+    vi.stubEnv("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", "10");
+    await expect(requireGenerationHost("host")).resolves.toEqual(
+      expect.objectContaining({ exempt: false, host: true }),
+    );
     vi.stubEnv("LIVEFORGE_GENERATION_HOST_IDS", "999");
     await expect(requireGenerationHost("host")).resolves.toEqual(
-      expect.objectContaining({ exempt: false }),
+      expect.objectContaining({ exempt: false, host: false }),
     );
   });
 });

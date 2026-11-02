@@ -5,6 +5,8 @@ import { getStore, type DocumentStore } from "./store";
 export interface GenerationIdentity {
   actorId: string;
   exempt: boolean;
+  /** An allowlisted host with its own daily allowance, outside the public pool. */
+  host?: boolean;
 }
 export interface GenerationQuotaView {
   day: string;
@@ -27,6 +29,8 @@ interface Reservation {
   showId: string;
   actorId: string;
   day: string;
+  /** False when the debit was charged to a host allowance rather than the shared public pool. */
+  publicPool?: boolean;
 }
 interface QuotaLedger {
   days: Record<string, { total: number; users: Record<string, number> }>;
@@ -53,6 +57,14 @@ function limits() {
     globalLimit: limit("LIVEFORGE_GENERATIONS_GLOBAL_PER_DAY", 40),
   };
 }
+/** Daily allowance for allowlisted hosts; null keeps them fully exempt. */
+export function hostDailyLimit(): number | null {
+  const raw = process.env.LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY;
+  if (raw === undefined || raw === "") return null;
+  return limit("LIVEFORGE_GENERATIONS_PER_HOST_PER_DAY", 0);
+}
+const hostAllowance = (identity: GenerationIdentity) =>
+  !identity.exempt && identity.host ? hostDailyLimit() : null;
 function dayOf(timestamp: number) {
   return new Date(timestamp).toISOString().slice(0, 10);
 }
@@ -62,14 +74,18 @@ function projection(
   timestamp: number,
 ): GenerationQuotaView {
   const day = dayOf(timestamp);
-  const { perUserLimit, globalLimit } = limits();
+  const { perUserLimit: publicLimit, globalLimit } = limits();
+  const hostLimit = hostAllowance(identity);
+  const perUserLimit = hostLimit ?? publicLimit;
   const usage = ledger?.days[day];
   const userRemaining = identity.exempt
     ? null
     : Math.max(0, perUserLimit - (usage?.users[identity.actorId] || 0));
-  const globalRemaining = identity.exempt
-    ? null
-    : Math.max(0, globalLimit - (usage?.total || 0));
+  // Hosts with their own allowance neither consume nor wait on the public pool.
+  const globalRemaining =
+    identity.exempt || hostLimit !== null
+      ? null
+      : Math.max(0, globalLimit - (usage?.total || 0));
   return {
     day,
     resetsAt: new Date(
@@ -172,9 +188,10 @@ export async function reserveGenerationQuota(
         : "Shared daily forges used — load a sample law",
     );
     const day = quota.day;
+    const publicPool = quota.globalRemaining !== null;
     if (!identity.exempt) {
       const bucket = (ledger.days[day] ??= { total: 0, users: {} });
-      bucket.total++;
+      if (publicPool) bucket.total++;
       bucket.users[identity.actorId] =
         (bucket.users[identity.actorId] || 0) + 1;
     }
@@ -183,6 +200,7 @@ export async function reserveGenerationQuota(
       showId: request.showId,
       actorId: identity.actorId,
       day,
+      ...(publicPool ? {} : { publicPool: false }),
     };
     ledger.reservations[request.reservationId] = reservation;
     const cutoff = dayOf(timestamp - DAY_MS);
@@ -214,7 +232,8 @@ export async function releaseGenerationQuota(
     );
     const bucket = ledger.days[receipt.day];
     if (bucket) {
-      bucket.total = Math.max(0, bucket.total - 1);
+      if (receipt.publicPool !== false)
+        bucket.total = Math.max(0, bucket.total - 1);
       bucket.users[identity.actorId] = Math.max(
         0,
         (bucket.users[identity.actorId] ?? 0) - 1,
