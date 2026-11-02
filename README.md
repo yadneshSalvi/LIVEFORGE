@@ -28,7 +28,9 @@ Fresh generation requires an independently authorized Twitch account and availab
 
 [Round-2 production acceptance, 1 November](docs/evidence/review-round2-2026-11-01/production-browser.md): one operator used two real accounts to complete this path under the ordinary public quota, with one generation charged, replies OFF/ON verified, and a real moderator command removing a proposal from all public views. The temporary moderator role was removed afterward. The signed-out practice path also passed on this release. A 15-minute unoperated background-tab run accepted all four sampled proposal/vote pairs; the browser reported visible, so true minimized-window behavior remains unverified.
 
-Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Publish alternative** saves a separate, credited proposal; **Forge selected idea** starts its fresh generation only when you choose. Suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
+Try lighter gravity, an extra air jump, size while holding interact, local wind, bouncy dropped embers, horizontally moving platforms, or a temporary platform on landing. The studio shows the actual capability contract. After a failed run, review Codex’s suggestion or write your own alternative. **Publish alternative** saves a separate, credited proposal; **Forge selected idea** starts its fresh generation only when you choose. Suggested, host-edited and host-written wording stay distinguishable. The original idea and failed run are preserved.
+
+Moving surfaces carry the courier, props and a dropped ember. The courier can jump aboard, ride without input, then jump off. Their flat mint top and tapered brass underside share the same rendering in Preview and live play. The source chooses placement, travel and timing through generic bounded capabilities; the existing signed-out shadow sample remains unchanged. The [surface motion evidence](docs/evidence/surface-motion-2026-11-02/README.md) separates engine regressions from real chat generation and recorded play.
 
 ## One world, up to three laws
 
@@ -53,6 +55,7 @@ Codex combines these capabilities into a new rule. Every candidate still needs a
 | Wind and local speed              | Horizontal wind up to ±0.18; local integration speed 0.5–1.5×                    |
 | Friction and bounce               | Friction 0.65–0.99; restitution 0–0.95                                           |
 | Shadows and temporary platforms   | Up to 48 generated surfaces across all laws; shadow length up to 480 world units |
+| Horizontal surface motion         | Signed travel of 20–240 units; speed 0.3–2.5 units/tick; fixed bounded path      |
 | Temporary props                   | Up to 12 across the world, with at most 4 per spawning clause                    |
 | Timers, cues and bounded impulses | Temporary effects last at most 10 seconds; impulse components up to ±2           |
 

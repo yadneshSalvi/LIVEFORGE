@@ -110,7 +110,9 @@ export class WorldRenderer {
       view = width / scale;
     const target = Math.max(
       0,
-      Math.min(2500 - view + 60, world.entities[0].x - view * 0.31),
+      // Keep the takeoff point visible through an ordinary jump while leaving
+      // most of the viewport ahead of the courier.
+      Math.min(2500 - view + 60, world.entities[0].x - view * 0.4),
     );
     this.camera += (target - this.camera) * (reducedMotion ? 1 : 0.09);
     if (world.entities[0].x < 220) this.camera = 0;
@@ -813,6 +815,54 @@ export class WorldRenderer {
     s: Surface,
     tick: number,
   ) {
+    if (s.motion) {
+      const depth = Math.min(24, Math.max(12, s.w * 0.2)),
+        direction =
+          Math.sign(s.x - s.motion.previousX) || Math.sign(s.motion.travel),
+        trailingEdge = direction > 0 ? s.x : s.x + s.w;
+      glow(c, s.x + s.w / 2, s.y + depth / 2, Math.min(100, s.w), "#8de4be20");
+      for (let i = 1; i <= 3; i++)
+        line(
+          c,
+          trailingEdge - direction * (8 + i * 6),
+          s.y + 3 + i * 4,
+          trailingEdge - direction * (23 + i * 6),
+          s.y + 3 + i * 4,
+          i === 1 ? "#8de4be50" : "#8de4be24",
+          2,
+        );
+      polygon(
+        c,
+        [
+          [s.x, s.y],
+          [s.x + s.w, s.y],
+          [s.x + s.w - Math.min(12, s.w * 0.12), s.y + depth * 0.35],
+          [s.x + s.w * 0.34, s.y + depth],
+          [s.x + Math.min(9, s.w * 0.12), s.y + depth * 0.4],
+        ],
+        s.solid ? "#796541" : "#79654133",
+        s.solid ? "#d5b875" : "#d5b87566",
+      );
+      line(c, s.x, s.y, s.x + s.w, s.y, s.solid ? "#c4f7d8" : "#8de4be66", 3);
+      line(c, s.x + 8, s.y + 5, s.x + s.w - 10, s.y + 5, "#8de4be85");
+      line(
+        c,
+        s.x + s.w * 0.34,
+        s.y + depth - 3,
+        s.x + s.w * 0.64,
+        s.y + depth * 0.55,
+        "#e4c88488",
+      );
+      if (s.solid)
+        glow(
+          c,
+          s.x + s.w * 0.4,
+          s.y + depth,
+          14 + Math.sin(tick / 24) * 2,
+          "#8de4be35",
+        );
+      return;
+    }
     if (s.solid) {
       glow(c, s.x + s.w / 2, s.y + 6, Math.min(110, s.w / 2), "#9aebbc15");
       polygon(

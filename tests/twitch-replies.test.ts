@@ -193,7 +193,7 @@ describe("Twitch moderation and private settings", () => {
       )!,
     );
     expect(reply).toContain(
-      "gravity, jump strength, air jumps, size, wind, spawned platforms or props, shadows, and timers",
+      "gravity, jump strength, air jumps, size, wind, moving platforms, spawned props, shadows, and timers",
     );
     await persist(show);
     await deliverRecentChatReplies(show.id);

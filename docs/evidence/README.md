@@ -2,6 +2,10 @@
 
 This index separates tests, real integrations and browser observations. No synthetic participant is presented as a Twitch viewer, no stored sample is presented as a fresh generation, and planned acceptance targets are not reported as results.
 
+## Surface motion implementation — 2 November 2026
+
+The [surface motion regression record](surface-motion-2026-11-02/README.md) freezes the exact two stored samples and revision 004 Solid Shadows source before implementation, with their parsed programs, full verifier reports and hashes. The additive capability retains engine `last-light/2.0.0`. Its synthetic tests exercise bounded horizontal travel, refresh, rider carry, an arrival-to-foundry traversal, strict checkpoint validation, replay, rollback and composition. Real Twitch generation, production acceptance and the revision 005 film are recorded separately when performed.
+
 The historical round-1 [second-account production record](review-2026-11-01/second-account-production.md) covers source `bbf8ddc` and its 359-test release: one operator, two real accounts, a non-exempt fresh generation with one quota debit, exact approval/activation, three observed replies, and corrected viewer/broadcaster moderation. It retains the original relay failure and stale-browser retry. Moderator-badge, quota-exhaustion, forced-replay and OBS claims remain excluded.
 
 ## Current release: round 4 fixes — 2 November 2026

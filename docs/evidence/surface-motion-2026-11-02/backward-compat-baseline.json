@@ -1,0 +1,336 @@
+{
+  "schema": "liveforge-surface-motion-baseline/v1",
+  "capturedAt": "2026-11-02T07:43:57.020Z",
+  "engineVersion": "last-light/2.0.0",
+  "commit": "02d171809b7651adb40b9d6a969b868f2e383d38",
+  "engineFiles": {
+    "src/game/contracts.ts": "6d2a85fef092392a09b1c2260438001e6fababcee37aeba5e78b64eeab0d723c",
+    "src/game/core.ts": "462c2961eb1a70904a00ffed55a27217b4cdb7bc042f90a38c0e217f23fd1206",
+    "src/game/runtime.ts": "814ba6944863649fbfb6a24e2de54968660a0a76c8d9575362175f752fecaa19",
+    "src/game/rules.ts": "36d22c825b34d413ba03feaab190fa4d98eb79d9f1aace84b2b5b9d68664dcf9",
+    "src/game/verifier.ts": "a7148ce7de047bbcd1956b2f66e4fc754c73960ecad32201fef4ae4addced162"
+  },
+  "records": [
+    {
+      "id": "REUSED_RULE_ARTIFACT",
+      "sourceRecord": "src/server/reused-artifact.ts",
+      "source": "export default {\n  version: 1,\n  name: \"Settled Prop Shadow Bridge\",\n  description: \"After a prop stays still for 30 ticks, its lantern-cast shadow becomes solid. The shadow lasts one tick and refreshes only while the prop remains still, so movement dissolves the bridge on the next simulation tick.\",\n  rules: [\n    {\n      id: \"settled-prop-shadow\",\n      each: \"prop\",\n      when: {\n        all: [\n          { compare: { left: { field: \"stationaryTicks\" }, op: \"gte\", right: 30 } },\n          { compare: { left: { field: \"speed\" }, op: \"eq\", right: 0 } }\n        ]\n      },\n      actions: [\n        { type: \"projectShadow\", maxLength: 480, thickness: 12, lifetime: 1, solid: true }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+      "sourceHash": "5e87b5815309d8054626dddbd952ab661d00d302f0c5540e60c6409938531dfc",
+      "programHash": "e2c587406b146dbed283c9bcec7fb620d377970a07211bc23ec907ef35956a6c",
+      "program": {
+        "version": 1,
+        "name": "Settled Prop Shadow Bridge",
+        "description": "After a prop stays still for 30 ticks, its lantern-cast shadow becomes solid. The shadow lasts one tick and refreshes only while the prop remains still, so movement dissolves the bridge on the next simulation tick.",
+        "rules": [
+          {
+            "id": "settled-prop-shadow",
+            "each": "prop",
+            "when": {
+              "all": [
+                {
+                  "compare": {
+                    "left": {
+                      "field": "stationaryTicks"
+                    },
+                    "op": "gte",
+                    "right": 30
+                  }
+                },
+                {
+                  "compare": {
+                    "left": {
+                      "field": "speed"
+                    },
+                    "op": "eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "actions": [
+              {
+                "type": "projectShadow",
+                "maxLength": 480,
+                "thickness": 12,
+                "lifetime": 1,
+                "solid": true
+              }
+            ]
+          }
+        ]
+      },
+      "report": {
+        "passed": true,
+        "engineVersion": "last-light/2.0.0",
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "passed": true,
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Deterministic input replay",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          }
+        ],
+        "ticksSimulated": 7290,
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "effects": {
+          "surfacesCreated": 14046,
+          "impulsesApplied": 0,
+          "cuesApplied": 0,
+          "modifiersApplied": 0,
+          "entitiesSpawned": 0
+        }
+      },
+      "reportHash": "67c33a6b91ec388e7c5fe4043d0ece46316fe62523da86b1cdf5bea6e72b2889"
+    },
+    {
+      "id": "REUSED_STEP_ARTIFACT",
+      "sourceRecord": "src/server/reused-artifact.ts",
+      "source": "export default {\n  version: 1,\n  name: \"Brass Prop Step\",\n  description: \"A stationary prop glows brass while the courier is within 90 units. A solid step appears to its right, 32 units above its feet. The step lasts one tick and is renewed only while the courier remains nearby, so it expires when the courier moves away.\",\n  rules: [\n    {\n      id: \"nearby-stationary-prop-step\",\n      each: \"prop\",\n      when: {\n        all: [\n          { compare: { left: { field: \"speed\" }, op: \"eq\", right: 0 } },\n          { compare: { left: { field: \"distanceToPlayer\" }, op: \"lte\", right: 90 } }\n        ]\n      },\n      actions: [\n        { type: \"createSurface\", offsetX: 56, offsetY: -32, width: 72, lifetime: 1, solid: true },\n        { type: \"cue\", target: \"self\", color: \"brass\", intensity: 0.8 }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+      "sourceHash": "94c0c2a1b2ac51ac2b88726bdf4b9bf2548466b4354b6e6e6651b320b190de4d",
+      "programHash": "2a93f7338748f89ac78e74e76cd6d56777e3a359d6e49018d412ad25defc1263",
+      "program": {
+        "version": 1,
+        "name": "Brass Prop Step",
+        "description": "A stationary prop glows brass while the courier is within 90 units. A solid step appears to its right, 32 units above its feet. The step lasts one tick and is renewed only while the courier remains nearby, so it expires when the courier moves away.",
+        "rules": [
+          {
+            "id": "nearby-stationary-prop-step",
+            "each": "prop",
+            "when": {
+              "all": [
+                {
+                  "compare": {
+                    "left": {
+                      "field": "speed"
+                    },
+                    "op": "eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "compare": {
+                    "left": {
+                      "field": "distanceToPlayer"
+                    },
+                    "op": "lte",
+                    "right": 90
+                  }
+                }
+              ]
+            },
+            "actions": [
+              {
+                "type": "createSurface",
+                "offsetX": 56,
+                "offsetY": -32,
+                "width": 72,
+                "lifetime": 1,
+                "solid": true
+              },
+              {
+                "type": "cue",
+                "target": "self",
+                "color": "brass",
+                "intensity": 0.8
+              }
+            ]
+          }
+        ]
+      },
+      "report": {
+        "passed": true,
+        "engineVersion": "last-light/2.0.0",
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "passed": true,
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Deterministic input replay",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          }
+        ],
+        "ticksSimulated": 7290,
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "effects": {
+          "surfacesCreated": 407,
+          "impulsesApplied": 0,
+          "cuesApplied": 407,
+          "modifiersApplied": 0,
+          "entitiesSpawned": 0
+        }
+      },
+      "reportHash": "bda0713407339e221ac97742538806b88e2365c18838c77fcf596ad3beebd373"
+    },
+    {
+      "id": "REVISION_004_SOLID_SHADOWS",
+      "sourceRecord": "../videos/liveforge/evidence/revision-005-baseline/solid-shadows.ts",
+      "source": "export default {\n  version: 1,\n  name: \"Solid Shadows\",\n  description: \"While a crate is still, its shadow from a lit lantern becomes a solid bridge you can walk across.\",\n  rules: [\n    {\n      id: \"still-prop-shadow-bridge\",\n      each: \"prop\",\n      on: \"tick\",\n      when: {\n        compare: {\n          left: { field: \"stationaryTicks\" },\n          op: \"gte\",\n          right: 1\n        }\n      },\n      actions: [\n        {\n          type: \"projectShadow\",\n          maxLength: 480,\n          thickness: 10,\n          lifetime: 1,\n          solid: true\n        }\n      ]\n    }\n  ]\n} satisfies RuleModule;",
+      "sourceHash": "1d201ac7150e0e0bef6ba1273c1ee1a11b681524386db14e610f413ce4b08779",
+      "programHash": "11d5cfae5816930462ea2ab514dac61a1d01b88c00c0b1cd722a50913d00fbd6",
+      "program": {
+        "version": 1,
+        "name": "Solid Shadows",
+        "description": "While a crate is still, its shadow from a lit lantern becomes a solid bridge you can walk across.",
+        "rules": [
+          {
+            "id": "still-prop-shadow-bridge",
+            "each": "prop",
+            "on": "tick",
+            "when": {
+              "compare": {
+                "left": {
+                  "field": "stationaryTicks"
+                },
+                "op": "gte",
+                "right": 1
+              }
+            },
+            "actions": [
+              {
+                "type": "projectShadow",
+                "maxLength": 480,
+                "thickness": 10,
+                "lifetime": 1,
+                "solid": true
+              }
+            ]
+          }
+        ]
+      },
+      "report": {
+        "passed": true,
+        "engineVersion": "last-light/2.0.0",
+        "checks": [
+          {
+            "name": "Bounded capability schema",
+            "passed": true,
+            "detail": "Strict source members, derived composition, finite expressions and aggregate limits checked."
+          },
+          {
+            "name": "Actual effects and protected invariants",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Controlled gameplay comparison including airborne jumps",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Held input stress and soft runtime budgets",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Observable behavior in trusted scenarios",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Deterministic input replay",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "Activation rollback preserves exact world",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          },
+          {
+            "name": "JSON checkpoint continuation and temporary cleanup",
+            "passed": true,
+            "detail": "Trusted engine assertions passed."
+          }
+        ],
+        "ticksSimulated": 7290,
+        "summary": "Passed actual combined simulation, deterministic replay, rollback and JSON continuation. Intent and global solvability still require review.",
+        "effects": {
+          "surfacesCreated": 15235,
+          "impulsesApplied": 0,
+          "cuesApplied": 0,
+          "modifiersApplied": 0,
+          "entitiesSpawned": 0
+        }
+      },
+      "reportHash": "e7462670009437af2eb7b68def5112b0bbe08b37b14ed55f8fcce8fa8c652efc",
+      "lineage": {
+        "showId": "f2a47781-7022-4b7e-a298-89cd497d5a11",
+        "proposalId": "P1",
+        "proposalText": "A still prop's shadow becomes a solid bridge.",
+        "lawName": "Solid Shadows",
+        "sourceSHA256": "1d201ac7150e0e0bef6ba1273c1ee1a11b681524386db14e610f413ce4b08779",
+        "operator": "yadneshsalvi96",
+        "runtimeCodexThread": "01a19aa0-d06f-7671-bb7e-a359238e7e3a",
+        "runtimeCommit": "4ff08544cf9bea3bed56b32a37a8faa85a8b4222",
+        "documentationHead": "9732df3"
+      }
+    }
+  ]
+}

@@ -44,6 +44,15 @@ export interface PhysicsState {
   timeScale: number;
   windX: number;
 }
+export interface SurfaceMotion {
+  travel: number;
+  speed: number;
+}
+export interface SurfaceMotionState extends SurfaceMotion {
+  anchorX: number;
+  startedAt: number;
+  previousX: number;
+}
 export type RuleAction =
   | {
       type: "projectShadow";
@@ -60,6 +69,7 @@ export type RuleAction =
       lifetime: number;
       solid: boolean;
       maxCount?: number;
+      motion?: SurfaceMotion;
     }
   | {
       type: "spawnProp";
@@ -167,6 +177,7 @@ export interface Surface {
   solid: boolean;
   generated?: boolean;
   owner?: string;
+  motion?: SurfaceMotionState;
 }
 export interface InputState {
   left: boolean;

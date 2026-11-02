@@ -9,8 +9,10 @@ import type {
   RuleProgram,
   Scalar,
   Surface,
+  SurfaceMotionState,
   TimedModifier,
 } from "./contracts";
+import { SURFACE_MOTION_LIMITS, surfaceMotionX } from "./surface-motion";
 export interface EffectCounts {
   surfacesCreated: number;
   impulsesApplied: number;
@@ -279,6 +281,7 @@ function applyModifier(e: Entity, m: TimedModifier) {
 export function applyRuleProgram(
   world: GameSnapshot,
   program: RuleProgram,
+  previousSurfaces: readonly Surface[] = world.surfaces,
 ): {
   world: GameSnapshot;
   effects: EffectCounts;
@@ -349,6 +352,23 @@ export function applyRuleProgram(
             };
       if (geometry) {
         const key = a.type === "spawnPlatform" ? `${id}:${world.tick}` : id;
+        let motion: SurfaceMotionState | undefined;
+        if (a.type !== "projectShadow" && a.motion) {
+          const previous = previousSurfaces.find(
+            (s) => s.id === key && s.motion,
+          );
+          const anchorX = previous?.motion?.anchorX ?? geometry.x;
+          // Refresh extends a moving surface's lifetime, never its path. In
+          // particular, a rider must not drag the anchor along with itself.
+          geometry.y = previous?.y ?? geometry.y;
+          geometry.x = surfaceMotionX(anchorX, a.motion, world.tick);
+          motion = {
+            ...a.motion,
+            anchorX,
+            startedAt: previous?.motion?.startedAt ?? world.tick,
+            previousX: previous?.x ?? geometry.x,
+          };
+        }
         const replacing = next.surfaces.some((s) => s.id === key);
         const cap =
           a.type === "projectShadow"
@@ -382,7 +402,13 @@ export function applyRuleProgram(
           geometry.x < -500 ||
           geometry.x + geometry.w > 3100 ||
           geometry.y < -100 ||
-          geometry.y > 900
+          geometry.y > 900 ||
+          (motion &&
+            (Math.min(motion.anchorX, motion.anchorX + motion.travel) <
+              SURFACE_MOTION_LIMITS.minX ||
+              Math.max(motion.anchorX, motion.anchorX + motion.travel) +
+                geometry.w >
+                SURFACE_MOTION_LIMITS.maxX))
         ) {
           diagnostics.geometrySkipped++;
           continue;
@@ -395,6 +421,7 @@ export function applyRuleProgram(
           solid: a.solid,
           generated: true,
           owner: entity.id,
+          ...(motion ? { motion } : {}),
         });
         effects.surfacesCreated++;
       }

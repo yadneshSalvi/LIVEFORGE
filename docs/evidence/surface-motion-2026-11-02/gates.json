@@ -1,0 +1,51 @@
+{
+  "schema": "liveforge-surface-motion-gates/v1",
+  "completedAt": "2026-11-02T07:57:24.808Z",
+  "baseCommit": "02d171809b7651adb40b9d6a969b868f2e383d38",
+  "branch": "feat/bounded-surface-motion",
+  "engineVersion": "last-light/2.0.0",
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "passed": true
+    },
+    {
+      "command": "npm test",
+      "passed": true,
+      "tests": 513,
+      "files": 41
+    },
+    {
+      "command": "npm run format:check",
+      "passed": true
+    },
+    {
+      "command": "npm run build",
+      "passed": true,
+      "nextVersion": "16.4.3",
+      "staticPageGenerationTasks": 15,
+      "buildId": "Xv-42M0iU650xYZC6NUQO"
+    }
+  ],
+  "sourceSHA256": {
+    "src/game/contracts.ts": "7dd98710d8c99e03acf08bb999d561879f3047296913e5fab287ce8f8ce8130f",
+    "src/game/rules.ts": "ab9dd641278b69b11aa1b626f8d08b638b699b3e02edca54812d53e99f6c4ece",
+    "src/game/runtime.ts": "bb3fdcdad5fb40939dc36f171242c2c167e8d6edb23ff8a6cb1a9edfbccda760",
+    "src/game/core.ts": "45c398f52ba702dd667502eb62fbb9efa223bb457529745f9ecf0a57937d9d7a",
+    "src/game/verifier.ts": "2d4684a9f4bb2a0e521e8650d59ef0dcd4b117c181f275389e28569809c25e46",
+    "src/game/surface-motion.ts": "09887e9d62bfca138b14e041976403f9c197496a065fe55a573730234e45831e",
+    "src/game/renderer.ts": "ca65ae469173b7a6a11b20abeef05d2d779b738fb873f29e87c17337c1b51aaa",
+    "src/server/checkpoint.ts": "09a7cb756d13cb73b98d648d7404bfc932acdd8d6880fa9100dd919f946887a5",
+    "src/lib/capabilities.ts": "4edb47c2f0a507578ced408387f328b453935d55c1a9d8847ff8d19fe1cc2379",
+    "tests/game-surface-motion.test.ts": "9944fb7a020c93609d460d57876909ddecbfad55c6991bf66359e1f473ff8943",
+    "tests/game-surface-motion-compat.test.ts": "b2c64db2397693e03416c012e1d40a06d6a4e1a7851656c62e19773feddb8aee",
+    "tests/twitch-replies.test.ts": "71ceea5a83dbd635b945c3b4336bf1764df7a6284b6ff8abaff0901215af0c88"
+  },
+  "compatibility": {
+    "exactLegacyArtifacts": 3,
+    "archivedSingleLaws": 20,
+    "archivedStacks": 8,
+    "sourceHashesAndFullReportsUnchanged": true
+  },
+  "scope": "Local implementation gates after the generic camera framing change. No production deployment or fresh generation is asserted by this record."
+}

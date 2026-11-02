@@ -13,6 +13,7 @@ import {
   defaultPhysics,
 } from "@/game/runtime";
 import { validateRuntimeRuleProgram } from "@/game/rules";
+import { SURFACE_MOTION_LIMITS } from "@/game/surface-motion";
 import { assert } from "./errors";
 import { digest, hashData } from "./security";
 const finite = z.number().finite();
@@ -105,6 +106,27 @@ const surface = z
     solid: z.boolean(),
     generated: z.boolean().optional(),
     owner: z.string().min(1).max(200).optional(),
+    motion: z
+      .object({
+        travel: finite
+          .min(-SURFACE_MOTION_LIMITS.maxTravel)
+          .max(SURFACE_MOTION_LIMITS.maxTravel)
+          .refine(
+            (value) => Math.abs(value) >= SURFACE_MOTION_LIMITS.minTravel,
+          ),
+        speed: finite
+          .min(SURFACE_MOTION_LIMITS.minSpeed)
+          .max(SURFACE_MOTION_LIMITS.maxSpeed),
+        anchorX: finite
+          .min(SURFACE_MOTION_LIMITS.minX)
+          .max(SURFACE_MOTION_LIMITS.maxX),
+        startedAt: finite.int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+        previousX: finite
+          .min(SURFACE_MOTION_LIMITS.minX)
+          .max(SURFACE_MOTION_LIMITS.maxX),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export const checkpointSchema = z
@@ -255,6 +277,15 @@ export function parseCheckpoint(
       "Baseline checkpoint cannot contain generated effects.",
     );
   const tick = cp.snapshot.tick;
+  const hasMotion = cp.program?.rules.some((rule) =>
+    rule.actions.some(
+      (action) =>
+        (action.type === "createSurface" || action.type === "spawnPlatform") &&
+        action.motion,
+    ),
+  );
+  // Carry is in addition to the existing maximum velocity * local time scale.
+  const maxOwnerStep = 30 + (hasMotion ? SURFACE_MOTION_LIMITS.maxSpeed : 0);
   const grant = (id: string, owner?: string) => {
     const rule = cp.program?.rules.find((r) => id.startsWith(r.id + ":"));
     assert(rule, 400, "checkpoint_grant", "Generated state has no rule grant.");
@@ -334,7 +365,25 @@ export function parseCheckpoint(
       "checkpoint_grant",
       "Surface has an invalid creation window.",
     );
-    const travel = 30 * (age + 1) + source.baseW * 0.5,
+    const grantedMotion =
+      action.type === "projectShadow" ? undefined : action.motion;
+    assert(
+      Boolean(surface.motion) === Boolean(grantedMotion) &&
+        (!surface.motion ||
+          (surface.motion.travel === grantedMotion?.travel &&
+            surface.motion.speed === grantedMotion.speed &&
+            surface.motion.startedAt <= born &&
+            (action.type !== "spawnPlatform" ||
+              surface.motion.startedAt === created))),
+      400,
+      "checkpoint_grant",
+      "Surface motion differs from its exact action grant.",
+    );
+    // Motion keeps its original anchor when a stable surface is refreshed.
+    // Movable owners need a conservative historical window from that first
+    // creation; immutable lantern anchors can be checked exactly.
+    const anchorAge = tick - (surface.motion?.startedAt ?? born);
+    const travel = maxOwnerStep * (age + 1) + source.baseW * 0.5,
       originX = source.previousX,
       foot = source.previousY + source.h;
     if (action.type === "projectShadow")
@@ -347,7 +396,22 @@ export function parseCheckpoint(
         "checkpoint_grant",
         "Shadow placement exceeds its bounded owner history.",
       );
-    else
+    else if (surface.motion) {
+      const allowance =
+        source.kind === "lantern"
+          ? 1e-7
+          : maxOwnerStep * (anchorAge + 1) + source.baseW * 0.5;
+      const sourceX = source.kind === "lantern" ? source.x : originX;
+      const sourceFoot = source.kind === "lantern" ? source.y + source.h : foot;
+      assert(
+        Math.abs(surface.motion.anchorX - (sourceX + action.offsetX)) <=
+          allowance &&
+          Math.abs(surface.y - (sourceFoot + action.offsetY)) <= allowance,
+        400,
+        "checkpoint_grant",
+        "Moving surface anchor exceeds its bounded relative grant.",
+      );
+    } else
       assert(
         Math.abs(surface.x - (originX + action.offsetX)) <= travel &&
           Math.abs(surface.y - (foot + action.offsetY)) <= travel,

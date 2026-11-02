@@ -66,13 +66,13 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
   } catch (error) {
     return failure(error);
   }
-  const run = (name: string, fn: () => void) => {
+  const run = (name: string, fn: () => void | string) => {
     try {
-      fn();
+      const detail = fn();
       checks.push({
         name,
         passed: true,
-        detail: "Trusted engine assertions passed.",
+        detail: detail ?? "Trusted engine assertions passed.",
       });
     } catch (error) {
       checks.push({
@@ -326,6 +326,186 @@ function verify(input: RuleProgram, composition: boolean): VerificationReport {
     )
       throw new Error("Retired program left generated state");
   });
+  const hasMotion = program.rules.some((rule) =>
+    rule.actions.some(
+      (action) =>
+        (action.type === "createSurface" || action.type === "spawnPlatform") &&
+        action.motion !== undefined,
+    ),
+  );
+  if (hasMotion) {
+    run("Bounded horizontal motion and mid-sweep continuation", () => {
+      const e = makeEngine(),
+        before = e.checkpoint();
+      let restored: GameEngine | undefined;
+      e.activate(program, "motion-continuation");
+      // The longest permitted return trip is 1,600 ticks (240 / 0.3 * 2).
+      // This also covers one-tick refreshes and surviving spawned platforms.
+      for (let t = 0; t < 1800; t++) {
+        const previous = new Map(e.world.surfaces.map((s) => [s.id, s])),
+          input = {
+            ...EMPTY_INPUT,
+            right: t % 360 < 150,
+            left: t % 360 >= 150 && t % 360 < 300,
+            jump: t % 47 === 0,
+            interact: t % 83 < 5,
+            drop: t === 100 || t === 200,
+          };
+        e.step(input);
+        ticksSimulated++;
+        assertWorld(e.world);
+        assertSafety(e);
+        for (const surface of e.world.surfaces) {
+          const motion = surface.motion;
+          if (!motion) continue;
+          const distance = Math.abs(motion.travel),
+            phase = (e.world.tick * motion.speed) % (distance * 2),
+            expected =
+              motion.anchorX +
+              Math.sign(motion.travel) *
+                (phase <= distance ? phase : distance * 2 - phase);
+          if (
+            Math.abs(surface.x - expected) > 1e-7 ||
+            surface.x < 0 ||
+            surface.x + surface.w > 2500 ||
+            Math.abs(surface.x - motion.previousX) > motion.speed + 1e-7
+          )
+            throw new Error("Horizontal surface exceeded its motion grant");
+          const prior = previous.get(surface.id);
+          if (prior?.motion && prior.motion.startedAt === motion.startedAt) {
+            if (
+              prior.motion.anchorX !== motion.anchorX ||
+              prior.y !== surface.y ||
+              Math.abs(prior.x - motion.previousX) > 1e-7
+            )
+              throw new Error(
+                "Surface refresh changed its path or carry delta",
+              );
+          }
+        }
+        if (restored) {
+          restored.step(input);
+          ticksSimulated++;
+          assertWorld(restored.world);
+          assertSafety(restored);
+        }
+        if (t === 136) {
+          restored = makeEngine();
+          restored.restore(JSON.parse(JSON.stringify(e.checkpoint())));
+        }
+      }
+      if (
+        !restored ||
+        JSON.stringify(e.checkpoint()) !== JSON.stringify(restored.checkpoint())
+      )
+        throw new Error("Mid-sweep serialized continuation diverged");
+      e.rollback();
+      if (JSON.stringify(e.checkpoint()) !== JSON.stringify(before))
+        throw new Error("Motion rollback changed protected state");
+      restored.rollback();
+      if (restored.world.surfaces.some((surface) => surface.motion))
+        throw new Error("Retired motion left generated state");
+    });
+    run("Grounded riders follow horizontal motion", () => {
+      const e = makeEngine();
+      e.activate(program, "motion-rider");
+      const eligible = () =>
+        [...e.world.surfaces]
+          .reverse()
+          .find(
+            (s) =>
+              s.motion &&
+              s.solid &&
+              s.w >= e.world.entities[0].w + 4 &&
+              s.x >= 30 &&
+              s.x + s.w <= 2100 &&
+              s.y >= 100 &&
+              s.y <= 600,
+          );
+      for (let t = 0; t < 600 && !eligible(); t++) {
+        e.step({
+          ...EMPTY_INPUT,
+          right: t % 200 < 90,
+          left: t % 200 >= 100 && t % 200 < 190,
+          jump: t % 47 === 0,
+          interact: t % 83 === 0,
+        });
+        ticksSimulated++;
+        assertSafety(e);
+      }
+      const initial = eligible();
+      if (!initial?.motion)
+        return "No solid moving surface triggered in the rider probe; motion bounds and continuation remain checked.";
+      const player = e.world.entities[0];
+      player.x = initial.x + (initial.w - player.w) / 2;
+      player.y = initial.y - player.h;
+      player.vx = player.vy = 0;
+      player.grounded = true;
+      const horizon = Math.ceil(
+        (Math.abs(initial.motion.travel) * 2) / initial.motion.speed,
+      );
+      let checked = 0;
+      for (let t = 0; t < horizon; t++) {
+        const before = e.world.entities[0],
+          support = [...e.world.surfaces]
+            .reverse()
+            .find(
+              (s) =>
+                s.solid &&
+                Math.abs(before.y + before.h - s.y) < 1e-6 &&
+                before.x + before.w > s.x + 1 &&
+                before.x < s.x + s.w - 1,
+            );
+        if (
+          !before.grounded ||
+          support?.id !== initial.id ||
+          !support.motion ||
+          (!e.world.encounters.counterweight &&
+            before.x > 1300 &&
+            before.x < 1470) ||
+          (!e.world.encounters.guardian && before.x > 2080)
+        )
+          break;
+        const deaths = e.world.deaths;
+        e.step();
+        ticksSimulated++;
+        assertWorld(e.world);
+        assertSafety(e);
+        const after = e.world.entities[0],
+          current = e.world.surfaces.find((s) => s.id === support.id);
+        // Other lawful actions can launch, resize or move a rider, or let its
+        // conditional support expire. Those states are covered by safety/replay.
+        if (
+          e.world.deaths !== deaths ||
+          !current?.motion ||
+          current.motion.startedAt !== support.motion.startedAt ||
+          !after.grounded ||
+          before.vx !== 0 ||
+          after.vx !== 0 ||
+          before.w !== after.w ||
+          before.physics.windX !== 0 ||
+          after.physics.windX !== 0 ||
+          Math.abs(after.y + after.h - current.y) > 1e-6
+        )
+          break;
+        const expected = Math.max(
+          20,
+          Math.min(2470 - after.w, before.x + current.x - support.x),
+        );
+        if (
+          Math.abs(after.x - expected) > 1e-7 ||
+          Math.abs(after.previousX - before.x) > 1e-7
+        )
+          throw new Error(
+            "Grounded rider lost surface displacement or motion history",
+          );
+        checked++;
+      }
+      return checked
+        ? `Verified ${checked} neutral supported ticks with surface displacement and carry history.`
+        : "No neutral supported rider tick remained after candidate conditions changed; motion bounds and continuation remain checked.";
+    });
+  }
   for (const engine of engines)
     for (const key of Object.keys(effects) as (keyof typeof effects)[])
       effects[key] += engine.effects[key];

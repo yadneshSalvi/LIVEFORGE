@@ -15,8 +15,10 @@ import {
   type EffectCounts,
   emptyEffects,
   emptyDiagnostics,
+  MAX_GENERATED_SURFACES,
 } from "./runtime";
 import { validateRuntimeRuleProgram } from "./rules";
+import { SURFACE_MOTION_LIMITS, surfaceMotionX } from "./surface-motion";
 export const LEVEL_SURFACES: Surface[] = [
   {
     id: "arrival",
@@ -234,6 +236,29 @@ export class GameEngine {
     )
       this.respawn();
     const w = this.world;
+    const previousSurfaces = w.surfaces;
+    const riders = new Map<string, string>();
+    for (const e of previousSurfaces.some((s) => s.motion) ? w.entities : []) {
+      if (
+        !e.grounded ||
+        e.kind === "lantern" ||
+        (e.kind === "ember" && w.emberCarried)
+      )
+        continue;
+      // Landing resolves in surface order, so the final supporting surface
+      // wins here too. Capture before expiry: a one-tick grant can refresh.
+      let support: Surface | undefined;
+      for (const s of previousSurfaces)
+        if (
+          s.solid &&
+          !(e.kind === "prop" && s.generated && s.owner === e.id) &&
+          Math.abs(e.y + e.h - s.y) < 1e-6 &&
+          e.x + e.w > s.x + 1 &&
+          e.x < s.x + s.w - 1
+        )
+          support = s;
+      if (support?.motion) riders.set(e.id, support.id);
+    }
     w.input = { ...input };
     w.tick++;
     w.entities = w.entities.filter(
@@ -245,7 +270,7 @@ export class GameEngine {
         (s.expires >= w.tick && w.entities.some((e) => e.id === s.owner)),
     );
     if (this.program) {
-      const result = applyRuleProgram(w, this.program);
+      const result = applyRuleProgram(w, this.program, previousSurfaces);
       this.world = result.world;
       this.recordRuntime(result);
     }
@@ -257,6 +282,26 @@ export class GameEngine {
       lamp = world.entities
         .filter((e) => e.kind === "lantern")
         .sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x))[0];
+    for (const s of world.surfaces) {
+      if (!s.motion) continue;
+      s.motion.previousX =
+        previousSurfaces.find((previous) => previous.id === s.id)?.x ?? s.x;
+      s.x = surfaceMotionX(s.motion.anchorX, s.motion, world.tick);
+    }
+    // Carry is displacement, not velocity: jumping and walking retain the
+    // ordinary controls, and local time scale cannot multiply platform speed.
+    const carriedX = new Map<string, number>();
+    for (const e of world.entities) {
+      const supportId = riders.get(e.id);
+      if (!supportId) continue;
+      const support = world.surfaces.find(
+        (s) => s.id === supportId && s.solid && s.motion,
+      );
+      if (support?.motion) {
+        carriedX.set(e.id, e.x);
+        e.x = clamp(e.x + support.x - support.motion.previousX, 20, 2470 - e.w);
+      }
+    }
     for (const e of world.entities) {
       const foot = e.y + e.h,
         cx = e.x + e.w / 2,
@@ -368,10 +413,10 @@ export class GameEngine {
       if (e.kind === "lantern" || (e.kind === "ember" && world.emberCarried))
         continue;
       e.wasGrounded = e.grounded;
-      e.previousX = e.x;
+      e.previousX = carriedX.get(e.id) ?? e.x;
       e.previousY = e.y;
       const oldY = e.y,
-        oldX = e.x;
+        oldX = carriedX.get(e.id) ?? e.x;
       const dt = e.physics.timeScale;
       e.vx = clamp(e.vx + e.physics.windX * dt, -20, 20);
       e.vy = clamp(e.vy + 0.48 * e.physics.gravityScale * dt, -20, 20);
@@ -594,14 +639,13 @@ export function assertWorld(w: GameSnapshot) {
     )
       throw new Error("Invalid bounded spawned entity");
   }
-  for (const s of w.surfaces)
+  for (const s of w.surfaces) {
     if (
       !s.generated &&
       !LEVEL_SURFACES.some((base) => base.id === s.id) &&
       s.id !== "hall-causeway"
     )
       throw new Error("Unknown authored route surface");
-  for (const s of w.surfaces)
     if (
       ![s.x, s.y, s.w, s.h, s.expires].every(Number.isFinite) ||
       s.w <= 0 ||
@@ -615,7 +659,42 @@ export function assertWorld(w: GameSnapshot) {
       (s.generated && (s.expires < w.tick || s.expires > w.tick + 600))
     )
       throw new Error("Invalid checkpoint geometry");
-  if (w.surfaces.length > 58 || w.modifiers.length > 48)
+    if (s.motion) {
+      const m = s.motion;
+      if (
+        !s.generated ||
+        !Number.isSafeInteger(w.tick) ||
+        !Number.isSafeInteger(m.startedAt) ||
+        m.startedAt < 0 ||
+        m.startedAt > w.tick ||
+        ![m.anchorX, m.previousX, m.travel, m.speed].every(Number.isFinite) ||
+        Math.abs(m.travel) < SURFACE_MOTION_LIMITS.minTravel ||
+        Math.abs(m.travel) > SURFACE_MOTION_LIMITS.maxTravel ||
+        m.speed < SURFACE_MOTION_LIMITS.minSpeed ||
+        m.speed > SURFACE_MOTION_LIMITS.maxSpeed ||
+        Math.min(m.anchorX, m.anchorX + m.travel) <
+          SURFACE_MOTION_LIMITS.minX ||
+        Math.max(m.anchorX, m.anchorX + m.travel) + s.w >
+          SURFACE_MOTION_LIMITS.maxX ||
+        Math.abs(s.x - surfaceMotionX(m.anchorX, m, w.tick)) > 1e-7 ||
+        Math.abs(
+          m.previousX -
+            surfaceMotionX(
+              m.anchorX,
+              m,
+              m.startedAt === w.tick ? w.tick : w.tick - 1,
+            ),
+        ) > 1e-7 ||
+        Math.abs(s.x - m.previousX) > m.speed + 1e-7
+      )
+        throw new Error("Invalid bounded surface motion");
+    }
+  }
+  if (
+    w.surfaces.length > 58 ||
+    w.surfaces.filter((s) => s.generated).length > MAX_GENERATED_SURFACES ||
+    w.modifiers.length > 48
+  )
     throw new Error("World resource budget exceeded");
   for (const m of w.modifiers)
     if (

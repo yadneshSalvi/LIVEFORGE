@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Condition, Scalar, RuleProgram } from "./contracts";
+import { SURFACE_MOTION_LIMITS } from "./surface-motion";
 export type { RuleProgram, RuleModule, VerificationReport } from "./contracts";
 export { verifyRuleProgram, verifyRuleComposition } from "./verifier";
 const number = z.number().finite();
@@ -65,6 +66,17 @@ const condition: z.ZodType<Condition> = z.lazy(() =>
 );
 const target = z.enum(["self", "player"]),
   life = number.int().min(1).max(600);
+const motion = z
+  .object({
+    travel: number
+      .min(-SURFACE_MOTION_LIMITS.maxTravel)
+      .max(SURFACE_MOTION_LIMITS.maxTravel)
+      .refine((value) => Math.abs(value) >= SURFACE_MOTION_LIMITS.minTravel),
+    speed: number
+      .min(SURFACE_MOTION_LIMITS.minSpeed)
+      .max(SURFACE_MOTION_LIMITS.maxSpeed),
+  })
+  .strict();
 const action = z.discriminatedUnion("type", [
   z
     .object({
@@ -84,6 +96,7 @@ const action = z.discriminatedUnion("type", [
       lifetime: life,
       solid: z.boolean(),
       maxCount: number.int().min(1).max(8).optional(),
+      motion: motion.optional(),
     })
     .strict(),
   z
@@ -435,12 +448,13 @@ ACTIONS:
 {type:'material',target:'self'|'player',friction:.65...99,bounce:0...95,lifetime?:1..600}. Default1 tick; lifetime180 lasts three seconds at60Hz. An on:'touch' prop rule with lifetime180 makes contact-triggered temporary bounce. Ember material/physics is applied only while DROPPED; carried ember physics is ignored.
 {type:'impulse',target,x:Scalar[-2..2],y:Scalar[-2..2]} adds bounded velocity; speed cap20.
 {type:'projectShadow',maxLength:20..480,thickness:4..18,lifetime:1..600,solid:boolean} projects entity silhouette from nearest enabled lantern onto supporting feet plane and creates collision only if solid. Stillness relation belongs in generated when conditions. At most8 surfaces per clause.
-{type:'createSurface',offsetX:-300..300,offsetY:-200..200,width:12..320,lifetime:1..600,solid:boolean,maxCount?:1..8} creates/refreshes one surface relative to entity feet, per-clause cap default8.
-{type:'spawnPlatform',offsetX,offsetY,width,lifetime,solid,maxCount?:1..8} creates a distinct temporary platform per trigger/tick, per-clause cap default4.
+{type:'createSurface',offsetX:-300..300,offsetY:-200..200,width:12..320,lifetime:1..600,solid:boolean,maxCount?:1..8,motion?:{travel:number[-240..240],speed:number[.3..2.5]}} creates/refreshes one surface relative to entity feet, per-clause cap default8.
+{type:'spawnPlatform',offsetX,offsetY,width,lifetime,solid,maxCount?:1..8,motion?:{travel,speed}} has the same geometry and motion limits and creates a distinct temporary platform per trigger/tick, per-clause cap default4.
+SURFACE MOTION: optional, horizontal only. Absolute travel must be20..240; positive travel goes right of the initial anchor and negative travel goes left. speed is world units per simulation tick. Position ping-pongs between initial anchorX and anchorX+travel with a deterministic triangle wave of the absolute world tick; a one-way sweep lasts abs(travel)/speed ticks. The entire path including width must remain inside x0..2500. Initial anchorX=entity.x+offsetX and topY=entity.y+entity.h+offsetY are fixed for the surface lifetime; createSurface refresh preserves that initial anchor, height and phase even when its owner moves. Refresh every tick with lifetime1 to persist only while the condition holds. Without refresh it expires normally; motion never extends lifetime. Grounded courier, props and a dropped ember are carried horizontally by solid moving surfaces and can move or jump normally. A prop cannot stand on its own generated surface. No vertical motion or new action type.
 {type:'spawnProp',offsetX:-300..300,offsetY:-200..200,lifetime:1..600,cooldown:integer1..600,maxCount:integer1..4} spawns a28x40 crate relative to feet, only at tick multiples of cooldown; spawned props cannot recursively spawn. Per-clause and global caps skip creation at capacity. IDs deterministic. Prefer event triggers to per-tick creation.
 {type:'cue',target,color:'mint'|'coral'|'brass',intensity:0..1}; {type:'timer',value:integer0..600} sets each entity countdown.
 SAFETY AND VERIFICATION: all surface creation shares the48-surface cap; excess commands, modifiers, surfaces or props are safely skipped with diagnostics, and out-of-world surfaces are skipped. Any saturation or vertical ceiling recovery rejects verification. Continuous held jump/interact/left/right inputs are tested for600 ticks; do not apply repeated upward impulses that force entities above y=-80. Physics must produce a noticeable change in play (more than4 world units of position or size in controlled comparisons), not merely change metadata or add a cosmetic cue. Extra air jumps must be usable after an explicit second jump press while airborne. Tiny numerical changes fail with "No noticeable effect on play." Keep the original requested behavior; do not replace it to satisfy checks.
-WORLD: courier,3 authored crates at510/1130/1950,3 lanterns at320/1030/1840,exactly1 protected physical ember. A/D arrows move,Space jumps,E pushes nearest crate/toggles lantern/operates authored encounter, Q drops or picks up nearby ember,R checkpoint recovery. y increases down, floor448,width2500. The ember is an authored protected entity; rules can never drop,pick up,spawn,delete or steal it. Objective requires ember carried. Source<=24000chars,1600tree nodes,depth16;32queriedentities,128actions per tick,48generatedsurfaces,12spawnedprops (20totalentities),48timedmodifiers,source<=8clauses. Up to3 approved laws can compose as trusted namespaced IR<=24clauses with SHARED global budgets; never emit composition metadata in source. No network,files,process,DOM,teleport,inventory/progress/checkpoint edits. Describe supported behavior honestly and request adaptation for unsupported ideas.`;
+WORLD: courier,3 authored crates at510/1130/1950,3 lanterns at320/1030/1840,exactly1 protected physical ember. Lanterns are immovable anchors at x320 (lamp), x1030 (hall-lamp), x1840 (guardian-lamp), each y357,height91,feet448. Crates move when pushed. The Broken Crossing arrival ledge ends at x610 and the foundry ledge starts at x950; both tops are y448, leaving a340-unit gap. Lower stepping stones are at x665/y535 and x810/y540; a stair begins x895/y490. Courier size25x48, max run4.2/tick, baseline jump velocity-11.4 and gravity.48/tick squared. A/D arrows move,Space jumps,E pushes nearest crate/toggles lantern/operates authored encounter, Q drops or picks up nearby ember,R checkpoint recovery. y increases down, floor448,width2500. The ember is an authored protected entity; rules can never drop,pick up,spawn,delete or steal it. Objective requires ember carried. Source<=24000chars,1600tree nodes,depth16;32queriedentities,128actions per tick,48generatedsurfaces,12spawnedprops (20totalentities),48timedmodifiers,source<=8clauses. Up to3 approved laws can compose as trusted namespaced IR<=24clauses with SHARED global budgets; never emit composition metadata in source. No network,files,process,DOM,teleport,inventory/progress/checkpoint edits. Describe supported behavior honestly and request adaptation for unsupported ideas.`;
 
 export const RULE_CAPABILITY_HINTS = [
   {
@@ -457,6 +471,11 @@ export const RULE_CAPABILITY_HINTS = [
     title: "Temporary creations",
     detail:
       "Spawn capped props or platforms for up to ten seconds, or project a physical shadow from an existing lantern.",
+  },
+  {
+    title: "Moving platforms",
+    detail:
+      "Move surfaces horizontally along bounded paths. Riders travel with them and can walk or jump off; refresh a surface to keep it around.",
   },
   {
     title: "Arithmetic and conditions",
