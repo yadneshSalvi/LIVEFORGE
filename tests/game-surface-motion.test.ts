@@ -669,7 +669,7 @@ describe("motion checkpoints, grants and shared safety", () => {
     );
   });
 
-  it("documents generic motion and crossing geometry without a named preset or example law", () => {
+  it("documents generic motion, its rendered silhouette and crossing geometry without a preset or example law", () => {
     const prompt = buildGenerationPrompt("An unrelated bounded mechanic");
     expect(prompt).toContain(RULE_API_DOCUMENTATION);
     expect(prompt).toContain("motion?:{travel");
@@ -677,6 +677,18 @@ describe("motion checkpoints, grants and shared safety", () => {
     expect(prompt).toContain("x950");
     expect(prompt).toContain("y448");
     expect(prompt).toContain("Lanterns are immovable anchors");
+    expect(prompt).toContain(
+      "SURFACE PRESENTATION: every generated surface with motion",
+    );
+    expect(prompt).toContain("tapered, wedge-shaped brass underside");
+    expect(prompt).toContain("mint edging and a subtle motion trail/glow");
+    expect(prompt).toContain("requires no separate shape action");
+    expect(prompt).toContain(
+      "Collision remains a flat horizontal top edge when solid",
+    );
+    expect(prompt).toContain(
+      "Sloped walking surfaces and ramps are not supported",
+    );
     expect(prompt).not.toMatch(
       /movingWedge|floating wedge|jump on, ride it, jump off/i,
     );
